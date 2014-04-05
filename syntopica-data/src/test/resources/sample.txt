@@ -1,0 +1,41 @@
+Domain named: software requirements.
+
+governor governs: business.
+governor serves: business as: source of: vision, mission, values.
+
+requestor oversees: activities for: business.
+requestor requests: improvements in: activity.
+requestor serves: business as: source of: improvements, purposes.
+
+expector performs: activities for: business.
+expector uses: features of: solution.
+expector requests: actions by: components through: dialogs.
+expector requests: information from: components through: dialogs.
+expector expects: improvements in: activity for: business.
+expector serves: business as: source of: features.
+
+developer designs: component, dialog, interface.
+developer builds: component, dialog, interface.
+developer tests: component, dialog, interface.
+developer serves: business as: source of: estimates.
+
+vision describes: intended outcomes of: business.
+mission describes: intended effects of: business.
+value measures: quality of: concern for: business.
+
+activity produces: value for: business.
+activity conserves: value for: business.
+
+improvement = feature improves: activities for: business.
+feature solves: problems for: business.
+feature resolves: problems for: business.
+
+solution exhibits: features.
+solution has: components.
+component surfaces: dialogs.
+dialog reveals: features through: interfaces.
+
+interface exposes: model information.
+interface exposes: component operations.
+
+
