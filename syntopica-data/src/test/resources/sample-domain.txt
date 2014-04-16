@@ -9,8 +9,8 @@ requestor serves: business as: source of: improvements, purposes.
 
 expector performs: activities for: business.
 expector uses: features of: solution.
-expector requests: actions by: components through: dialogs.
-expector requests: information from: components through: dialogs.
+expector requests: actions of: components through: dialogs.
+expector requests: values from: components through: dialogs.
 expector expects: improvements in: activity for: business.
 expector serves: business as: source of: features.
 
@@ -22,10 +22,12 @@ developer serves: business as: source of: estimates.
 vision describes: intended outcomes of: business.
 mission describes: intended effects of: business.
 value measures: quality of: concern for: business.
+value measures: quantity of: money.
 
 activity produces: value for: business.
 activity conserves: value for: business.
 
+source describes: features for: developers.
 improvement = feature improves: activities for: business.
 feature solves: problems for: business.
 feature resolves: problems for: business.
@@ -33,9 +35,12 @@ feature resolves: problems for: business.
 solution exhibits: features.
 solution has: components.
 component surfaces: dialogs.
+component performs: actions.
 dialog reveals: features through: interfaces.
 
 interface exposes: model information.
 interface exposes: component operations.
+
+business creates: value for: constituents.
 
 

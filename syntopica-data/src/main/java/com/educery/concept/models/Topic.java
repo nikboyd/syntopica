@@ -1,5 +1,8 @@
 package com.educery.concept.models;
 
+import java.util.*;
+
+import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -22,8 +25,22 @@ import org.apache.commons.logging.LogFactory;
 public class Topic implements Registry.KeySource {
 
 	private static final Log Logger = LogFactory.getLog(Topic.class);
+	private static final String[] Vowels = { "a", "e", "i", "o", "u", "h" };
+	private static final String[] Articles = { "a", "an", "some" };
+	private static final String Period = ".";
+	private static final String Blank = " ";
+	private static final String Empty = "";
 
-	private String title = "";
+	private static final List<String> VowelList = Arrays.asList(Vowels);
+	private static final String[] Plurals = { "ue", "y", "ess" };
+	private static final HashMap<String, String> Replacements = new HashMap<String, String>();
+	static {
+		Replacements.put("ue", "ues");
+		Replacements.put("y", "ies");
+		Replacements.put("ess", "ess");
+	}
+
+	private String title = Empty;
 	private boolean defined = false;
 	private Discussion discussion = Discussion.withoutContent();
 	private Registry<Fact> facts = Registry.empty();
@@ -61,6 +78,7 @@ public class Topic implements Registry.KeySource {
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getKey() { return getTitle(); }
 
@@ -102,7 +120,58 @@ public class Topic implements Registry.KeySource {
 	 * @return facts
 	 */
 	public Fact[] getFacts() {
-		return this.facts.getItems();
+		Fact[] sample = { };
+		List<Fact> results = this.facts.getItems();
+		return results.toArray(sample);
+	}
+	
+	public String getCapitalizedLink() {
+		return Tag.linkWith(getLinkFileName())
+				.withContent(getSubject()).format();
+	}
+	
+	public String getReferenceLink() {
+		return getReferenceLink(false);
+	}
+	
+	public String getReferenceLink(boolean plural) {
+		return Tag.linkWith(getLinkFileName())
+				.withContent(getSubject(plural)).format();
+	}
+	
+	public String getArticle() {
+		return getArticle(false);
+	}
+	
+	public String getArticle(boolean plural) {
+		return getArticle(getTitle(), plural);
+	}
+	
+	public static String getArticle(String title, boolean plural) {
+		if (plural) return Articles[2];
+		String first = String.valueOf((title.charAt(0)));
+		return (VowelList.contains(first) ? Articles[1] : Articles[0] );
+	}
+	
+	private String getSubject(boolean plural) {
+		if (!plural) return getTitle();
+		String title = getTitle();
+		for (String suffix : Plurals) {
+			if (title.endsWith(suffix)) {
+				int shortLength = title.length() - suffix.length();
+				return title.substring(0, shortLength) + Replacements.get(suffix);
+			}
+		}
+		return title + "s";
+	}
+	
+	public String getSubject() {
+		return  WordUtils.capitalize(getTitle());
+	}
+	
+	public String getLinkFileName() {
+		String linkName = getTitle().replace(Blank, Period);
+		return linkName + ".html";
 	}
 	
 	/**

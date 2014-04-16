@@ -1,8 +1,11 @@
 package com.educery.concept.models;
 
-import org.junit.Test;
-//import org.apache.commons.logging.*;
+import java.util.*;
 
+import org.junit.*;
+import static org.junit.Assert.*;
+
+@Ignore
 public class ConceptTest {
 	
 //	private static final Log Logger = LogFactory.getLog(ConceptTest.class);
@@ -29,6 +32,8 @@ public class ConceptTest {
 		f.dumpSentence();
 
 		Domain.getCurrentDomain().dump();
+		List<Topic> topics = Domain.getCurrentDomain().getTopics().getItems();
+		assertFalse(topics.isEmpty());
 	}
 	
 	@Test

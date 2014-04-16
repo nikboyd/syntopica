@@ -3,6 +3,19 @@ package com.educery.concept.models;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Contains the topics of a domain model.
+ * 
+ * <h4>Domain Responsibilities:</h4>
+ * <ul>
+ * <li></li>
+ * </ul>
+ *
+ * <h4>Client Responsibilities:</h4>
+ * <ul>
+ * <li></li>
+ * </ul>
+ */
 public class Domain implements Registry.KeySource {
 
 	private static final Log Logger = LogFactory.getLog(Domain.class);
@@ -34,6 +47,7 @@ public class Domain implements Registry.KeySource {
 		return this.name;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String getKey() {
 		return getName();
@@ -70,6 +84,10 @@ public class Domain implements Registry.KeySource {
 	
 	public static Predication register(Predication predicate) {
 		return getCurrentDomain().getPredicates().register(predicate);
+	}
+	
+	public String getReferenceLink() {
+		return Tag.linkWith("domain.html").withContent("Model").format();
 	}
 	
 	public void dump() {

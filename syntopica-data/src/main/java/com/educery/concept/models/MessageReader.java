@@ -6,6 +6,19 @@ import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * Reads a domain model from a file.
+ * 
+ * <h4>MessageReader Responsibilities:</h4>
+ * <ul>
+ * <li></li>
+ * </ul>
+ *
+ * <h4>Client Responsibilities:</h4>
+ * <ul>
+ * <li></li>
+ * </ul>
+ */
 public class MessageReader {
 
 	private static final Log Logger = LogFactory.getLog(MessageReader.class);
@@ -79,7 +92,7 @@ public class MessageReader {
 			result.defines(Topic.named(definedTopic));
 			definedTopic = Empty;
 		}
-		result.dumpMessage();
+//		result.dumpMessage();
 	}
 
 } // MessageReader

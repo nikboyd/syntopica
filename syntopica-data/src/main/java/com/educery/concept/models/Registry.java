@@ -1,6 +1,6 @@
 package com.educery.concept.models;
 
-import java.util.HashMap;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -137,9 +137,8 @@ public class Registry<ItemType extends Registry.KeySource> {
 	 * The registered items.
 	 * @return the items
 	 */
-	@SuppressWarnings("unchecked")
-	public ItemType[] getItems() {
-		return (ItemType[])this.items.values().toArray();
+	public List<ItemType> getItems() {
+		return new ArrayList<ItemType>(this.items.values());
 	}
 	
 	private void reportMissingItem(String itemKey) {

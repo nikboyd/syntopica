@@ -125,6 +125,7 @@ public class Predication implements Registry.KeySource {
 		return this.valenceCount;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getKey() { return getSelector(); }
 

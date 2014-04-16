@@ -1,8 +1,6 @@
 package com.educery.concept.models;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,8 +27,18 @@ public class Fact implements Registry.KeySource {
 	private static final Log Logger = LogFactory.getLog(Fact.class);
 	private static final String Empty = "";
 	private static final String Blank = " ";
+	private static final String Comma = ",";
 	private static final String Period = ".";
 	private static final String Equals = " = ";
+	
+	private static final String[] Plurals = { "ues", "ies", "ess", "s" };
+	private static final HashMap<String, String> Replacements = new HashMap<String, String>();
+	static {
+		Replacements.put("ues", "ue");
+		Replacements.put("ies", "y");
+		Replacements.put("ess", "ess");
+		Replacements.put("s", "");
+	}
 	
 	private Predication predicate;
 	private ArrayList<String> topics = new ArrayList<String>();
@@ -113,11 +121,13 @@ public class Fact implements Registry.KeySource {
 		return builder.toString().trim() + Period;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return getMessage();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getKey() {
 		return getPredicate().getKey();
@@ -142,7 +152,83 @@ public class Fact implements Registry.KeySource {
 	}
 	
 	private String getPrefix() {
-		return (this.definedTopic.isEmpty() ? "fact" : this.definedTopic) + Equals;
+		return (this.definedTopic.isEmpty() ? 
+				getClass().getSimpleName() : 
+				this.definedTopic) + Equals;
+	}
+	
+	public List<String> getRelatedSubjects() {
+		ArrayList<String> results = new ArrayList<String>();
+		for (String candidate : this.topics) {
+			String[] subjects = candidate.split(Comma);
+			for (String subject : subjects) {
+				if (!subject.trim().isEmpty()) {
+					results.add(getSingular(subject));
+				}
+			}
+		}
+		return results;
+	}
+	
+	private String getSingular(String subject) {
+		String result = subject.trim();
+		for (String ending : Plurals) {
+			if (result.endsWith(ending)) {
+				int rootLength = result.length() - ending.length();
+				result = result.substring(0, rootLength);
+				result += Replacements.get(ending);
+				return result; // only one!
+			}
+		}
+		return result;
+	}
+	
+	public String getFormattedPredicate() {
+		String[] parts = getPredicate().getParts();
+		StringBuilder builder = new StringBuilder();
+		builder.append(Tag.italics(parts[0]).format());
+		if (getValenceCount() > 1) {
+			builder.append(Blank);
+			builder.append(formatRelatedTopics(this.topics.get(1)));
+			if (getValenceCount() > 2) {
+				for (int index = 2; index < getValenceCount(); index++) {
+					builder.append(Blank);
+					builder.append(parts[index - 1]);
+					builder.append(Blank);
+					builder.append(formatRelatedTopics(this.topics.get(index)));
+				}
+			}
+		}
+		return builder.toString();
+	}
+	
+	private String formatRelatedTopics(String topicList) {
+		StringBuilder builder = new StringBuilder();
+		String[] topicNames = topicList.split(Comma);
+		for (String topicName : topicNames) {
+			if (builder.length() > 0) {
+				builder.append(Comma + Blank);
+			}
+			
+			String subject = topicName.trim();
+			String topicTitle = getSingular(subject);
+			boolean plural = subject.length() > topicTitle.length();
+
+			if (Domain.containsTopic(topicTitle)) {
+				Topic topic = Domain.getCurrentDomain().getTopics().getItem(topicTitle);
+				builder.append(Blank);
+				builder.append(topic.getArticle(plural));
+				builder.append(Blank);
+				builder.append(topic.getReferenceLink(plural));
+			}
+			else {
+				builder.append(Blank);
+				builder.append(Topic.getArticle(topicName, plural));
+				builder.append(Blank);
+				builder.append(topicName);
+			}
+		}
+		return builder.toString();
 	}
 
 	/**
@@ -157,6 +243,7 @@ public class Fact implements Registry.KeySource {
 	 */
 	public void dumpMessage() {
 		Logger.info(getPrefix() + getMessage());
+		Logger.info(getRelatedSubjects().toString());
 	}
 	
 	private RuntimeException reportMissingSubject() {
