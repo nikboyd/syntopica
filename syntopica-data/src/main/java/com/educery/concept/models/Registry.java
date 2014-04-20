@@ -29,9 +29,16 @@ public class Registry<ItemType extends Registry.KeySource> {
 	 * <h4>KeySource Responsibilities:</h4>
 	 * <ul>
 	 * <li>provides a key for locating items in a registry</li>
+	 * <li>provides a few useful constants for implementors</li>
 	 * </ul>
 	 */
 	public interface KeySource {
+
+		public static final String Empty = "";
+		public static final String Blank = " ";
+		public static final String Comma = ",";
+		public static final String Period = ".";
+		public static final String Equals = " = ";
 
 		/**
 		 * Returns a registry key.
@@ -113,6 +120,14 @@ public class Registry<ItemType extends Registry.KeySource> {
 	 */
 	public void clear() {
 		this.items.clear();
+	}
+	
+	/**
+	 * Indicates whether this registry is empty.
+	 * @return whether empty
+	 */
+	public boolean isEmpty() {
+		return this.items.isEmpty();
 	}
 	
 	/**

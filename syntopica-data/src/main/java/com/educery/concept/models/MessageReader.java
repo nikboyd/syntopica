@@ -89,7 +89,7 @@ public class MessageReader {
 		Predication p = Predication.fromSelector(selector);
 		Fact result = p.buildFact(topics);
 		if (!definedTopic.isEmpty()) {
-			result.defines(Topic.named(definedTopic));
+			result.define(Topic.named(definedTopic));
 			definedTopic = Empty;
 		}
 //		result.dumpMessage();

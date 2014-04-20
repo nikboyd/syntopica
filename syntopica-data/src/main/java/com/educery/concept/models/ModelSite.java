@@ -33,6 +33,11 @@ public class ModelSite {
 	private File pageFolder;
 	private Configuration cfg = new Configuration();
 	
+	/**
+	 * Returns a new ModelSite.
+	 * @param templateFolder a page template folder
+	 * @return a new ModelSite
+	 */
 	public static ModelSite withTemplates(String templateFolder) {
 		ModelSite result = new ModelSite();
 		result.initialize(templateFolder);
@@ -51,20 +56,34 @@ public class ModelSite {
 			Logger.error(e.getMessage(), e);
 		}
 	}
-	
+
+	/**
+	 * Configures this site with a page folder.
+	 * @param pageFolder a page folder
+	 * @return this ModelSite
+	 */
 	public ModelSite withPages(String pageFolder) {
 		this.pageFolder = new File(pageFolder);
 		return this;
 	}
-	
+
+	/**
+	 * Configures this site with a model.
+	 * @param modelFile a model file
+	 * @return this ModelSite
+	 */
 	public ModelSite withModel(String modelFile) {
 		MessageReader.with(getClass().getResourceAsStream(modelFile)).readFacts();
 		return this;
 	}
-	
+
+	/**
+	 * Generates the model site pages.
+	 */
 	public void generatePages() {
 		List<Topic> topics = Domain.getCurrentDomain().getTopics().getItems();
 		for (Topic topic : topics) generatePage(topic);
+		Logger.info("generated " + topics.size() + " pages");
 	}
 	
 	private void generatePage(Topic topic) {

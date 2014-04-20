@@ -79,7 +79,7 @@ public class Predication implements Registry.KeySource {
 	 * @return whether this predication is locked
 	 */
 	public boolean isLocked() {
-		return Domain.contains(this);
+		return Domain.currentlyHasPredicate(this.getKey());
 	}
 	
 	/**

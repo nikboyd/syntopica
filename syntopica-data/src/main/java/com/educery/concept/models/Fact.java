@@ -1,9 +1,12 @@
 package com.educery.concept.models;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.educery.concept.models.Topic.Number;
 
 /**
  * Expresses a statement of fact.
@@ -25,24 +28,11 @@ import org.apache.commons.logging.LogFactory;
 public class Fact implements Registry.KeySource {
 	
 	private static final Log Logger = LogFactory.getLog(Fact.class);
-	private static final String Empty = "";
-	private static final String Blank = " ";
-	private static final String Comma = ",";
-	private static final String Period = ".";
-	private static final String Equals = " = ";
-	
-	private static final String[] Plurals = { "ues", "ies", "ess", "s" };
-	private static final HashMap<String, String> Replacements = new HashMap<String, String>();
-	static {
-		Replacements.put("ues", "ue");
-		Replacements.put("ies", "y");
-		Replacements.put("ess", "ess");
-		Replacements.put("s", "");
-	}
-	
+
+	private Domain domain;
 	private Predication predicate;
-	private ArrayList<String> topics = new ArrayList<String>();
 	private String definedTopic = Empty;
+	private ArrayList<String> topics = new ArrayList<String>();
 	
 	/**
 	 * Returns a new Fact.
@@ -72,9 +62,20 @@ public class Fact implements Registry.KeySource {
 	public Fact with(List<String> topics) {
 		if (topics.size() < 1) throw reportMissingSubject();
 		if (topics.size() > getValenceCount()) throw reportExcessiveTopics();
-		Domain.registerTopic(topics.get(0)).with(this);
+		
+		// register the subject of this statement of fact
+		this.domain = Domain.getCurrentDomain();
+		getDomain().registerTopic(Topic.named(topics.get(0))).with(this);
 		this.topics.addAll(topics);
 		return this;
+	}
+	
+	/**
+	 * The domain within which this fact is construed.
+	 * @return a Domain
+	 */
+	public Domain getDomain() {
+		return this.domain;
 	}
 
 	/**
@@ -83,6 +84,14 @@ public class Fact implements Registry.KeySource {
 	 */
 	public Predication getPredicate() {
 		return this.predicate;
+	}
+	
+	/**
+	 * The topics associated with this fact.
+	 * @return a list of Topics
+	 */
+	public List<String> getTopics() {
+		return this.topics;
 	}
 
 	/**
@@ -146,86 +155,77 @@ public class Fact implements Registry.KeySource {
 	 * @param topic a defined topic
 	 * @return this Fact
 	 */
-	public Fact defines(Topic topic) {
+	public Fact define(Topic topic) {
 		this.definedTopic = topic.getTitle();
 		return this;
 	}
 	
-	private String getPrefix() {
-		return (this.definedTopic.isEmpty() ? 
-				getClass().getSimpleName() : 
-				this.definedTopic) + Equals;
-	}
-	
+	/**
+	 * Returns the (potentially) related subjects.
+	 * @return the related subjects
+	 */
 	public List<String> getRelatedSubjects() {
-		ArrayList<String> results = new ArrayList<String>();
-		for (String candidate : this.topics) {
-			String[] subjects = candidate.split(Comma);
-			for (String subject : subjects) {
-				if (!subject.trim().isEmpty()) {
-					results.add(getSingular(subject));
-				}
-			}
-		}
-		return results;
+		return getTopics().stream()
+				.filter(s -> !(s.trim().isEmpty()))
+				.map(s -> Number.convertToSingular(s))
+				.collect(Collectors.toList());
 	}
 	
-	private String getSingular(String subject) {
-		String result = subject.trim();
-		for (String ending : Plurals) {
-			if (result.endsWith(ending)) {
-				int rootLength = result.length() - ending.length();
-				result = result.substring(0, rootLength);
-				result += Replacements.get(ending);
-				return result; // only one!
-			}
-		}
-		return result;
-	}
-	
+	/**
+	 * Formats the complete predicate of this fact as an HTML fragment.
+	 * @return the complete predicate of this fact formatted as an HTML fragment
+	 */
 	public String getFormattedPredicate() {
 		String[] parts = getPredicate().getParts();
 		StringBuilder builder = new StringBuilder();
 		builder.append(Tag.italics(parts[0]).format());
 		if (getValenceCount() > 1) {
 			builder.append(Blank);
-			builder.append(formatRelatedTopics(this.topics.get(1)));
+			builder.append(formatRelatedTopics(1));
 			if (getValenceCount() > 2) {
 				for (int index = 2; index < getValenceCount(); index++) {
 					builder.append(Blank);
-					builder.append(parts[index - 1]);
-					builder.append(Blank);
-					builder.append(formatRelatedTopics(this.topics.get(index)));
+					builder.append(formatRelatedTopics(index));
 				}
 			}
 		}
 		return builder.toString();
 	}
+
+	/**
+	 * Formats the topics related to this fact as HTML fragments.
+	 * @param index a topic index
+	 * @return a comma-separated list of topics formatted as HTML fragments
+	 */
+	private String formatRelatedTopics(int index) {
+		return getPredicate().getParts()[index] + Blank + 
+				formatRelatedTopics(getTopics().get(index));
+	}
 	
-	private String formatRelatedTopics(String topicList) {
+	/**
+	 * Formats the topics related to this fact as HTML fragments.
+	 * @param topics a comma-separated list of topics
+	 * @return a comma-separated list of topics formatted as HTML fragments
+	 */
+	private String formatRelatedTopics(String topics) {
 		StringBuilder builder = new StringBuilder();
-		String[] topicNames = topicList.split(Comma);
-		for (String topicName : topicNames) {
+		for (String topicName : Topic.namesFrom(topics)) {
 			if (builder.length() > 0) {
 				builder.append(Comma + Blank);
 			}
 			
 			String subject = topicName.trim();
-			String topicTitle = getSingular(subject);
-			boolean plural = subject.length() > topicTitle.length();
+			String singular = Number.convertToSingular(subject);
+			boolean plural = subject.length() > singular.length();
+			Number aNumber = Number.getNumber(plural);
 
-			if (Domain.containsTopic(topicTitle)) {
-				Topic topic = Domain.getCurrentDomain().getTopics().getItem(topicTitle);
-				builder.append(Blank);
-				builder.append(topic.getArticle(plural));
-				builder.append(Blank);
-				builder.append(topic.getReferenceLink(plural));
+			if (getDomain().containsTopic(singular)) {
+				Topic topic = getDomain().getTopic(singular);
+				builder.append(topic.formatReferenceLink(aNumber));
 			}
 			else {
-				builder.append(Blank);
-				builder.append(Topic.getArticle(topicName, plural));
-				builder.append(Blank);
-				builder.append(topicName);
+				Topic topic = Topic.named(singular);
+				builder.append(topic.formatReferenceLink(aNumber));
 			}
 		}
 		return builder.toString();
@@ -246,6 +246,12 @@ public class Fact implements Registry.KeySource {
 		Logger.info(getRelatedSubjects().toString());
 	}
 	
+	private String getPrefix() {
+		return (this.definedTopic.isEmpty() ? 
+				getClass().getSimpleName() : 
+				this.definedTopic) + Equals;
+	}
+
 	private RuntimeException reportMissingSubject() {
 		return new IllegalArgumentException("missing required subject for predicate " + getKey());
 	}
