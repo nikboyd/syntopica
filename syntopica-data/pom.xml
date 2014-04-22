@@ -135,11 +135,12 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.1</version>
 				<configuration>
-<!-- 					<source>1.8.0</source>
-					<target>1.8.0</target>
- -->					<executable>/usr/bin/javac</executable>
+					<compilerVersion>1.8</compilerVersion>
+					<source>1.8</source>
+					<target>1.8</target>
+  					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
 		

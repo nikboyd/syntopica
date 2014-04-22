@@ -1,5 +1,6 @@
 Domain named: software requirements.
 
+improvement = feature improves: activities for: business.
 governor governs: business.
 governor serves: business as: source of: vision, mission, values.
 
@@ -28,7 +29,6 @@ activity produces: value for: business.
 activity conserves: value for: business.
 
 source describes: features for: developers.
-improvement = feature improves: activities for: business.
 feature solves: problems for: business.
 feature resolves: problems for: business.
 

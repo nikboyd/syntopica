@@ -23,7 +23,7 @@ document provided this copyright statement is retained in all copies.
 <p>In the context of this <a href="domain.html">Model,</a> ${topic.article} ${topic.capitalizedLink}</p>
 <blockquote>
 <#list topic.facts as fact>
-<p>${fact.formattedPredicate}</p>
+<p>${fact.getFormattedPredicate(topic)}</p>
 </#list>
 </blockquote>
 

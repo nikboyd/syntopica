@@ -2,6 +2,9 @@ package com.educery.concept.models;
 
 import org.junit.*;
 
+/**
+ * Generates model pages from a sample model.
+ */
 public class ModelTest {
 	
 	@Test

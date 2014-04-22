@@ -1,5 +1,7 @@
 package com.educery.concept.models;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -18,9 +20,25 @@ import org.apache.commons.logging.LogFactory;
 public class Domain implements Registry.KeySource {
 
 	private static final Log Logger = LogFactory.getLog(Domain.class);
+	private static final String ClassName = Domain.class.getSimpleName();
 
 	private static Registry<Domain> Domains = Registry.empty();
 	private static Domain Current = Domain.named("default");
+
+	private String name = "";
+	private Registry<Topic> topics = Registry.empty();
+	private Registry<Selector> predicates = Registry.empty();
+	
+	/**
+	 * Indicates whether a message contains a named domain.
+	 * @param selector a message selector
+	 * @param topics some topics
+	 * @return whether a message contains a named domain
+	 */
+	public static boolean accepts(String selector, List<String> topics) {
+		return (Selector.Named.equals(selector) && 
+				!topics.isEmpty() && ClassName.equals(topics.get(0)));
+	}
 	
 	/**
 	 * Returns the current domain.
@@ -29,10 +47,6 @@ public class Domain implements Registry.KeySource {
 	public static Domain getCurrentDomain() {
 		return Current;
 	}
-
-	private String name = "";
-	private Registry<Topic> topics = Registry.empty();
-	private Registry<Predication> predicates = Registry.empty();
 	
 	/**
 	 * Returns the domain of a given name.
@@ -85,7 +99,7 @@ public class Domain implements Registry.KeySource {
 	 * Returns the predicates associated with this domain.
 	 * @return a predicate Registry
 	 */
-	public Registry<Predication> getPredicates() {
+	public Registry<Selector> getPredicates() {
 		return this.predicates;
 	}
 	
@@ -121,7 +135,7 @@ public class Domain implements Registry.KeySource {
 	 * @param predicateName a predicate name
 	 * @return a Predication, or null
 	 */
-	public Predication getPredicate(String predicateName) {
+	public Selector getPredicate(String predicateName) {
 		return getPredicates().getItem(predicateName);
 	}
 	
@@ -139,7 +153,7 @@ public class Domain implements Registry.KeySource {
 	 * @param predicate a predicate
 	 * @return the registered Predication
 	 */
-	public static Predication register(Predication predicate) {
+	public static Selector register(Selector predicate) {
 		return getCurrentDomain().getPredicates().register(predicate);
 	}
 	
@@ -182,7 +196,7 @@ public class Domain implements Registry.KeySource {
 	 * @param p a predicate
 	 * @return the registered Predication
 	 */
-	public Predication registerPredicate(Predication p) {
+	public Selector registerPredicate(Selector p) {
 		String predicateName = p.getKey();
 		if (!this.containsPredicate(predicateName)) {
 			getPredicates().register(p);

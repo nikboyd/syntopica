@@ -6,25 +6,22 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Represents the skeleton of a complete predicate, as a template for a concrete statement of fact.
+ * A predicate selector. Represents the skeleton of a complete predicate, 
+ * as a template for a concrete statement of fact.
  * 
- * <h4>Predicate Responsibilities:</h4>
+ * <h4>Selector Responsibilities:</h4>
  * <ul>
  * <li>knows a predicate (a verb + some parts)</li>
  * <li>knows a valence count (number of terms)</li>
  * <li>produces a message selector</li>
  * <li></li>
  * </ul>
- *
- * <h4>Client Responsibilities:</h4>
- * <ul>
- * <li></li>
- * </ul>
  */
-public class Predication implements Registry.KeySource {
+public class Selector implements Registry.KeySource {
 
-	private static final Log Logger = LogFactory.getLog(Predication.class);
-	static final String Separator = ":";
+	private static final Log Logger = LogFactory.getLog(Selector.class);
+	
+	public static final String Named = "named:";
 	
 	private int valenceCount = 0;
 	private ArrayList<String> parts = new ArrayList<String>();
@@ -34,9 +31,9 @@ public class Predication implements Registry.KeySource {
 	 * @param verb a verb
 	 * @return a new Predication
 	 */
-	public static Predication withUnary(String verb) {
+	public static Selector withUnary(String verb) {
 		if (verb.isEmpty()) throw reportMissingVerb();
-		Predication result = new Predication();
+		Selector result = new Selector();
 		result.parts.add(verb);
 		result.valenceCount = 1;
 		return result;
@@ -48,9 +45,9 @@ public class Predication implements Registry.KeySource {
 	 * @param parts additional parts (typically prepositions)
 	 * @return a new n-ary Predication
 	 */
-	public static Predication withVerb(String verb, String ... parts) {
+	public static Selector withVerb(String verb, String ... parts) {
 		if (verb.isEmpty()) throw reportMissingVerb();
-		Predication result = new Predication();
+		Selector result = new Selector();
 		result.valenceCount = 2;
 		result.parts.add(verb);
 		return result.with(parts);
@@ -61,14 +58,14 @@ public class Predication implements Registry.KeySource {
 	 * @param selector a selector
 	 * @return a new Predication
 	 */
-	public static Predication fromSelector(String selector) {
-		if (!selector.endsWith(Separator)) return withUnary(selector);
-		String[] parts = selector.split(Separator);
-		return Predication.withParts(Arrays.asList(parts));
+	public static Selector fromSelector(String selector) {
+		if (!selector.endsWith(Colon)) return withUnary(selector);
+		String[] parts = selector.split(Colon);
+		return Selector.withParts(Arrays.asList(parts));
 	}
 	
-	private static Predication withParts(List<String> parts) {
-		Predication result = new Predication();
+	private static Selector withParts(List<String> parts) {
+		Selector result = new Selector();
 		result.valenceCount = parts.size() + 1;
 		result.parts.addAll(parts);
 		return result;
@@ -87,7 +84,7 @@ public class Predication implements Registry.KeySource {
 	 * @param parts some parts
 	 * @return this Predication
 	 */
-	public Predication with(String ... parts) {
+	public Selector with(String ... parts) {
 		if (isLocked()) {
 			reportLockedPredicate();
 			return this;
@@ -150,7 +147,7 @@ public class Predication implements Registry.KeySource {
 		int count = getValenceCount();
 		String[] results = getParts();
 		for (int index = 0; index < results.length; index++) {
-			if (count > 1) results[index] += Separator;
+			if (count > 1) results[index] += Colon;
 		}
 		return results;
 	}
@@ -186,4 +183,4 @@ public class Predication implements Registry.KeySource {
 		Logger.warn(getSelector() + " was locked after building a fact");
 	}
 
-} // Predication
+} // Selector

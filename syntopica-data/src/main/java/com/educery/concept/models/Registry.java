@@ -36,6 +36,7 @@ public class Registry<ItemType extends Registry.KeySource> {
 
 		public static final String Empty = "";
 		public static final String Blank = " ";
+		public static final String Colon = ":";
 		public static final String Comma = ",";
 		public static final String Period = ".";
 		public static final String Equals = " = ";

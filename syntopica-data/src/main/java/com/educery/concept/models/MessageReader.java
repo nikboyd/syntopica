@@ -1,7 +1,6 @@
 package com.educery.concept.models;
 
 import java.io.*;
-import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,32 +10,34 @@ import org.apache.commons.logging.LogFactory;
  * 
  * <h4>MessageReader Responsibilities:</h4>
  * <ul>
- * <li></li>
- * </ul>
- *
- * <h4>Client Responsibilities:</h4>
- * <ul>
- * <li></li>
+ * <li>creates the facts and topics found in a model file</li>
  * </ul>
  */
-public class MessageReader {
+public class MessageReader implements Registry.KeySource {
 
 	private static final Log Logger = LogFactory.getLog(MessageReader.class);
-	private static final String Empty = "";
-	private static final String Blank = " ";
-	private static final String Period = ".";
-	private static final String Equals = "=";
 	
 	private BufferedReader reader;
 	
+	/**
+	 * Returns a new MessageReader.
+	 * @param stream a stream of fact messages
+	 * @return a new MessageReader
+	 */
 	public static MessageReader with(InputStream stream) {
 		MessageReader result = new MessageReader();
 		result.reader = new BufferedReader(new InputStreamReader(stream));
 		return result;
 	}
 	
+	/**
+	 * Constructs a new MessageReader.
+	 */
 	private MessageReader() { }
 	
+	/**
+	 * Reads facts from the configured message stream.
+	 */
 	public void readFacts() {
 		try {
 			for (String line = readLine(); line != null; line = readLine() ) {
@@ -49,50 +50,28 @@ public class MessageReader {
 		}
 	}
 	
+	/**
+	 * Reads a single line (statement) from the message stream.
+	 * @return a single statement
+	 * @throws Exception if raised during the read
+	 */
 	private String readLine() throws Exception {
 		return this.reader.readLine();
 	}
 	
+	/**
+	 * Reads a Fact from a given line.
+	 * @param line a line of text
+	 */
 	private void readFact(String line) {
 		if (line.trim().isEmpty()) return;
-		String definedTopic = Empty;
-		String[] terms = line.split(Blank);
-		
-		String topic = Empty;
-		String selector = Empty;
-		ArrayList<String> topics = new ArrayList<String>();
-		for (int index = 0; index < terms.length; index++) {
-			String term = terms[index].trim().replace(Period, Blank);
-			if (!term.isEmpty()) {
-				if (term.equals(Equals)) {
-					definedTopic = topic.trim();
-					topic = Empty;
-				}
-				else
-				if (term.endsWith(Predication.Separator)) {
-					selector += term;
-					topics.add(topic.trim());
-					topic = Empty;
-				}
-				else {
-					topic += term;
-					topic += Blank;
-				}
-			}
-		}
+		Fact.parseFrom(line);
+	}
 
-		topics.add(topic.trim());
-		if (topics.get(0).equals(Domain.class.getSimpleName()) && selector.equals("named:")) {
-			Domain.named(topics.get(1));
-		}
-
-		Predication p = Predication.fromSelector(selector);
-		Fact result = p.buildFact(topics);
-		if (!definedTopic.isEmpty()) {
-			result.define(Topic.named(definedTopic));
-			definedTopic = Empty;
-		}
-//		result.dumpMessage();
+	/** {@inheritDoc} */
+	@Override
+	public String getKey() {
+		return Empty;
 	}
 
 } // MessageReader

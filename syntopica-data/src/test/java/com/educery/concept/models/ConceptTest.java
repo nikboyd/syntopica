@@ -18,13 +18,13 @@ public class ConceptTest {
 	
 	@Test
 	public void binaryTemplate() {
-		Predication p = Predication.withVerb("has");
+		Selector p = Selector.withVerb("has");
 		p.dump();
 	}
 	
 	@Test
 	public void trinaryTemplate() {
-		Predication p = Predication.withVerb("has").with("for");
+		Selector p = Selector.withVerb("has").with("for");
 		p.dump();
 
 		Fact f = p.buildFact("Sample", "Dimple", "Example");
@@ -38,19 +38,19 @@ public class ConceptTest {
 	
 	@Test
 	public void unaryConcept() {
-		Predication p = Predication.withUnary("works");
+		Selector p = Selector.withUnary("works");
 		p.dump();
 	}
 	
 	@Test
 	public void binaryConcept() {
-		Predication p = Predication.withVerb("has");
+		Selector p = Selector.withVerb("has");
 		p.dump();
 	}
 	
 	@Test
 	public void complexConcept() {
-		Predication p = Predication.withVerb("has", "for");
+		Selector p = Selector.withVerb("has", "for");
 		p.dump();
 	}
 

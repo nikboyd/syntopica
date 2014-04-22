@@ -16,11 +16,6 @@ import org.apache.commons.logging.LogFactory;
  * <li>knows some associations (if given)</li>
  * <li></li>
  * </ul>
- *
- * <h4>Client Responsibilities:</h4>
- * <ul>
- * <li></li>
- * </ul>
  */
 public class Topic implements Registry.KeySource {
 	
@@ -31,11 +26,7 @@ public class Topic implements Registry.KeySource {
 	 * <ul>
 	 * <li>converts plural forms to their singular forms</li>
 	 * <li>converts singular forms to their plural forms</li>
-	 * </ul>
-	 *
-	 * <h4>Client Responsibilities:</h4>
-	 * <ul>
-	 * <li></li>
+	 * <li>knows the proper article for singular and plural forms</li>
 	 * </ul>
 	 */
 	public static class Number {
@@ -93,6 +84,10 @@ public class Topic implements Registry.KeySource {
 		private String[] suffixKeys;
 		private HashMap<String, String> replacements = new HashMap<String, String>();
 		
+		/**
+		 * Constructs a new Number.
+		 * @param keys the keys used to find replacements.
+		 */
 		private Number(String[] keys) {
 			this.suffixKeys = keys;
 		}
@@ -131,6 +126,7 @@ public class Topic implements Registry.KeySource {
 		}
 
 	} // Number
+
 
 	private static final Log Logger = LogFactory.getLog(Topic.class);
 	private static final String PageType = ".html";

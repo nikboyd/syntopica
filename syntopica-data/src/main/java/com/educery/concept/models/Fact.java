@@ -16,13 +16,8 @@ import com.educery.concept.models.Topic.Number;
  * <li>knows the predicate from which it was derived</li>
  * <li>knows the topics associated with this fact, esp. its subject</li>
  * <li>knows the placement of each topic within the predicate</li>
- * <li></li>
- * <li></li>
- * </ul>
- *
- * <h4>Client Responsibilities:</h4>
- * <ul>
- * <li></li>
+ * <li>formats XHTML fragments</li>
+ * <li>creates facts from messages</li>
  * </ul>
  */
 public class Fact implements Registry.KeySource {
@@ -30,20 +25,73 @@ public class Fact implements Registry.KeySource {
 	private static final Log Logger = LogFactory.getLog(Fact.class);
 
 	private Domain domain;
-	private Predication predicate;
+	private Selector predicate;
 	private String definedTopic = Empty;
 	private ArrayList<String> topics = new ArrayList<String>();
 	
 	/**
-	 * Returns a new Fact.
-	 * @param p a predication
+	 * Parses a message to produce a fact.
+	 * @param message a message
 	 * @return a new Fact
 	 */
-	public static Fact with(Predication p) {
+	public static Fact parseFrom(String message) {
+		String definedTopic = Empty;
+		String[] terms = message.split(Blank);
+		
+		String topic = Empty;
+		String selector = Empty;
+		ArrayList<String> topics = new ArrayList<String>();
+		for (int index = 0; index < terms.length; index++) {
+			String term = terms[index].trim().replace(Period, Blank);
+			if (!term.isEmpty()) {
+				if (term.equals(Equals)) {
+					definedTopic = topic.trim();
+					topic = Empty;
+				}
+				else
+				if (term.endsWith(Colon)) {
+					selector += term;
+					topics.add(topic.trim());
+					topic = Empty;
+				}
+				else {
+					topic += term;
+					topic += Blank;
+				}
+			}
+		}
+
+		topics.add(topic.trim());
+		if (Domain.accepts(selector, topics)) {
+			Domain.named(topics.get(1));
+			return null;
+		}
+
+		Selector p = Selector.fromSelector(selector);
+		Fact result = p.buildFact(topics);
+		if (!definedTopic.isEmpty()) {
+			result.define(Topic.named(definedTopic));
+			definedTopic = Empty;
+		}
+		return result;
+	}
+	
+	/**
+	 * Returns a new Fact.
+	 * @param p a predicate
+	 * @return a new Fact
+	 */
+	public static Fact with(Selector p) {
 		Fact result = new Fact();
 		result.predicate = p;
 		return result;
 	}
+	
+	/**
+	 * Constructs a new Fact. Prevents external construction 
+	 * without use of the static factory method.
+	 */
+	private Fact() { }
 
 	/**
 	 * Adds topics to this fact.
@@ -79,10 +127,10 @@ public class Fact implements Registry.KeySource {
 	}
 
 	/**
-	 * Returns the predication from which this fact was derived.
+	 * Returns the predicate from which this fact was derived.
 	 * @return a Predication
 	 */
-	public Predication getPredicate() {
+	public Selector getPredicate() {
 		return this.predicate;
 	}
 	
@@ -90,8 +138,17 @@ public class Fact implements Registry.KeySource {
 	 * The topics associated with this fact.
 	 * @return a list of Topics
 	 */
-	public List<String> getTopics() {
-		return this.topics;
+	public String[] getTopics() {
+		return this.topics.stream().toArray(String[]::new);
+	}
+	
+	/**
+	 * Return a specific topic.
+	 * @param index indicates which topic
+	 * @return a topic
+	 */
+	private String getTopic(int index) {
+		return this.topics.get(index);
 	}
 
 	/**
@@ -99,17 +156,7 @@ public class Fact implements Registry.KeySource {
 	 * @return a sentence
 	 */
 	public String getSentence() {
-		String[] parts = getPredicate().getParts();
-		StringBuilder builder = new StringBuilder();
-		for (int index = 0; index < this.topics.size(); index++) {
-			builder.append(Blank);
-			builder.append(this.topics.get(index));
-			if (index < parts.length) {
-				builder.append(Blank);
-				builder.append(parts[index]);
-			}
-		}
-		return builder.toString().trim() + Period;
+		return getMessage().replace(Colon, Empty);
 	}
 	
 	/**
@@ -117,11 +164,12 @@ public class Fact implements Registry.KeySource {
 	 * @return a message
 	 */
 	public String getMessage() {
+		String[] topics = getTopics();
 		String[] parts = getPredicate().getSelectorParts();
 		StringBuilder builder = new StringBuilder();
-		for (int index = 0; index < this.topics.size(); index++) {
+		for (int index = 0; index < topics.length; index++) {
 			builder.append(Blank);
-			builder.append(this.topics.get(index));
+			builder.append(topics[index]);
 			if (index < parts.length) {
 				builder.append(Blank);
 				builder.append(parts[index]);
@@ -157,6 +205,8 @@ public class Fact implements Registry.KeySource {
 	 */
 	public Fact define(Topic topic) {
 		this.definedTopic = topic.getTitle();
+		topic.getFactRegistry().register(this);
+		getDomain().getTopics().register(topic);
 		return this;
 	}
 	
@@ -165,7 +215,7 @@ public class Fact implements Registry.KeySource {
 	 * @return the related subjects
 	 */
 	public List<String> getRelatedSubjects() {
-		return getTopics().stream()
+		return this.topics.stream()
 				.filter(s -> !(s.trim().isEmpty()))
 				.map(s -> Number.convertToSingular(s))
 				.collect(Collectors.toList());
@@ -175,31 +225,30 @@ public class Fact implements Registry.KeySource {
 	 * Formats the complete predicate of this fact as an HTML fragment.
 	 * @return the complete predicate of this fact formatted as an HTML fragment
 	 */
-	public String getFormattedPredicate() {
+	public String getFormattedPredicate(Topic context) {
+		String subject = getTopic(0);
 		String[] parts = getPredicate().getParts();
 		StringBuilder builder = new StringBuilder();
+		if (!this.definedTopic.isEmpty() && 
+			context.getTitle().equals(subject)) {
+			builder.append(formatRelatedTopics(subject));
+			builder.append(Blank);
+		}
+
 		builder.append(Tag.italics(parts[0]).format());
 		if (getValenceCount() > 1) {
 			builder.append(Blank);
-			builder.append(formatRelatedTopics(1));
+			builder.append(formatRelatedTopics(getTopic(1)));
 			if (getValenceCount() > 2) {
 				for (int index = 2; index < getValenceCount(); index++) {
 					builder.append(Blank);
-					builder.append(formatRelatedTopics(index));
+					builder.append(parts[index - 1]);
+					builder.append(Blank);
+					builder.append(formatRelatedTopics(getTopic(index)));
 				}
 			}
 		}
 		return builder.toString();
-	}
-
-	/**
-	 * Formats the topics related to this fact as HTML fragments.
-	 * @param index a topic index
-	 * @return a comma-separated list of topics formatted as HTML fragments
-	 */
-	private String formatRelatedTopics(int index) {
-		return getPredicate().getParts()[index] + Blank + 
-				formatRelatedTopics(getTopics().get(index));
 	}
 	
 	/**
@@ -208,27 +257,28 @@ public class Fact implements Registry.KeySource {
 	 * @return a comma-separated list of topics formatted as HTML fragments
 	 */
 	private String formatRelatedTopics(String topics) {
+		List<String> topicNames = Topic.namesFrom(topics);
 		StringBuilder builder = new StringBuilder();
-		for (String topicName : Topic.namesFrom(topics)) {
-			if (builder.length() > 0) {
-				builder.append(Comma + Blank);
-			}
-			
+		for (String topicName : topicNames) {
 			String subject = topicName.trim();
-			String singular = Number.convertToSingular(subject);
-			boolean plural = subject.length() > singular.length();
-			Number aNumber = Number.getNumber(plural);
+			String singularSubject = Number.convertToSingular(subject);
+			Number aNumber = Number.getNumber(subject.length() > singularSubject.length());
 
-			if (getDomain().containsTopic(singular)) {
-				Topic topic = getDomain().getTopic(singular);
-				builder.append(topic.formatReferenceLink(aNumber));
-			}
-			else {
-				Topic topic = Topic.named(singular);
-				builder.append(topic.formatReferenceLink(aNumber));
-			}
+			if (builder.length() > 0) builder.append(Comma + Blank);
+			builder.append(getTopic(singularSubject).formatReferenceLink(aNumber));
 		}
 		return builder.toString();
+	}
+	
+	/**
+	 * Returns a topic with a given name.
+	 * @param topicName a topic name
+	 * @return a Topic
+	 */
+	private Topic getTopic(String topicName) {
+		return getDomain().containsTopic(topicName) ? 
+				getDomain().getTopic(topicName) : 
+				Topic.named(topicName);
 	}
 
 	/**
@@ -246,6 +296,10 @@ public class Fact implements Registry.KeySource {
 		Logger.info(getRelatedSubjects().toString());
 	}
 	
+	/**
+	 * Returns a prefix that describes this fact.
+	 * @return a fact description prefix
+	 */
 	private String getPrefix() {
 		return (this.definedTopic.isEmpty() ? 
 				getClass().getSimpleName() : 
