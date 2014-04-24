@@ -44,7 +44,7 @@ public class Fact implements Registry.KeySource {
 		for (int index = 0; index < terms.length; index++) {
 			String term = terms[index].trim().replace(Period, Blank);
 			if (!term.isEmpty()) {
-				if (term.equals(Equals)) {
+				if (term.equals(Equals.trim())) {
 					definedTopic = topic.trim();
 					topic = Empty;
 				}
@@ -230,7 +230,7 @@ public class Fact implements Registry.KeySource {
 		String[] parts = getPredicate().getParts();
 		StringBuilder builder = new StringBuilder();
 		if (!this.definedTopic.isEmpty() && 
-			context.getTitle().equals(subject)) {
+			!context.getTitle().equals(subject)) {
 			builder.append(formatRelatedTopics(subject));
 			builder.append(Blank);
 		}
