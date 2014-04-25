@@ -6,6 +6,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.*;
 
+import com.educery.xml.tags.*;
+
 /**
  * Generates model pages from a sample model.
  */
@@ -32,13 +34,14 @@ public class ModelTest {
 	 */
 	@Test
 	public void svgSample() throws Exception {
-		GraphicsFactory factory = new GraphicsFactory();
-		Tag example = factory.makeModelElement("Expector", "#add8e6", 80, 50);
-		Tag sample = factory.makeModelElement("Requestor", "#add8e6", 80, 180);
+		int[] viewbox = { 58, 18, 443, 506 };
+		GraphicsContext context = GraphicsContext.with(12, 13).with(viewbox);
+		Tag example = ModelElement.named("Expector").withColor("#add8e6").at(80, 50).buildGraphicElement();
+		Tag sample = ModelElement.named("Requestor").withColor("#add8e6").at(80, 180).buildGraphicElement();
 		Tag page = 
 			Tag.named("html")
 				.with(Tag.named("head").with(Tag.named("title").withContent("Sample")))
-				.with(Tag.named("body").with(factory.makeGraphicsContext().with(example).with(sample)))
+				.with(Tag.named("body").with(context.buildContext().with(example).with(sample)))
 				;
 
 		String xml = page.format();

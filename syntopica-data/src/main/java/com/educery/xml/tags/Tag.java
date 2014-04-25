@@ -1,6 +1,8 @@
-package com.educery.concept.models;
+package com.educery.xml.tags;
 
 import java.util.*;
+
+import com.educery.utils.Registry;
 
 /**
  * Represents an X/HTML element and its contents.
@@ -113,6 +115,27 @@ public class Tag implements Registry.KeySource {
 	}
 	
 	/**
+	 * Copies the named values from a source Tag.
+	 * @param source a source tag
+	 * @return this Tag
+	 */
+	public Tag withValues(Tag source) {
+		for (String key : source.names) {
+			this.with(key, source.getValue(key));
+		}
+		return this;
+	}
+	
+	/**
+	 * Copies the style of another Tag.
+	 * @param stylingTag a styling tag
+	 * @return this Tag
+	 */
+	public Tag withStyle(Tag stylingTag) {
+		return this.withStyle(stylingTag.getValue(Style));
+	}
+	
+	/**
 	 * Adds a value named: style.
 	 * @param value style value
 	 * @return this Tag
@@ -161,8 +184,8 @@ public class Tag implements Registry.KeySource {
 	 * @return this Tag
 	 */
 	public Tag with(String name, String value) {
+		if (!this.hasValue(name)) this.names.add(name);
 		this.namedValues.put(name, value);
-		this.names.add(name);
 		return this;
 	}
 	
@@ -280,8 +303,12 @@ public class Tag implements Registry.KeySource {
 		builder.append(RightBracket);
 	}
 	
+	private boolean hasValue(String valueName) {
+		return this.namedValues.containsKey(valueName);
+	}
+	
 	private String getValue(String valueName) {
-		return (this.namedValues.containsKey(valueName) ? 
+		return (this.hasValue(valueName) ? 
 				this.namedValues.get(valueName) : Empty);
 	}
 

@@ -1,4 +1,4 @@
-package com.educery.concept.models;
+package com.educery.utils;
 
 import java.util.*;
 

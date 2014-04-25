@@ -6,6 +6,9 @@ import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.educery.utils.Registry;
+import com.educery.xml.tags.Tag;
+
 /**
  * Describes a topic and its associations.
  * 
@@ -133,7 +136,7 @@ public class Topic implements Registry.KeySource {
 
 	private String title = Empty;
 	private boolean defined = false;
-	private Discussion discussion = Discussion.withoutContent();
+	private String discussion = Empty;
 	private Registry<Fact> facts = Registry.empty();
 	
 	/**
@@ -161,7 +164,7 @@ public class Topic implements Registry.KeySource {
 	 * @param discussion a discussion
 	 * @return this Topic
 	 */
-	public Topic with(Discussion discussion) {
+	public Topic with(String discussion) {
 		setDiscussion(discussion);
 		return this;
 	}
@@ -194,7 +197,7 @@ public class Topic implements Registry.KeySource {
 	 * The discussion associated with this topic.
 	 * @return a discussion
 	 */
-	public Discussion getDiscussion() {
+	public String getDiscussion() {
 		return this.discussion;
 	}
 
@@ -202,7 +205,7 @@ public class Topic implements Registry.KeySource {
 	 * Adds a discussion to the topic.
 	 * @param discussion a discussion
 	 */
-	public void setDiscussion(Discussion discussion) {
+	public void setDiscussion(String discussion) {
 		this.discussion = discussion;
 	}
 	

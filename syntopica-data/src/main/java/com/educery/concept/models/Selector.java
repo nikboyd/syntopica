@@ -5,6 +5,8 @@ import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.educery.utils.Registry;
+
 /**
  * A predicate selector. Represents the skeleton of a complete predicate, 
  * as a template for a concrete statement of fact.

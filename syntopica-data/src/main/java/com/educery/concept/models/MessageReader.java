@@ -5,6 +5,8 @@ import java.io.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.educery.utils.Registry;
+
 /**
  * Reads a domain model from a file.
  * 

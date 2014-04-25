@@ -7,6 +7,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.educery.concept.models.Topic.Number;
+import com.educery.utils.Registry;
+import com.educery.xml.tags.Tag;
 
 /**
  * Expresses a statement of fact.

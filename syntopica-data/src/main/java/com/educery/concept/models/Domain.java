@@ -5,6 +5,9 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.educery.utils.Registry;
+import com.educery.xml.tags.Tag;
+
 /**
  * Contains the topics of a discourse domain.
  * 
