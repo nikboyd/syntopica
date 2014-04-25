@@ -14,6 +14,19 @@ import com.educery.utils.Registry;
  * </ul>
  */
 public class Tag implements Registry.KeySource {
+	
+	/**
+	 * Defines a protocol for building tags.
+	 */
+	public static interface Factory {
+		
+		/**
+		 * Builds a new Tag.
+		 * @return a new Tag
+		 */
+		public Tag buildElement();
+
+	} // Factory
 
 	private static final String Slash = "/";
 	private static final String Quote = "\"";

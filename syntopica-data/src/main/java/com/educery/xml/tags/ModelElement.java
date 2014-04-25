@@ -2,12 +2,28 @@ package com.educery.xml.tags;
 
 import com.educery.utils.Registry;
 
-public class ModelElement implements Registry.KeySource {
+/**
+ * A model element. This represents a named rectangle in a model diagram.
+ * 
+ * <h4>ModelElement Responsibilities:</h4>
+ * <ul>
+ * <li>knows a name, color, and location in a diagram</li>
+ * <li>knows the appearance of such in a diagram</li>
+ * <li>draws a model element in a diagram using SVG</li>
+ * </ul>
+ *
+ * <h4>Client Responsibilities:</h4>
+ * <ul>
+ * <li>supply a name, color, and location during construction</li>
+ * </ul>
+ */
+public class ModelElement implements Registry.KeySource, Tag.Factory {
 	
 	private static int Width = 140;
 	private static int Height = 44;
 	private static int[] Offsets = { Width / 2, Height / 2 + 5 };
 	
+	// styling for a SVG text rectangle
 	private static Tag RectangleBase =
 		Tag.named("rect-style")
 		.withStyle("fill", "none")
@@ -18,6 +34,7 @@ public class ModelElement implements Registry.KeySource {
 		.withHeight(Height)
 		;
 	
+	// styling for a SVG text box
 	private static Tag TextStyle = 
 		Tag.named("text-style")
 		.withStyle("fill", "#000000")
@@ -32,21 +49,85 @@ public class ModelElement implements Registry.KeySource {
 	private String color = "none";
 	private int[] location = { 0, 0 };
 	
+	/**
+	 * Returns a new ModelElement.
+	 * @param name a model element name
+	 * @return a new ModelElement
+	 */
 	public static ModelElement named(String name) {
 		ModelElement result = new ModelElement();
 		result.name = name;
 		return result;
 	}
-	
+
+	/**
+	 * Configures this model element with a color.
+	 * @param color a color
+	 * @return this ModelElement
+	 */
 	public ModelElement withColor(String color) {
 		this.color = color;
 		return this;
 	}
-	
+
+	/**
+	 * Configures this model element with a location.
+	 * @param x an x position
+	 * @param y an y position
+	 * @return this ModelElement
+	 */
 	public ModelElement at(int x, int y) {
 		this.location[0] = x;
 		this.location[1] = y;
 		return this;
+	}
+	
+	/**
+	 * The model element name.
+	 * @return an element name
+	 */
+	public String getName() {
+		return this.name;
+	}
+	
+	/**
+	 * The model element fill color.
+	 * @return a fill color
+	 */
+	public String getColor() {
+		return this.color;
+	}
+
+	/**
+	 * An x position.
+	 * @return a position
+	 */
+	public int getX() {
+		return this.location[0];
+	}
+	
+	/**
+	 * An offset x position.
+	 * @return a position
+	 */
+	public int getOffsetX() {
+		return getX() + Offsets[0];
+	}
+	
+	/**
+	 * An y position
+	 * @return a position
+	 */
+	public int getY() {
+		return this.location[1];
+	}
+	
+	/**
+	 * An offset y position.
+	 * @return a position
+	 */
+	public int getOffsetY() {
+		return getY() + Offsets[1];
 	}
 	
 	/** {@inheritDoc} */
@@ -54,32 +135,10 @@ public class ModelElement implements Registry.KeySource {
 	public String getKey() {
 		return this.name;
 	}
-	
-	public String getName() {
-		return this.name;
-	}
-	
-	public String getColor() {
-		return this.color;
-	}
-	
-	public int getX() {
-		return this.location[0];
-	}
-	
-	public int getOffsetX() {
-		return getX() + Offsets[0];
-	}
-	
-	public int getY() {
-		return this.location[1];
-	}
-	
-	public int getOffsetY() {
-		return getY() + Offsets[1];
-	}
-	
-	public Tag buildGraphicElement() {
+
+	/** {@inheritDoc} */
+	@Override
+	public Tag buildElement() {
 		return Tag.named("g")
 				.with(buildFilledRectangle())
 				.with(buildDrawnRectangle())
@@ -89,8 +148,7 @@ public class ModelElement implements Registry.KeySource {
 	private Tag buildFilledRectangle() {
 		return Tag.named("rect").withStyle("fill", getColor())
 				.withWidth(Width).withHeight(Height)
-				.withX(getX()).withY(getY())
-				;
+				.withX(getX()).withY(getY());
 	}
 	
 	private Tag buildDrawnRectangle() {

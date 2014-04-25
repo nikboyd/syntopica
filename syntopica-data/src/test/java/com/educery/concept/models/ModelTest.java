@@ -35,13 +35,15 @@ public class ModelTest {
 	@Test
 	public void svgSample() throws Exception {
 		int[] viewbox = { 58, 18, 443, 506 };
-		GraphicsContext context = GraphicsContext.with(12, 13).with(viewbox);
-		Tag example = ModelElement.named("Expector").withColor("#add8e6").at(80, 50).buildGraphicElement();
-		Tag sample = ModelElement.named("Requestor").withColor("#add8e6").at(80, 180).buildGraphicElement();
+		GraphicsContext context = 
+			GraphicsContext.with(12, 13).with(viewbox)
+			.with(ModelElement.named("Expector").withColor("#add8e6").at(80, 50))
+			.with(ModelElement.named("Requestor").withColor("#add8e6").at(80, 180));
+
 		Tag page = 
 			Tag.named("html")
 				.with(Tag.named("head").with(Tag.named("title").withContent("Sample")))
-				.with(Tag.named("body").with(context.buildContext().with(example).with(sample)))
+				.with(Tag.named("body").with(context.buildElement()))
 				;
 
 		String xml = page.format();
