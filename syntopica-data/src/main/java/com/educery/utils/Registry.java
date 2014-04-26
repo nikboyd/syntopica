@@ -10,14 +10,13 @@ import org.apache.commons.logging.LogFactory;
  * 
  * <h4>Registry Responsibilities:</h4>
  * <ul>
- * <li></li>
+ * <li>knows the registered items and their keys</li>
+ * <li>registers item</li>
+ * <li>provides an items given its key</li>
+ * <li>removes an item if requested</li>
  * </ul>
- *
- * <h4>Client Responsibilities:</h4>
- * <ul>
- * <li></li>
- * </ul>
- * @param <ItemType>
+ * 
+ * @param <ItemType> an item type
  */
 public class Registry<ItemType extends Registry.KeySource> {
 

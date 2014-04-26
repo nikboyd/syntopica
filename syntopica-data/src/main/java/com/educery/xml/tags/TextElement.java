@@ -2,6 +2,14 @@ package com.educery.xml.tags;
 
 import com.educery.utils.Registry;
 
+/**
+ * Describes an element that contains text in a box (rectangle).
+ * 
+ * <h4>TextElement Responsibilities:</h4>
+ * <ul>
+ * <li>knows some text, a color, and a location</li>
+ * </ul>
+ */
 public class TextElement implements Registry.KeySource {
 
 	protected String name = Empty;

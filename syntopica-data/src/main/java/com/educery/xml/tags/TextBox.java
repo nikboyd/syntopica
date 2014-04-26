@@ -1,16 +1,18 @@
 package com.educery.xml.tags;
 
 /**
- * A text box. These label and describe the connectors that appear in model diagrams.
+ * A text box. A text box labels and describes a connector (arrow) that appears in a model diagram.
  * 
  * <h4>TextBox Responsibilities:</h4>
  * <ul>
- * <li></li>
+ * <li>knows the style used for drawing connector text boxes</li>
+ * <li>knows the text, color, and location of such a text box</li>
+ * <li>draws a connector text box in a diagram using SVG</li>
  * </ul>
  *
  * <h4>Client Responsibilities:</h4>
  * <ul>
- * <li></li>
+ * <li>supply a name, color, and location during construction</li>
  * </ul>
  */
 public class TextBox extends TextElement implements Tag.Factory {

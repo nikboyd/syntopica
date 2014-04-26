@@ -12,7 +12,7 @@ public class ConceptTest {
 	
 	@Test
 	public void readFacts() throws Exception {
-		MessageReader.with(getClass().getResourceAsStream("/sample.txt")).readFacts();
+		FactReader.with(getClass().getResourceAsStream("/sample.txt")).readFacts();
 		Domain.getCurrentDomain().dump();
 	}
 	

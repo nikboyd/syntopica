@@ -16,12 +16,13 @@ import freemarker.template.TemplateExceptionHandler;
  * 
  * <h4>ModelSite Responsibilities:</h4>
  * <ul>
- * <li></li>
+ * <li>reads domain model facts from a model file</li>
+ * <li>generates model pages from the domain model</li>
  * </ul>
  *
  * <h4>Client Responsibilities:</h4>
  * <ul>
- * <li></li>
+ * <li>provide locations for a model file and page folder during construction</li>
  * </ul>
  */
 public class ModelSite {
@@ -73,7 +74,7 @@ public class ModelSite {
 	 * @return this ModelSite
 	 */
 	public ModelSite withModel(String modelFile) {
-		MessageReader.with(getClass().getResourceAsStream(modelFile)).readFacts();
+		FactReader.with(getClass().getResourceAsStream(modelFile)).readFacts();
 		return this;
 	}
 

@@ -10,32 +10,32 @@ import com.educery.utils.Registry;
 /**
  * Reads a domain model from a file.
  * 
- * <h4>MessageReader Responsibilities:</h4>
+ * <h4>FactReader Responsibilities:</h4>
  * <ul>
  * <li>creates the facts and topics found in a model file</li>
  * </ul>
  */
-public class MessageReader implements Registry.KeySource {
+public class FactReader implements Registry.KeySource {
 
-	private static final Log Logger = LogFactory.getLog(MessageReader.class);
+	private static final Log Logger = LogFactory.getLog(FactReader.class);
 	
 	private BufferedReader reader;
 	
 	/**
-	 * Returns a new MessageReader.
+	 * Returns a new FactReader.
 	 * @param stream a stream of fact messages
-	 * @return a new MessageReader
+	 * @return a new FactReader
 	 */
-	public static MessageReader with(InputStream stream) {
-		MessageReader result = new MessageReader();
+	public static FactReader with(InputStream stream) {
+		FactReader result = new FactReader();
 		result.reader = new BufferedReader(new InputStreamReader(stream));
 		return result;
 	}
 	
 	/**
-	 * Constructs a new MessageReader.
+	 * Constructs a new FactReader.
 	 */
-	private MessageReader() { }
+	private FactReader() { }
 	
 	/**
 	 * Reads facts from the configured message stream.
@@ -76,4 +76,4 @@ public class MessageReader implements Registry.KeySource {
 		return Empty;
 	}
 
-} // MessageReader
+} // FactReader
