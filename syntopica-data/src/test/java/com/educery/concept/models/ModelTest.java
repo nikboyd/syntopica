@@ -37,6 +37,7 @@ public class ModelTest {
 		int[] viewbox = { 58, 18, 443, 506 };
 		GraphicsContext context = 
 			GraphicsContext.with(12, 13).with(viewbox)
+			.with(TextBox.named("requests").withColor("#ffffff").at(300, 80))
 			.with(ModelElement.named("Expector").withColor("#add8e6").at(80, 50))
 			.with(ModelElement.named("Requestor").withColor("#add8e6").at(80, 180));
 

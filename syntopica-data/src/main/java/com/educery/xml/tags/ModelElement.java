@@ -1,9 +1,7 @@
 package com.educery.xml.tags;
 
-import com.educery.utils.Registry;
-
 /**
- * A model element. This represents a named rectangle in a model diagram.
+ * A model element. These represent a named rectangle in a model diagram.
  * 
  * <h4>ModelElement Responsibilities:</h4>
  * <ul>
@@ -17,7 +15,7 @@ import com.educery.utils.Registry;
  * <li>supply a name, color, and location during construction</li>
  * </ul>
  */
-public class ModelElement implements Registry.KeySource, Tag.Factory {
+public class ModelElement extends TextElement implements Tag.Factory {
 	
 	private static int Width = 140;
 	private static int Height = 44;
@@ -44,10 +42,6 @@ public class ModelElement implements Registry.KeySource, Tag.Factory {
 		.withStyle("font-weight", 700)
 		.with("font-size", 17)
 		;
-	
-	private String name = Empty;
-	private String color = "none";
-	private int[] location = { 0, 0 };
 	
 	/**
 	 * Returns a new ModelElement.
@@ -81,45 +75,13 @@ public class ModelElement implements Registry.KeySource, Tag.Factory {
 		this.location[1] = y;
 		return this;
 	}
-	
-	/**
-	 * The model element name.
-	 * @return an element name
-	 */
-	public String getName() {
-		return this.name;
-	}
-	
-	/**
-	 * The model element fill color.
-	 * @return a fill color
-	 */
-	public String getColor() {
-		return this.color;
-	}
-
-	/**
-	 * An x position.
-	 * @return a position
-	 */
-	public int getX() {
-		return this.location[0];
-	}
-	
+		
 	/**
 	 * An offset x position.
 	 * @return a position
 	 */
 	public int getOffsetX() {
 		return getX() + Offsets[0];
-	}
-	
-	/**
-	 * An y position
-	 * @return a position
-	 */
-	public int getY() {
-		return this.location[1];
 	}
 	
 	/**
