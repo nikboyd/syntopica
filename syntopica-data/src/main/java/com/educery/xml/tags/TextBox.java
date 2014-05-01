@@ -24,12 +24,12 @@ public class TextBox extends TextElement implements Tag.Factory {
 	// styling for a SVG text box
 	private static Tag TextStyle = 
 		Tag.named("text-style")
-		.withStyle("fill", "#000000")
-		.withStyle("text-anchor", "middle")
-		.withStyle("font-family", "sans-serif")
-		.withStyle("font-style", "italic")
-		.withStyle("font-weight", "normal")
-		.with("font-size", 17)
+		.withStyle(Fill, Black)
+		.withStyle(TextAnchor, Middle)
+		.withStyle(FontFamily, SansSerif)
+		.withStyle(FontStyle, Italic)
+		.withStyle(FontWeight, Normal)
+		.with(FontSize, 17)
 		;
 	
 	/**
@@ -69,6 +69,7 @@ public class TextBox extends TextElement implements Tag.Factory {
 	 * An offset x position.
 	 * @return a position
 	 */
+	@Override
 	public int getOffsetX() {
 		return getX() + Offsets[0];
 	}
@@ -77,6 +78,7 @@ public class TextBox extends TextElement implements Tag.Factory {
 	 * An offset y position.
 	 * @return a position
 	 */
+	@Override
 	public int getOffsetY() {
 		return getY() + Offsets[1];
 	}
@@ -84,26 +86,24 @@ public class TextBox extends TextElement implements Tag.Factory {
 	/** {@inheritDoc} */
 	@Override
 	public Tag buildElement() {
-		return Tag.named("g")
+		return Tag.graphic()
 				.with(buildFilledRectangle())
 				.with(buildTextElement());
 	}
 	
-	private Tag buildFilledRectangle() {
-		return Tag.named("rect").withStyle("fill", getColor())
-				.withWidth(Width).withHeight(Height)
-				.withX(getX()).withY(getY());
+	@Override
+	protected int getWidth() {
+		return Width;
+	}
+
+	@Override
+	protected int getHeight() {
+		return Height;
 	}
 	
-	private Tag buildTextElement() {
-		return Tag.named("text")
-				.withValues(TextStyle).with(buildTextSpan())
-				.withX(getOffsetX()).withY(getOffsetY());
-	}
-	
-	private Tag buildTextSpan() {
-		return Tag.named("tspan").withContent(getName())
-				.withX(getOffsetX()).withY(getOffsetY());
+	@Override
+	protected Tag getTextStyle() {
+		return TextStyle;
 	}
 
 } // TextBox

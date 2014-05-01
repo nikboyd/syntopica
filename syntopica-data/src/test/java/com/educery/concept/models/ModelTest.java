@@ -35,11 +35,19 @@ public class ModelTest {
 	@Test
 	public void svgSample() throws Exception {
 		int[] viewbox = { 58, 18, 443, 506 };
+		Connector c = Connector.with(
+				Point.at(280, 250), 
+				Point.at(280, 200), 
+				Point.at(350, 200))
+				.withHeads(1)
+				.fillHeads(false);
+
 		GraphicsContext context = 
 			GraphicsContext.with(12, 13).with(viewbox)
 			.with(TextBox.named("requests").withColor("#ffffff").at(300, 80))
 			.with(ModelElement.named("Expector").withColor("#add8e6").at(80, 50))
-			.with(ModelElement.named("Requestor").withColor("#add8e6").at(80, 180));
+			.with(ModelElement.named("Requestor").withColor("#add8e6").at(80, 180))
+			.with(c);
 
 		Tag page = 
 			Tag.named("html")

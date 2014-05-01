@@ -88,14 +88,14 @@ public class ModelSite {
 	}
 	
 	private void generatePage(Topic topic) {
-		HashMap<String, Object> root = new HashMap<String, Object>();
-		root.put("topic", topic);
-		root.put("domain", Domain.getCurrentDomain());
+		HashMap<String, Object> rootMap = new HashMap<String, Object>();
+		rootMap.put("topic", topic);
+		rootMap.put("domain", Domain.getCurrentDomain());
 		
 		try {
 			File pageFile = new File(this.pageFolder, topic.getLinkFileName());
 			Writer writer = new OutputStreamWriter(new FileOutputStream(pageFile));
-			getTemplate("page-template.html").process(root, writer);
+			getTemplate("page-template.html").process(rootMap, writer);
 		}
 		catch (Exception e ) {
 			Logger.error(e.getMessage(), e);

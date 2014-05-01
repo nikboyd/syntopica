@@ -24,23 +24,12 @@ public class ModelElement extends TextElement implements Tag.Factory {
 	// styling for a SVG text rectangle
 	private static Tag RectangleBase =
 		Tag.named("rect-style")
-		.withStyle("fill", "none")
-		.withStyle("fill-opacity", 0)
-		.withStyle("stroke-width", 2)
-		.withStyle("stroke", "#000000")
+		.withStyle(Fill, None)
+		.withStyle(FillOpacity, 0)
+		.withStyle(StrokeWidth, 2)
+		.withStyle(Stroke, Black)
 		.withWidth(Width)
 		.withHeight(Height)
-		;
-	
-	// styling for a SVG text box
-	private static Tag TextStyle = 
-		Tag.named("text-style")
-		.withStyle("fill", "#000000")
-		.withStyle("text-anchor", "middle")
-		.withStyle("font-family", "sans-serif")
-		.withStyle("font-style", "normal")
-		.withStyle("font-weight", 700)
-		.with("font-size", 17)
 		;
 	
 	/**
@@ -80,6 +69,7 @@ public class ModelElement extends TextElement implements Tag.Factory {
 	 * An offset x position.
 	 * @return a position
 	 */
+	@Override
 	public int getOffsetX() {
 		return getX() + Offsets[0];
 	}
@@ -88,6 +78,7 @@ public class ModelElement extends TextElement implements Tag.Factory {
 	 * An offset y position.
 	 * @return a position
 	 */
+	@Override
 	public int getOffsetY() {
 		return getY() + Offsets[1];
 	}
@@ -101,32 +92,25 @@ public class ModelElement extends TextElement implements Tag.Factory {
 	/** {@inheritDoc} */
 	@Override
 	public Tag buildElement() {
-		return Tag.named("g")
+		return Tag.graphic()
 				.with(buildFilledRectangle())
 				.with(buildDrawnRectangle())
 				.with(buildTextElement());
 	}
 	
-	private Tag buildFilledRectangle() {
-		return Tag.named("rect").withStyle("fill", getColor())
-				.withWidth(Width).withHeight(Height)
-				.withX(getX()).withY(getY());
-	}
-	
 	private Tag buildDrawnRectangle() {
-		return Tag.named("rect").withValues(RectangleBase)
+		return Tag.rectangle().withValues(RectangleBase)
 				.withX(getX()).withY(getY());
 	}
 	
-	private Tag buildTextElement() {
-		return Tag.named("text")
-				.withValues(TextStyle).with(buildTextSpan())
-				.withX(getOffsetX()).withY(getOffsetY());
+	@Override
+	protected int getWidth() {
+		return Width;
 	}
-	
-	private Tag buildTextSpan() {
-		return Tag.named("tspan").withContent(getName())
-				.withX(getOffsetX()).withY(getOffsetY());
+
+	@Override
+	protected int getHeight() {
+		return Height;
 	}
 
 } // ModelElement

@@ -11,18 +11,15 @@ import com.educery.utils.Registry;
  * <ul>
  * <li>knows a location and view box</li>
  * <li>knows / contains some elements</li>
- * </ul>
- *
- * <h4>Client Responsibilities:</h4>
- * <ul>
- * <li></li>
+ * <li>draws the contents of a graphic diagram in SVG</li>
  * </ul>
  */
 public class GraphicsContext implements Registry.KeySource, Tag.Factory {
 	
-	private static String Measure = "cm";
-	private static String Namespace = "http://www.w3.org/2000/svg";
-	private static String LinkNamespace = "http://www.w3.org/1999/xlink";
+	private static final String Measure = "cm";
+	private static final String Viewbox = "viewbox";
+	private static final String Namespace = "http://www.w3.org/2000/svg";
+	private static final String LinkNamespace = "http://www.w3.org/1999/xlink";
 	
 	private int width = 0;
 	private int height = 0;
@@ -85,10 +82,10 @@ public class GraphicsContext implements Registry.KeySource, Tag.Factory {
 	}
 	
 	private Tag buildSVG() {
-		return Tag.named("svg")
-				.with("width", this.width + Measure)
-				.with("height", this.height + Measure)
-				.with("viewbox", getViewbox())
+		return Tag.context()
+				.withWidth(this.width + Measure)
+				.withHeight(this.height + Measure)
+				.with(Viewbox, getViewbox())
 				.with("xmlns", Namespace)
 				.with("xmlns:xlink", LinkNamespace);
 	}

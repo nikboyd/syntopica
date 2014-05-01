@@ -19,6 +19,25 @@ public class Tag implements Registry.KeySource {
 	 * Defines a protocol for building tags.
 	 */
 	public static interface Factory {
+
+		public static final String TextAnchor = "text-anchor";
+		public static final String FontFamily = "font-family";
+		public static final String FontWeight = "font-weight";
+		public static final String FontStyle = "font-style";
+		public static final String FontSize = "font-size";
+
+		public static final String Fill = "fill";
+		public static final String FillOpacity = "fill-opacity";
+
+		public static final String StrokeWidth = "stroke-width";
+		public static final String Stroke = "stroke";
+
+		public static final String Black = "#000000";
+		public static final String SansSerif = "sans-serif";
+		public static final String Middle = "middle";
+		public static final String Normal = "normal";
+		public static final String Italic = "italic";
+		public static final String None = "none";
 		
 		/**
 		 * Builds a new Tag.
@@ -35,15 +54,58 @@ public class Tag implements Registry.KeySource {
 	private static final String LeftBracket = "<";
 	private static final String RightBracket = ">";
 	
+	private static final String Context = "svg";
+	private static final String Graphic = "g";
 	private static final String Italics = "i";
 	private static final String Anchor = "a";
 	private static final String HyperLink = "href";
+
 	private static final String Style = "style";
+	private static final String TextSpan = "tspan";
+	private static final String Text = "text";
+	
+	private static final String Rectangle = "rect";
+	private static final String Polyline = "polyline";
+	private static final String Polygon = "polygon";
+	private static final String Height = "height";
+	private static final String Width = "width";
 
 	private String name = Empty;
 	private ArrayList<Tag> contentTags = new ArrayList<Tag>();
 	private ArrayList<String> names = new ArrayList<String>();
 	private HashMap<String, String> namedValues = new HashMap<String, String>();
+	
+	public static Tag polyline() {
+		return Tag.named(Polyline);
+	}
+	
+	public static Tag polygon() {
+		return Tag.named(Polygon);
+	}
+	
+	public static Tag rectangle() {
+		return Tag.named(Rectangle);
+	}
+	
+	public static Tag textSpan() {
+		return Tag.named(TextSpan);
+	}
+
+	public static Tag textBox() {
+		return Tag.named(Text);
+	}
+	
+	public static Tag context() {
+		return Tag.named(Context);
+	}
+
+	/**
+	 * Returns a new graphic Tag.
+	 * @return a new Tag
+	 */
+	public static Tag graphic() {
+		return Tag.named(Graphic);
+	}
 	
 	/**
 	 * Returns a new Tag for an italicized HTML element.
@@ -115,7 +177,25 @@ public class Tag implements Registry.KeySource {
 	 * @return this Tag
 	 */
 	public Tag withWidth(int value) {
-		return this.with("width", value + Empty);
+		return this.with(Width, value + Empty);
+	}
+
+	/**
+	 * Adds a value named: width.
+	 * @param value width value
+	 * @return this Tag
+	 */
+	public Tag withWidth(String value) {
+		return this.with(Width, value);
+	}
+
+	/**
+	 * Adds a value named: height.
+	 * @param value height value
+	 * @return this Tag
+	 */
+	public Tag withHeight(int value) {
+		return this.with(Height, value + Empty);
 	}
 	
 	/**
@@ -123,8 +203,8 @@ public class Tag implements Registry.KeySource {
 	 * @param value height value
 	 * @return this Tag
 	 */
-	public Tag withHeight(int value) {
-		return this.with("height", value + Empty);
+	public Tag withHeight(String value) {
+		return this.with(Height, value);
 	}
 	
 	/**
