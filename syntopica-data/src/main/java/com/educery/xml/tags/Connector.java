@@ -23,10 +23,14 @@ public class Connector implements Tag.Factory {
 		.withStyle(Stroke, Black)
 		;
 	
+	private static Tag FillStyle =
+		Tag.named("fill-style")
+		.withStyle(Fill, Black)
+		;
+	
 	private Path path;
 	private int headCount = 1;
 	private boolean filledHeads = false;
-	private Orientation orientation;
 	
 	/**
 	 * Returns a new Connector.
@@ -36,7 +40,6 @@ public class Connector implements Tag.Factory {
 	public static Connector with(Point ... points) {
 		Connector result = new Connector();
 		result.path = Path.from(points);
-		result.orientation = result.path.getOrientation();
 		return result;
 	}
 	
@@ -69,75 +72,55 @@ public class Connector implements Tag.Factory {
 		return this;
 	}
 	
-	/**
-	 * The orientation of the head of this connector.
-	 * @return an Orientation
-	 */
-	public Orientation getOrientation() {
-		return this.orientation;
-	}
-
-	/**
-	 * Formats the path of this connector.
-	 * @return a formatted path
-	 */
-	public String formatPath() {
-		return adjustPath().format();
-	}
-	
-	/**
-	 * Adjusts the path to account for empty heads if needed.
-	 * @return an adjusted path
-	 */
-	public Path adjustPath() {
-		Point[] heads = getHead();
-		return this.path.withHead(heads[0].plus(adjustHead(heads)));
-	}
-	
-	/**
-	 * Returns the head segment of this connector.
-	 * @return a pair of points
-	 */
-	public Point[] getHead() {
-		return this.path.getHead();
-	}
-	
-	/**
-	 * Builds an element from this connector.
-	 * @return a Tag
-	 */
+	/** {@inheritDoc} */
+	@Override
 	public Tag buildElement() {
-		Tag result = Tag.graphic().with(buildConnector());
+		Tag result = Tag.graphic().with(buildSegmentedLine());
 		for (int index = 0; index < this.headCount; index++) {
 			result.with(buildArrow(index));
 		}
 		return result;
 	}
 	
-	private Tag buildConnector() {
+	private Tag buildSegmentedLine() {
 		return Tag.polyline().withValues(LineStyle).with(Points, formatPath());
 	}
 	
 	private Tag buildArrow(int index) {
-		Tag result = Tag.polygon().with(Points, buildHead(index).format());
+		return Tag.polygon().with(Points, buildArrowTriangle(index).format()).withValues(getArrowStyle());
+	}
 
-		if (this.filledHeads) {
-			result.withStyle(Fill, Black);
-		}
-		else {
-			result.withValues(LineStyle);
-		}
-
-		return result;
+	private String formatPath() {
+		return getPath().withHead(getTip().plus(headAdjustment())).format();
 	}
 	
-	private Path buildHead(int index) {
-		return getOrientation().buildArrow(this.path.getHead(), index);
+	private Tag getArrowStyle() {
+		return (this.filledHeads ? FillStyle : LineStyle);
 	}
 	
-	private Point adjustHead(Point[] points) {
+	private Path buildArrowTriangle(int index) {
+		return getOrientation().buildArrow(getHead(), index);
+	}
+	
+	private Point headAdjustment() {
 		if (filledHeads) return Point.at(0, 0);
 		return getOrientation().getTipOffset(this.headCount);
+	}
+
+	private Orientation getOrientation() {
+		return getPath().getOrientation();
+	}
+
+	private Point[] getHead() {
+		return getPath().getHead();
+	}
+	
+	private Point getTip() {
+		return getPath().getTip();
+	}
+	
+	private Path getPath() {
+		return this.path;
 	}
 
 } // Connector

@@ -57,6 +57,14 @@ public class Path {
 		this.points.addAll(Arrays.asList(points));
 		return this;
 	}
+
+	/**
+	 * Returns the tip of this path.
+	 * @return a Point
+	 */
+	public Point getTip() {
+		return this.points.get(0);
+	}
 	
 	/**
 	 * Returns the initial (head) segment of this path.
