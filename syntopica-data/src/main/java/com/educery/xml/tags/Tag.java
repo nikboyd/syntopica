@@ -32,6 +32,7 @@ public class Tag implements Registry.KeySource {
 		public static final String StrokeWidth = "stroke-width";
 		public static final String Stroke = "stroke";
 
+		public static final String White = "#ffffff";
 		public static final String Black = "#000000";
 		public static final String SansSerif = "sans-serif";
 		public static final String Middle = "middle";

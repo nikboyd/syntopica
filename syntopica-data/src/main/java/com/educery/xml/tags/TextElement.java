@@ -118,12 +118,44 @@ public class TextElement implements Registry.KeySource, Tag.Factory {
 				.withX(getOffsetX()).withY(getOffsetY());
 	}
 	
-	protected int getWidth() {
+	/**
+	 * The width of this element.
+	 * @return a width
+	 */
+	public int getWidth() {
 		return 20;
 	}
 
-	protected int getHeight() {
+	/**
+	 * The height of this element.
+	 * @return a height
+	 */
+	public int getHeight() {
 		return 20;
+	}
+	
+	public int getLeft() {
+		return getX();
+	}
+	
+	public int getCenter() {
+		return getOffsetX();
+	}
+	
+	public int getRight() {
+		return getX() + getWidth();
+	}
+	
+	public int getTop() {
+		return getY();
+	}
+	
+	public int getMiddle() {
+		return getY() + (getHeight() / 2);
+	}
+	
+	public int getBottom() {
+		return getY() + getHeight();
 	}
 	
 	protected Tag getTextStyle() {

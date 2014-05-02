@@ -18,8 +18,8 @@ package com.educery.xml.tags;
 public class TextBox extends TextElement implements Tag.Factory {
 
 	private static int Width = 70;
-	private static int Height = 20;
-	private static int[] Offsets = { Width / 2, Height };
+	private static int Height = 24;
+	private static int[] Offsets = { Width / 2, (Height * 2) / 3 };
 
 	// styling for a SVG text box
 	private static Tag TextStyle = 
@@ -82,22 +82,14 @@ public class TextBox extends TextElement implements Tag.Factory {
 	public int getOffsetY() {
 		return getY() + Offsets[1];
 	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Tag buildElement() {
-		return Tag.graphic()
-				.with(buildFilledRectangle())
-				.with(buildTextElement());
-	}
 	
 	@Override
-	protected int getWidth() {
+	public int getWidth() {
 		return Width;
 	}
 
 	@Override
-	protected int getHeight() {
+	public int getHeight() {
 		return Height;
 	}
 	

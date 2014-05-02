@@ -60,8 +60,10 @@ public class GraphicsContext implements Registry.KeySource, Tag.Factory {
 	 * @param element an element
 	 * @return this GraphicsContext
 	 */
-	public GraphicsContext with(Tag.Factory element) {
-		this.elements.add(element);
+	public GraphicsContext with(Tag.Factory ... elements) {
+		for (Tag.Factory element : elements) {
+			this.elements.add(element);
+		}
 		return this;
 	}
 	

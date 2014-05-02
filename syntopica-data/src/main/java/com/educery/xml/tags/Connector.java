@@ -29,9 +29,32 @@ public class Connector implements Tag.Factory {
 		;
 	
 	private Path path;
+	private String label = "";
 	private int headCount = 1;
 	private boolean filledHeads = false;
 	
+	/**
+	 * Returns a new Connector.
+	 * @param elements the connected elements
+	 * @return a new Connector
+	 */
+	public static Connector between(ModelElement ... elements) {
+		Point tip = Point.at(elements[0].getCenter(), elements[0].getTop());
+		Point end = Point.at(elements[1].getCenter(), elements[1].getBottom());
+		if (tip.getX() == end.getX()) return Connector.with(tip, end);
+
+		int testX = elements[0].getCenter() + 15;
+		if (testX > elements[1].getRight()) {
+			end = Point.at(elements[1].getRight(), elements[1].getMiddle());
+			Point p = Point.at(tip.getX(), end.getY());
+			return Connector.with(tip, p, end);
+		}
+		
+		int halfY = ((tip.getY() - end.getY()) / 3) + end.getY();
+		Point p = Point.at(tip.getX(), halfY);
+		Point q = Point.at(end.getX(), halfY);
+		return Connector.with(tip, p, q, end);
+	}
 	/**
 	 * Returns a new Connector.
 	 * @param points the points that define a path for this connector
@@ -41,6 +64,16 @@ public class Connector implements Tag.Factory {
 		Connector result = new Connector();
 		result.path = Path.from(points);
 		return result;
+	}
+	
+	/**
+	 * Configures the label of this connector.
+	 * @param label a label
+	 * @return this Connector
+	 */
+	public Connector withLabel(String label) {
+		this.label = label;
+		return this;
 	}
 	
 	/**
@@ -79,7 +112,17 @@ public class Connector implements Tag.Factory {
 		for (int index = 0; index < this.headCount; index++) {
 			result.with(buildArrow(index));
 		}
-		return result;
+		if (this.label.isEmpty()) return result;
+		return result.with(buildTextBox());
+	}
+	
+	private Tag buildTextBox() {
+		Point[] head = getHead();
+		TextBox b = TextBox.named(this.label);
+		int bx = (head[0].getX() + head[1].getX() - b.getWidth()) / 2;
+		int by = (head[0].getY() + head[1].getY() - b.getHeight()) / 2;
+		b = b.withColor(White).at(bx, by);
+		return b.buildElement();
 	}
 	
 	private Tag buildSegmentedLine() {

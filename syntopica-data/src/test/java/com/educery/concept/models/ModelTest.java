@@ -14,6 +14,8 @@ import com.educery.xml.tags.*;
 public class ModelTest {
 
 	private static final Log Logger = LogFactory.getLog(ModelTest.class);
+	private static final String Cyan = "#add8e6";
+	private static final String Grey = "#bfbfbf";
 
 	/**
 	 * Generates web pages from a model.
@@ -34,28 +36,16 @@ public class ModelTest {
 	 */
 	@Test
 	public void svgSample() throws Exception {
+		ModelElement activity = ModelElement.named("Activity").withColor(Cyan).at(80, 50);
+		ModelElement value = ModelElement.named("Value").withColor(Grey).at(180, 200);
+		ModelElement business = ModelElement.named("Business").withColor(Grey).at(350, 200);
+		Connector va = Connector.between(value, activity).withHeads(1).fillHeads(true).withLabel("produces");
+		Connector ba = Connector.between(business, activity).withHeads(1).fillHeads(false).withLabel("for");
+
 		int[] viewbox = { 58, 18, 443, 506 };
-		Connector c = 
-			Connector.with(
-				Point.at(280, 250), 
-				Point.at(280, 100), 
-				Point.at(400, 100))
-				.withHeads(1)
-				.fillHeads(false);
-
-		GraphicsContext context = 
-			GraphicsContext.with(12, 13).with(viewbox)
-			.with(c)
-			.with(TextBox.named("requests").withColor("#ffffff").at(300, 85))
-			.with(ModelElement.named("Expector").withColor("#add8e6").at(80, 50))
-			.with(ModelElement.named("Requestor").withColor("#add8e6").at(80, 180))
-			;
-
-		Tag page = 
-			Tag.named("html")
-				.with(Tag.named("head").with(Tag.named("title").withContent("Sample")))
-				.with(Tag.named("body").with(context.buildElement()))
-				;
+		Tag.Factory[] tags = { activity, value, business, va, ba };
+		GraphicsContext context = GraphicsContext.with(12, 13).with(viewbox).with(tags);
+		Tag page = buildPage().with(Tag.named("body").with(context.buildElement()));
 
 		String xml = page.format();
 		String pageFolder = getClass().getResource("/pages").getFile();
@@ -64,6 +54,14 @@ public class ModelTest {
 		OutputStreamWriter writer = new OutputStreamWriter(stream);
 		writer.write(xml);
 		writer.close();
+	}
+	
+	private Tag buildPage() {
+		return Tag.named("html").with(buildHeader());
+	}
+	
+	private Tag buildHeader() {
+		return Tag.named("head").with(Tag.named("title").withContent("Sample"));
 	}
 
 } // ModelTest

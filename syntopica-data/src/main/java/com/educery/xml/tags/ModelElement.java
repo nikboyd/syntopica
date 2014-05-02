@@ -104,12 +104,12 @@ public class ModelElement extends TextElement implements Tag.Factory {
 	}
 	
 	@Override
-	protected int getWidth() {
+	public int getWidth() {
 		return Width;
 	}
 
 	@Override
-	protected int getHeight() {
+	public int getHeight() {
 		return Height;
 	}
 
