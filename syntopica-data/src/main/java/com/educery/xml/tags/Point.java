@@ -14,6 +14,22 @@ public class Point {
 	private int[] positions = { 0, 0 };
 	
 	/**
+	 * Returns the zero point.
+	 * @return a Point
+	 */
+	public static Point zero() {
+		return new Point();
+	}
+	
+	/**
+	 * Returns the unity point.
+	 * @return a Point
+	 */
+	public static Point unity() {
+		return Point.at(1, 1);
+	}
+	
+	/**
 	 * Returns a new Point.
 	 * @param x a location
 	 * @param y a location
@@ -26,10 +42,7 @@ public class Point {
 	/**
 	 * Constructs a new Point.
 	 */
-	public Point() {
-		this.positions[0] = 0;
-		this.positions[1] = 0;
-	}
+	public Point() { }
 	
 	/**
 	 * Constructs a new Point.
@@ -42,11 +55,24 @@ public class Point {
 	}
 	
 	/**
+	 * Combines the X and Y elements with a factor.
+	 * @param factor a factor
+	 * @return a combined result
+	 */
+	public int combine(int factor) {
+		return (getY() * factor) + getX();
+	}
+	
+	/**
 	 * An X position
 	 * @return X
 	 */
 	public int getX() {
 		return this.positions[0];
+	}
+	
+	public void setX(int x) {
+		this.positions[0] = x;
 	}
 
 	/**
@@ -56,6 +82,10 @@ public class Point {
 	public int getY() {
 		return this.positions[1];
 	}
+	
+	public void setY(int y) {
+		this.positions[1] = y;
+	}
 
 	/**
 	 * Computes a product.
@@ -64,6 +94,15 @@ public class Point {
 	 */
 	public Point times(int factor) {
 		return Point.at(getX() * factor, getY() * factor);
+	}
+	
+	/**
+	 * Computes the product of this point and another.
+	 * @param p a point
+	 * @return a new Point
+	 */
+	public Point times(Point p) {
+		return Point.at(getX() * p.getX(), getY() * p.getY());
 	}
 
 	/**
@@ -75,11 +114,19 @@ public class Point {
 	}
 	
 	/**
+	 * The signs of X and Y.
+	 * @return a new Point
+	 */
+	public Point signs() {
+		return Point.at((int)Math.signum(getX()), (int)Math.signum(getY()));
+	}
+	
+	/**
 	 * Inverts the X and Y values.
 	 * @return a new Point
 	 */
 	public Point invert() {
-		return Point.at(-getX(), -getY());
+		return this.times(-1);
 	}
 	
 	/**
@@ -122,6 +169,14 @@ public class Point {
 	 */
 	public String format() {
 		return getX() + "," + getY();
+	}
+	
+	@Override
+	public boolean equals(Object candidate) {
+		if (null == candidate) return false;
+		if (!(candidate instanceof Point)) return false;
+		Point p = (Point) candidate;
+		return p.getX() == getX() && p.getY() == getY();
 	}
 
 } // Point

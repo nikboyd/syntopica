@@ -17,8 +17,8 @@ package com.educery.xml.tags;
  */
 public class ModelElement extends TextElement implements Tag.Factory {
 	
-	private static int Width = 140;
-	private static int Height = 44;
+	public static int Width = 140;
+	public static int Height = 44;
 	private static int[] Offsets = { Width / 2, Height / 2 + 5 };
 	
 	// styling for a SVG text rectangle
@@ -31,6 +31,13 @@ public class ModelElement extends TextElement implements Tag.Factory {
 		.withWidth(Width)
 		.withHeight(Height)
 		;
+	
+	/**
+	 * Constructs a new ModelElement.
+	 */
+	private ModelElement() {
+		super();
+	}
 	
 	/**
 	 * Returns a new ModelElement.
@@ -60,8 +67,7 @@ public class ModelElement extends TextElement implements Tag.Factory {
 	 * @return this ModelElement
 	 */
 	public ModelElement at(int x, int y) {
-		this.location[0] = x;
-		this.location[1] = y;
+		setLocation(Point.at(x, y));
 		return this;
 	}
 		
@@ -91,14 +97,14 @@ public class ModelElement extends TextElement implements Tag.Factory {
 
 	/** {@inheritDoc} */
 	@Override
-	public Tag buildElement() {
+	public Tag drawElement() {
 		return Tag.graphic()
-				.with(buildFilledRectangle())
-				.with(buildDrawnRectangle())
-				.with(buildTextElement());
+				.with(drawFilledRectangle())
+				.with(drawUnfilledRectangle())
+				.with(drawTextElement());
 	}
 	
-	private Tag buildDrawnRectangle() {
+	private Tag drawUnfilledRectangle() {
 		return Tag.rectangle().withValues(RectangleBase)
 				.withX(getX()).withY(getY());
 	}
@@ -111,6 +117,10 @@ public class ModelElement extends TextElement implements Tag.Factory {
 	@Override
 	public int getHeight() {
 		return Height;
+	}
+	
+	public Direction pathOrientation(ModelElement element) {
+		return Direction.RightWard;
 	}
 
 } // ModelElement

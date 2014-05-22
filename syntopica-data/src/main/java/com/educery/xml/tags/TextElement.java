@@ -1,6 +1,8 @@
 package com.educery.xml.tags;
 
 import com.educery.utils.Registry;
+import com.educery.xml.tags.Edge.Index;
+import com.educery.xml.tags.Edge.Border;
 
 /**
  * Describes an element that contains text in a box (rectangle).
@@ -11,6 +13,8 @@ import com.educery.utils.Registry;
  * </ul>
  */
 public class TextElement implements Registry.KeySource, Tag.Factory {
+
+	private static final int MarginOffset = 10;
 	
 	// styling for a SVG text box
 	private static Tag TextStyle = 
@@ -25,7 +29,33 @@ public class TextElement implements Registry.KeySource, Tag.Factory {
 
 	protected String name = Empty;
 	protected String color = "none";
-	protected int[] location = { 0, 0 };
+	protected Point location = Point.at(0, 0);
+	protected Border border = new Border();
+	
+	/**
+	 * Constructs a new TextElement.
+	 */
+	protected TextElement() {
+		super();
+	}
+	
+	/**
+	 * Sets the origin of this element.
+	 * @param origin a Point
+	 */
+	public void setLocation(Point origin) {
+		this.location.setX(origin.getX());
+		this.location.setY(origin.getY());
+		this.border.locate(origin, Point.at(getWidth(), getHeight()));
+	}
+	
+	public Edge getEdge(Index index) {
+		return getBorder().getEdge(index);
+	}
+	
+	public Border getBorder() {
+		return this.border;
+	}
 	
 	/**
 	 * The model element name.
@@ -42,13 +72,41 @@ public class TextElement implements Registry.KeySource, Tag.Factory {
 	public String getColor() {
 		return this.color;
 	}
+	
+	/**
+	 * The origin point of this element.
+	 * @return a Point
+	 */
+	public Point getLocation() {
+		return this.location;
+	}
+	
+	public void addHeads(Connector ... heads) {
+		getBorder().addHeads(heads);
+	}
+	
+	public void addTails(Connector ... tails) {
+		getBorder().addTails(tails);
+	}
+	
+	public Point assignHead(Point end) {
+		return getBorder().assignHead(getPole(), end);
+	}
+	
+	public Point assignTail(Point tip) {
+		return getBorder().assignTail(tip, getPole());
+	}
+	
+	public Point getPole() {
+		return Point.at(getCenter(), getMiddle());
+	}
 
 	/**
 	 * An x position.
 	 * @return a position
 	 */
 	public int getX() {
-		return this.location[0];
+		return getLocation().getX();
 	}
 	
 	/**
@@ -56,7 +114,7 @@ public class TextElement implements Registry.KeySource, Tag.Factory {
 	 * @return a position
 	 */
 	public int getY() {
-		return this.location[1];
+		return getLocation().getY();
 	}
 	
 	/**
@@ -83,17 +141,17 @@ public class TextElement implements Registry.KeySource, Tag.Factory {
 
 	/** {@inheritDoc} */
 	@Override
-	public Tag buildElement() {
+	public Tag drawElement() {
 		return Tag.graphic()
-				.with(buildFilledRectangle())
-				.with(buildTextElement());
+				.with(drawFilledRectangle())
+				.with(drawTextElement());
 	}
 	
 	/**
 	 * Builds a filled rectangle surrounding this text element.
 	 * @return a Tag
 	 */
-	protected Tag buildFilledRectangle() {
+	protected Tag drawFilledRectangle() {
 		return Tag.rectangle().withStyle(Fill, getColor())
 				.withWidth(getWidth()).withHeight(getHeight())
 				.withX(getX()).withY(getY());
@@ -103,9 +161,9 @@ public class TextElement implements Registry.KeySource, Tag.Factory {
 	 * Builds a text box for this element.
 	 * @return a Tag
 	 */
-	protected Tag buildTextElement() {
+	protected Tag drawTextElement() {
 		return Tag.textBox()
-				.withValues(getTextStyle()).with(buildTextSpan())
+				.withValues(getTextStyle()).with(drawTextSpan())
 				.withX(getOffsetX()).withY(getOffsetY());
 	}
 	
@@ -113,7 +171,7 @@ public class TextElement implements Registry.KeySource, Tag.Factory {
 	 * Builds a text span for this element.
 	 * @return a Tag
 	 */
-	protected Tag buildTextSpan() {
+	protected Tag drawTextSpan() {
 		return Tag.textSpan().withContent(getName())
 				.withX(getOffsetX()).withY(getOffsetY());
 	}
@@ -134,30 +192,74 @@ public class TextElement implements Registry.KeySource, Tag.Factory {
 		return 20;
 	}
 	
+	/**
+	 * The left edge of this element.
+	 * @return a position
+	 */
 	public int getLeft() {
 		return getX();
 	}
 	
-	public int getCenter() {
-		return getOffsetX();
+	public int getMarginLeft() {
+		return getLeft() - MarginOffset;
 	}
-	
+
+	/**
+	 * The center of this element.
+	 * @return a position
+	 */
+	public int getCenter() {
+		return getX() + (getWidth() / 2);
+	}
+
+	/**
+	 * The right edge of this element.
+	 * @return a position
+	 */
 	public int getRight() {
 		return getX() + getWidth();
 	}
 	
+	public int getMarginRight() {
+		return getRight() + MarginOffset;
+	}
+
+	/**
+	 * The top of this element.
+	 * @return a position
+	 */
 	public int getTop() {
 		return getY();
 	}
 	
+	public int getMarginTop() {
+		return getTop() - MarginOffset;
+	}
+	
+	/**
+	 * The middle of the element.
+	 * @return a position
+	 */
 	public int getMiddle() {
 		return getY() + (getHeight() / 2);
 	}
 	
+	/**
+	 * The bottom of this element.
+	 * @return a position
+	 */
 	public int getBottom() {
 		return getY() + getHeight();
 	}
 	
+	public int getMarginBottom() {
+		return getBottom() + MarginOffset;
+	}
+
+	/**
+	 * The text style of this element.
+	 * @return a Tag
+	 */
 	protected Tag getTextStyle() {
 		return TextStyle;
 	}

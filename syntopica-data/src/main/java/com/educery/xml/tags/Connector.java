@@ -1,5 +1,6 @@
 package com.educery.xml.tags;
 
+import java.util.*;
 
 /**
  * A connector between a pair of model elements.
@@ -11,6 +12,72 @@ package com.educery.xml.tags;
  * </ul>
  */
 public class Connector implements Tag.Factory {
+	
+	/**
+	 * An anchor staples a connector end point to the edge of an element.
+	 * 
+	 * <h4>Anchor Responsibilities:</h4>
+	 * <ul>
+	 * <li>knows a point of connection</li>
+	 * <li>knows the attached connectors</li>
+	 * </ul>
+	 */
+	public static class Anchor {
+		
+		private Point location = new Point();
+		private ArrayList<Connector> connectors = new ArrayList<Connector>();
+
+		/**
+		 * The connection point.
+		 * @param p a connection point
+		 */
+		public void setLocation(Point p) {
+			this.location.setX(p.getX());
+			this.location.setY(p.getY());
+		}
+		
+		/**
+		 * The connection point.
+		 */
+		public Point getLocation() {
+			return this.location;
+		}
+
+		/**
+		 * Indicates whether this anchor has any connectors.
+		 * @return whether this anchor has any connectors
+		 */
+		public boolean isEmpty() {
+			return this.connectors.isEmpty();
+		}
+
+		/**
+		 * A connector count.
+		 * @return a count
+		 */
+		public int count() {
+			return this.connectors.size();
+		}
+
+		/**
+		 * Adds connectors to this anshor.
+		 * @param c the connectors
+		 */
+		public void add(Connector ... c) {
+			this.connectors.addAll(Arrays.asList(c));
+		}
+		
+		/**
+		 * The connectors attached to this anchor.
+		 * @return the Connectors, or empty
+		 */
+		public Connector[] getConnectors() {
+			return this.connectors.stream().toArray(Connector[]::new);
+		}
+		
+	} // Anchor
+	
+//	private static final Log Logger = LogFactory.getLog(Connector.class);
 	
 	private static final String Points = "points";
 	
@@ -31,38 +98,68 @@ public class Connector implements Tag.Factory {
 	private Path path;
 	private String label = "";
 	private int headCount = 1;
-	private boolean filledHeads = false;
+	private boolean filledHeads = true;
+	
+	public static Connector named(String label) {
+		Connector result = new Connector();
+		result.label = label;
+		return result;
+	}
 	
 	/**
-	 * Returns a new Connector.
+	 * Connects to a pair of model elements.
 	 * @param elements the connected elements
-	 * @return a new Connector
+	 * @return this Connector
 	 */
-	public static Connector between(ModelElement ... elements) {
-		Point tip = Point.at(elements[0].getCenter(), elements[0].getTop());
-		Point end = Point.at(elements[1].getCenter(), elements[1].getBottom());
-		if (tip.getX() == end.getX()) return Connector.with(tip, end);
-
-		int testX = elements[0].getCenter() + 15;
-		if (testX > elements[1].getRight()) {
-			end = Point.at(elements[1].getRight(), elements[1].getMiddle());
-			Point p = Point.at(tip.getX(), end.getY());
-			return Connector.with(tip, p, end);
-		}
+	public Connector between(ModelElement ... elements) {
+		Point tip = elements[0].assignHead(elements[1].getPole());
+		Point end = elements[1].assignTail(elements[0].getPole());
 		
-		int halfY = ((tip.getY() - end.getY()) / 3) + end.getY();
-		Point p = Point.at(tip.getX(), halfY);
-		Point q = Point.at(end.getX(), halfY);
-		return Connector.with(tip, p, q, end);
+		Point delta = end.minus(tip);
+		Point norm = delta.signs().times(delta);
+		if (norm.getY() == 0 || norm.getX() == 0) {
+			this.path = Path.from(tip, end);
+			return this;
+		}
+
+		Edge head = elements[0].getBorder().getEdge(tip);
+		Edge tail = elements[1].getBorder().getEdge(end);
+		boolean headHoriz = head.getIndex().ordinal() < Edge.Index.Top.ordinal();
+		boolean tailHoriz = tail.getIndex().ordinal() < Edge.Index.Top.ordinal();
+		boolean opposites = headHoriz ^ tailHoriz;
+
+		if (opposites) {
+			Point mid = Point.at(tip.getX(), end.getY());
+			this.path = Path.from(tip, mid, end);
+		}
+		else {
+			int changeY = delta.getY() / 3;
+			int midY = tip.getY() + changeY;
+			Point p = Point.at(tip.getX(), midY);
+			Point q = Point.at(end.getX(), midY);
+			this.path = Path.from(tip, p, q, end);
+		}
+
+		return this;
 	}
+
 	/**
 	 * Returns a new Connector.
 	 * @param points the points that define a path for this connector
 	 * @return a new Connector
 	 */
 	public static Connector with(Point ... points) {
+		return Connector.with(Path.from(points));
+	}
+	
+	/**
+	 * Returns a new Connector.
+	 * @param path a path
+	 * @return a new Connector
+	 */
+	public static Connector with(Path path) {
 		Connector result = new Connector();
-		result.path = Path.from(points);
+		result.path = path;
 		return result;
 	}
 	
@@ -94,6 +191,11 @@ public class Connector implements Tag.Factory {
 		fillHeads(true);
 		return this;
 	}
+	
+	public Connector emptyHeads() {
+		fillHeads(false);
+		return this;
+	}
 
 	/**
 	 * Configures whether this connector has filled arrow heads.
@@ -107,30 +209,34 @@ public class Connector implements Tag.Factory {
 	
 	/** {@inheritDoc} */
 	@Override
-	public Tag buildElement() {
-		Tag result = Tag.graphic().with(buildSegmentedLine());
+	public Tag drawElement() {
+		Tag result = Tag.graphic().with(drawSegmentedLine());
 		for (int index = 0; index < this.headCount; index++) {
-			result.with(buildArrow(index));
+			result.with(drawArrow(index));
 		}
-		if (this.label.isEmpty()) return result;
-		return result.with(buildTextBox());
+		return (this.label.isEmpty() ? result : 
+				result.with(drawTextBox()));
 	}
 	
-	private Tag buildTextBox() {
-		Point[] head = getHead();
-		TextBox b = TextBox.named(this.label);
-		int bx = (head[0].getX() + head[1].getX() - b.getWidth()) / 2;
-		int by = (head[0].getY() + head[1].getY() - b.getHeight()) / 2;
-		b = b.withColor(White).at(bx, by);
-		return b.buildElement();
+	private Tag drawTextBox() {
+		Point[] segment = getTextSegment();
+		TextBox box = TextBox.named(this.label);
+		int bx = (segment[0].getX() + segment[1].getX() - box.getWidth()) / 2;
+		int by = (segment[0].getY() + segment[1].getY() - box.getHeight()) / 2;
+		box = box.withColor(White).at(bx, by);
+		return box.drawElement();
 	}
 	
-	private Tag buildSegmentedLine() {
+	private Point[] getTextSegment() {
+		return (this.path.length() < 4 ? getHead() : getTail());
+	}
+	
+	private Tag drawSegmentedLine() {
 		return Tag.polyline().withValues(LineStyle).with(Points, formatPath());
 	}
 	
-	private Tag buildArrow(int index) {
-		return Tag.polygon().with(Points, buildArrowTriangle(index).format()).withValues(getArrowStyle());
+	private Tag drawArrow(int index) {
+		return Tag.polygon().with(Points, drawArrowPath(index).format()).withValues(getArrowStyle());
 	}
 
 	private String formatPath() {
@@ -141,7 +247,7 @@ public class Connector implements Tag.Factory {
 		return (this.filledHeads ? FillStyle : LineStyle);
 	}
 	
-	private Path buildArrowTriangle(int index) {
+	private Path drawArrowPath(int index) {
 		return getOrientation().buildArrow(getHead(), index);
 	}
 	
@@ -150,19 +256,31 @@ public class Connector implements Tag.Factory {
 		return getOrientation().getTipOffset(this.headCount);
 	}
 
-	private Orientation getOrientation() {
-		return getPath().getOrientation();
+	private Direction getOrientation() {
+		return getPath().getDirection();
 	}
 
-	private Point[] getHead() {
+	public Point[] getHead() {
 		return getPath().getHead();
 	}
 	
-	private Point getTip() {
+	public Point[] getTail() {
+		return getPath().getTail();
+	}
+	
+	public Point getTip() {
 		return getPath().getTip();
 	}
 	
-	private Path getPath() {
+	public Point getEnd() {
+		return getPath().getEnd();
+	}
+	
+	/**
+	 * The path of this connector.
+	 * @return a Path
+	 */
+	public Path getPath() {
 		return this.path;
 	}
 

@@ -44,7 +44,7 @@ public class Tag implements Registry.KeySource {
 		 * Builds a new Tag.
 		 * @return a new Tag
 		 */
-		public Tag buildElement();
+		public Tag drawElement();
 
 	} // Factory
 
@@ -55,7 +55,7 @@ public class Tag implements Registry.KeySource {
 	private static final String LeftBracket = "<";
 	private static final String RightBracket = ">";
 	
-	private static final String Context = "svg";
+	private static final String Canvas = "svg";
 	private static final String Graphic = "g";
 	private static final String Italics = "i";
 	private static final String Anchor = "a";
@@ -76,28 +76,52 @@ public class Tag implements Registry.KeySource {
 	private ArrayList<String> names = new ArrayList<String>();
 	private HashMap<String, String> namedValues = new HashMap<String, String>();
 	
+	/**
+	 * Returns a new polyline Tag.
+	 * @return a new Tag
+	 */
 	public static Tag polyline() {
 		return Tag.named(Polyline);
 	}
 	
+	/**
+	 * Returns a new polygon Tag.
+	 * @return a new Tag
+	 */
 	public static Tag polygon() {
 		return Tag.named(Polygon);
 	}
 	
+	/**
+	 * Returns a new rectangle Tag.
+	 * @return a new Tag
+	 */
 	public static Tag rectangle() {
 		return Tag.named(Rectangle);
 	}
 	
+	/**
+	 * Returns a new text span Tag.
+	 * @return a new Tag
+	 */
 	public static Tag textSpan() {
 		return Tag.named(TextSpan);
 	}
 
+	/**
+	 * Returns a new text box Tag.
+	 * @return a new Tag
+	 */
 	public static Tag textBox() {
 		return Tag.named(Text);
 	}
 	
+	/**
+	 * Returns a new canvas Tag.
+	 * @return a new Tag
+	 */
 	public static Tag context() {
-		return Tag.named(Context);
+		return Tag.named(Canvas);
 	}
 
 	/**
@@ -284,12 +308,12 @@ public class Tag implements Registry.KeySource {
 	}
 	
 	/**
-	 * Adds a content tag to this element.
-	 * @param contentTag a content element
+	 * Adds some content elements to this element.
+	 * @param elements some content elements
 	 * @return this Tag
 	 */
-	public Tag with(Tag contentTag) {
-		this.contentTags.add(contentTag);
+	public Tag with(Tag ... elements) {
+		this.contentTags.addAll(Arrays.asList(elements));
 		return this;
 	}
 	

@@ -20,21 +20,49 @@ public class Path {
 	 * @param points the points that form a path
 	 * @return a new Path
 	 */
+	public static Path from(List<Point> points) {
+		if (points.size() < 2) return null;
+		Path result = new Path();
+		result.points.addAll(points);
+		return result;
+	}
+	
+	/**
+	 * Returns a new Path.
+	 * @param points the points that form a path
+	 * @return a new Path
+	 */
 	public static Path from(Point ... points) {
 		if (points.length < 2) return null;
-		Path result = new Path();
-		result.points.addAll(Arrays.asList(points));
-		return result;
+		return Path.from(Arrays.asList(points));
 	}
 	
 	private Path() { }
 	
 	/**
-	 * Returns the orientation of this path.
-	 * @return an Orientation
+	 * The length of this path.
+	 * @return a point count
 	 */
-	public Orientation getOrientation() {
-		return Orientation.of(this);
+	public int length() {
+		return this.points.size();
+	}
+	
+	/**
+	 * Returns a new Path which reverses this one.
+	 * @return a new Path
+	 */
+	public Path reverse() {
+		ArrayList<Point> results = new ArrayList<Point>(this.points);
+		Collections.reverse(results);
+		return Path.from(results);
+	}
+	
+	/**
+	 * Returns the overall direction of this path.
+	 * @return a Direction
+	 */
+	public Direction getDirection() {
+		return Direction.ofHead(this);
 	}
 	
 	/**
@@ -66,6 +94,10 @@ public class Path {
 		return this.points.get(0);
 	}
 	
+	public Point getEnd() {
+		return this.points.get(this.points.size() - 1);
+	}
+	
 	/**
 	 * Returns the initial (head) segment of this path.
 	 * @return a (initial) pair of points
@@ -83,6 +115,10 @@ public class Path {
 		int last = this.points.size() - 1;
 		int[] spots = { last, last - 1 };
 		return getSpots(spots);
+	}
+	
+	public Point[] getPoints() {
+		return this.points.stream().toArray(Point[]::new);
 	}
 	
 	/**

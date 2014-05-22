@@ -33,6 +33,13 @@ public class TextBox extends TextElement implements Tag.Factory {
 		;
 	
 	/**
+	 * Constructs a new TextBox.
+	 */
+	private TextBox() {
+		super();
+	}
+	
+	/**
 	 * Returns a new TextBox.
 	 * @param name a text box name
 	 * @return a new TextBox
@@ -60,8 +67,7 @@ public class TextBox extends TextElement implements Tag.Factory {
 	 * @return this TextBox
 	 */
 	public TextBox at(int x, int y) {
-		this.location[0] = x;
-		this.location[1] = y;
+		this.location = Point.at(x, y);
 		return this;
 	}
 	

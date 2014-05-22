@@ -5,16 +5,16 @@ import java.util.ArrayList;
 import com.educery.utils.Registry;
 
 /**
- * A graphics context. This represents a SVG viewbox.
+ * A drawing canvas. This represents a SVG viewbox.
  * 
- * <h4>GraphicsContext Responsibilities:</h4>
+ * <h4>Canvas Responsibilities:</h4>
  * <ul>
  * <li>knows a location and view box</li>
  * <li>knows / contains some elements</li>
- * <li>draws the contents of a graphic diagram in SVG</li>
+ * <li>draws a diagram using SVG</li>
  * </ul>
  */
-public class GraphicsContext implements Registry.KeySource, Tag.Factory {
+public class Canvas implements Registry.KeySource, Tag.Factory {
 	
 	private static final String Measure = "cm";
 	private static final String Viewbox = "viewbox";
@@ -27,26 +27,26 @@ public class GraphicsContext implements Registry.KeySource, Tag.Factory {
 	private ArrayList<Tag.Factory> elements = new ArrayList<Tag.Factory>();
 	
 	/**
-	 * Returns a new GraphicsContext.
+	 * Returns a new Canvas.
 	 * @param width a width
 	 * @param height a height
-	 * @return a new GraphicsContext
+	 * @return a new Canvas
 	 */
-	public static GraphicsContext with(int width, int height) {
-		GraphicsContext result = new GraphicsContext();
+	public static Canvas with(int width, int height) {
+		Canvas result = new Canvas();
 		result.width = width;
 		result.height = height;
 		return result;
 	}
 	
-	private GraphicsContext() { }
+	private Canvas() { }
 	
 	/**
-	 * Configures this context with a view box.
+	 * Configures this canvas with a view box.
 	 * @param viewbox a view box
-	 * @return this GraphicsContext
+	 * @return this Canvas
 	 */
-	public GraphicsContext with(int[] viewbox) {
+	public Canvas with(int[] viewbox) {
 		if (viewbox.length == 4) {
 			for (int index = 0; index < 4; index++) {
 				this.viewbox[index] = viewbox[index];
@@ -56,11 +56,11 @@ public class GraphicsContext implements Registry.KeySource, Tag.Factory {
 	}
 	
 	/**
-	 * Adds an element to this context.
-	 * @param element an element
-	 * @return this GraphicsContext
+	 * Adds some element(s) to this canvas.
+	 * @param elements some element(s)
+	 * @return this Canvas
 	 */
-	public GraphicsContext with(Tag.Factory ... elements) {
+	public Canvas with(Tag.Factory ... elements) {
 		for (Tag.Factory element : elements) {
 			this.elements.add(element);
 		}
@@ -75,15 +75,15 @@ public class GraphicsContext implements Registry.KeySource, Tag.Factory {
 	
 	/** {@inheritDoc} */
 	@Override
-	public Tag buildElement() {
-		Tag result = buildSVG();		
+	public Tag drawElement() {
+		Tag result = buildContext();		
 		for (Tag.Factory element : this.elements) {
-			result.with(element.buildElement());
+			result.with(element.drawElement());
 		}
 		return result;
 	}
 	
-	private Tag buildSVG() {
+	private Tag buildContext() {
 		return Tag.context()
 				.withWidth(this.width + Measure)
 				.withHeight(this.height + Measure)
@@ -99,4 +99,4 @@ public class GraphicsContext implements Registry.KeySource, Tag.Factory {
 				this.viewbox[3];
 	}
 
-} // GraphicsContext
+} // Canvas
