@@ -1,4 +1,4 @@
-package com.educery.xml.tags;
+package com.educery.graphics;
 
 /**
  * A 2-dimensional point.

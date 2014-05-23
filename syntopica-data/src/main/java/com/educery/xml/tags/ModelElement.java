@@ -1,5 +1,8 @@
 package com.educery.xml.tags;
 
+import com.educery.graphics.Direction;
+import com.educery.graphics.Point;
+
 /**
  * A model element. These represent a named rectangle in a model diagram.
  * 

@@ -1,5 +1,7 @@
 package com.educery.xml.tags;
 
+import com.educery.graphics.Point;
+
 /**
  * A text box. A text box labels and describes a connector (arrow) that appears in a model diagram.
  * 

@@ -2,8 +2,8 @@ package com.educery.concept.models;
 
 import java.io.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+//import org.apache.commons.logging.Log;
+//import org.apache.commons.logging.LogFactory;
 import org.junit.*;
 
 import com.educery.xml.tags.*;
@@ -13,7 +13,7 @@ import com.educery.xml.tags.*;
  */
 public class ModelTest {
 
-	private static final Log Logger = LogFactory.getLog(ModelTest.class);
+//	private static final Log Logger = LogFactory.getLog(ModelTest.class);
 	private static final String Cyan = "#add8e6";
 	private static final String Grey = "#bfbfbf";
 	private static final String Bluish = "#d8e5e5";
@@ -69,12 +69,6 @@ public class ModelTest {
 		activity.addTails(produces, producesFor);
 		business.addHeads(produces);
 		value.addHeads(producesFor);
-		
-//		Connector ef = Connector.between(feature, expector).withHeads(1).fillHeads(true).withLabel("uses");
-//		Connector ea = Connector.between(activity, expector).withHeads(1).fillHeads(true).withLabel("performs");
-//		Connector fa = Connector.between(activity, feature).withHeads(1).fillHeads(true).withLabel("improves");
-//		Connector va = Connector.between(value, activity).withHeads(1).fillHeads(true).withLabel("produces");
-//		Connector ba = Connector.between(business, activity).withHeads(1).fillHeads(false).withLabel("for");
 
 		int[] viewbox = { 10, 10, 500, 500 };
 		Tag.Factory[] tags = { 

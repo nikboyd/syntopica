@@ -1,6 +1,7 @@
 package com.educery.xml.tags;
 
 import java.util.*;
+import com.educery.graphics.*;
 
 /**
  * A connector between a pair of model elements.
@@ -100,6 +101,11 @@ public class Connector implements Tag.Factory {
 	private int headCount = 1;
 	private boolean filledHeads = true;
 	
+	/**
+	 * Returns a new Connector.
+	 * @param label a label
+	 * @return a new Connector
+	 */
 	public static Connector named(String label) {
 		Connector result = new Connector();
 		result.label = label;
@@ -192,6 +198,10 @@ public class Connector implements Tag.Factory {
 		return this;
 	}
 	
+	/**
+	 * Makes this connector have empty arrow heads.
+	 * @return this Connector
+	 */
 	public Connector emptyHeads() {
 		fillHeads(false);
 		return this;
@@ -248,30 +258,46 @@ public class Connector implements Tag.Factory {
 	}
 	
 	private Path drawArrowPath(int index) {
-		return getOrientation().buildArrow(getHead(), index);
+		return getDirection().buildArrow(getHead(), index);
 	}
 	
 	private Point headAdjustment() {
 		if (filledHeads) return Point.at(0, 0);
-		return getOrientation().getTipOffset(this.headCount);
+		return getDirection().getTipOffset(this.headCount);
 	}
 
-	private Direction getOrientation() {
+	private Direction getDirection() {
 		return getPath().getDirection();
 	}
 
+	/**
+	 * Returns the head of this connector.
+	 * @return a path segment
+	 */
 	public Point[] getHead() {
 		return getPath().getHead();
 	}
 	
+	/**
+	 * Returns the tail of this connector.
+	 * @return a path segment
+	 */
 	public Point[] getTail() {
 		return getPath().getTail();
 	}
 	
+	/**
+	 * Returns the tip of this connector.
+	 * @return a Point
+	 */
 	public Point getTip() {
 		return getPath().getTip();
 	}
 	
+	/**
+	 * Returns the end of this connector.
+	 * @return a Point
+	 */
 	public Point getEnd() {
 		return getPath().getEnd();
 	}

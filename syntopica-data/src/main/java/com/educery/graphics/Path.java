@@ -1,4 +1,4 @@
-package com.educery.xml.tags;
+package com.educery.graphics;
 
 import java.util.*;
 
@@ -62,7 +62,7 @@ public class Path {
 	 * @return a Direction
 	 */
 	public Direction getDirection() {
-		return Direction.ofHead(this);
+		return Direction.of(getHead());
 	}
 	
 	/**
@@ -93,7 +93,11 @@ public class Path {
 	public Point getTip() {
 		return this.points.get(0);
 	}
-	
+
+	/**
+	 * Returns the end of this path.
+	 * @return a Point
+	 */
 	public Point getEnd() {
 		return this.points.get(this.points.size() - 1);
 	}
@@ -117,6 +121,10 @@ public class Path {
 		return getSpots(spots);
 	}
 	
+	/**
+	 * Returns the points that form this path.
+	 * @return some Points
+	 */
 	public Point[] getPoints() {
 		return this.points.stream().toArray(Point[]::new);
 	}

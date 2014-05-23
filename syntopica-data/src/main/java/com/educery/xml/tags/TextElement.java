@@ -1,5 +1,6 @@
 package com.educery.xml.tags;
 
+import com.educery.graphics.Point;
 import com.educery.utils.Registry;
 import com.educery.xml.tags.Edge.Index;
 import com.educery.xml.tags.Edge.Border;
