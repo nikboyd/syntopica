@@ -1,9 +1,10 @@
-package com.educery.xml.tags;
+package com.educery.tags;
 
 import com.educery.graphics.Point;
+import com.educery.tags.Edge.Border;
+import com.educery.tags.Edge.Index;
 import com.educery.utils.Registry;
-import com.educery.xml.tags.Edge.Index;
-import com.educery.xml.tags.Edge.Border;
+import com.educery.utils.Tag;
 
 /**
  * Describes an element that contains text in a box (rectangle).

@@ -1,8 +1,9 @@
-package com.educery.xml.tags;
+package com.educery.tags;
 
 import java.util.ArrayList;
 
 import com.educery.utils.Registry;
+import com.educery.utils.Tag;
 
 /**
  * A drawing canvas. This represents a SVG viewbox.

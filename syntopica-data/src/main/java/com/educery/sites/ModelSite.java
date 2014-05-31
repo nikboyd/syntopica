@@ -1,15 +1,15 @@
-package com.educery.concept.models;
+package com.educery.sites;
 
 import java.io.*;
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.*;
+import freemarker.template.*;
 
-import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapper;
-import freemarker.template.Template;
-import freemarker.template.TemplateExceptionHandler;
+import com.educery.concepts.*;
+import com.educery.graphics.Point;
+import com.educery.tags.*;
+import com.educery.utils.Tag;
 
 /**
  * Generates a web site from a domain model.
@@ -91,6 +91,7 @@ public class ModelSite {
 		HashMap<String, Object> rootMap = new HashMap<String, Object>();
 		rootMap.put("topic", topic);
 		rootMap.put("domain", Domain.getCurrentDomain());
+		rootMap.put("diagram", buildDiagram(topic));
 		
 		try {
 			File pageFile = new File(this.pageFolder, topic.getLinkFileName());
@@ -100,6 +101,58 @@ public class ModelSite {
 		catch (Exception e ) {
 			Logger.error(e.getMessage(), e);
 		}
+	}
+	
+	public String buildDiagram(Topic topic) {
+		int[] viewbox = { 10, 10, 500, 500 };
+		Tag.Factory[] tags = buildTags(topic.getFacts()[0]);
+		Canvas canvas = Canvas.with(12, 13).with(viewbox).with(tags);
+		return canvas.drawElement().format();
+	}
+	
+	private Tag.Factory[] buildTags(Fact fact) {
+		ModelElement[] elements = buildModels(fact);
+		Connector[] connectors = buildConnectors(fact.getPredicate(), elements);
+		ArrayList<Tag.Factory> results = new ArrayList<>();
+		results.addAll(Arrays.asList(elements));
+		results.addAll(Arrays.asList(connectors));
+		return results.stream().toArray(Tag.Factory[]::new);
+	}
+
+	private Connector[] buildConnectors(Selector factSelector, ModelElement[] elements) {
+		if (elements.length < 2) return new Connector[0];
+		String[] labels = factSelector.getParts();
+		Connector[] results = new Connector[labels.length];
+		for (int index = 0; index < labels.length; index++) {
+			results[index] = Connector.named(labels[index]);
+			if (index > 0) results[index].emptyHeads();
+			if (index < elements.length - 1) {
+				results[index].between(elements[index + 1], elements[0]);
+			}
+		}
+		elements[0].addTails(results);
+		for (int index = 0; index < results.length; index++) {
+			elements[index + 1].addHeads(results[index]);
+		}
+		return results;
+	}
+	
+	private ModelElement[] buildModels(Fact fact) {
+		Point p = Point.at(50, 50);
+		String[] topics = fact.getTopics();
+		ModelElement[] results = new ModelElement[topics.length];
+		for (int index = 0; index < topics.length; index++) {
+			results[index] = ModelElement.named(topics[index]);
+			if (index > 0) {
+				Point delta = Point.at(index * 160, 0);
+				results[index].withGrey().at(p.plus(delta));
+			}
+			else {
+				results[index].withCyan().at(p);
+				p = p.plus(Point.at(-20, 150));
+			}
+		}
+		return results;
 	}
 
 	private Template getTemplate(String templateName) throws Exception {

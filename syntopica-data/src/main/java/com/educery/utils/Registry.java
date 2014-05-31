@@ -48,6 +48,7 @@ public class Registry<ItemType extends Registry.KeySource> {
 
 	} // KeySource
 
+	private ArrayList<String> order = new ArrayList<String>();
 	private HashMap<String, ItemType> items = new HashMap<String, ItemType>();	
 	private Registry() { } // prevent external construction
 	
@@ -89,6 +90,7 @@ public class Registry<ItemType extends Registry.KeySource> {
 		String key = item.getKey().trim();
 		if (!this.items.containsKey(key)) {
 			this.items.put(key, item);
+			this.order.add(key);
 		}
 		return getItem(key);
 	}
@@ -103,6 +105,7 @@ public class Registry<ItemType extends Registry.KeySource> {
 			return;
 		}
 
+		this.order.remove(item.getKey().trim());
 		this.items.remove(item.getKey().trim());
 	}
 
@@ -120,6 +123,7 @@ public class Registry<ItemType extends Registry.KeySource> {
 	 */
 	public void clear() {
 		this.items.clear();
+		this.order.clear();
 	}
 	
 	/**
@@ -153,7 +157,11 @@ public class Registry<ItemType extends Registry.KeySource> {
 	 * @return the items
 	 */
 	public List<ItemType> getItems() {
-		return new ArrayList<ItemType>(this.items.values());
+		ArrayList<ItemType> results = new ArrayList<ItemType>();
+		for (String key : this.order) {
+			results.add(this.items.get(key));
+		}
+		return results;
 	}
 	
 	private void reportMissingItem(String itemKey) {

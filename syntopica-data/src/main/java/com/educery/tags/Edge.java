@@ -1,21 +1,17 @@
-package com.educery.xml.tags;
+package com.educery.tags;
 
 import java.util.*;
 
 import com.educery.graphics.Point;
-import com.educery.xml.tags.Connector.Anchor;
+import com.educery.tags.Connector.Anchor;
 
 /**
  * An edge of a model element (rectangle). Each edge contains three anchors.
  * 
  * <h4>Edge Responsibilities:</h4>
  * <ul>
- * <li></li>
- * </ul>
- *
- * <h4>Client Responsibilities:</h4>
- * <ul>
- * <li></li>
+ * <li>knows its three anchors and their locations</li>
+ * <li>assigns the best available anchor to each connection</li>
  * </ul>
  * 
  * @see Anchor
@@ -30,6 +26,8 @@ public class Edge {
 	 * <li>knows its four edges and their locations</li>
 	 * <li>assigns the best available anchor to each connection</li>
 	 * </ul>
+	 * 
+	 * @see Edge
 	 */
 	public static class Border {
 		

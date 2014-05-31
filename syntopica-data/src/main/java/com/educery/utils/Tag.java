@@ -1,8 +1,6 @@
-package com.educery.xml.tags;
+package com.educery.utils;
 
 import java.util.*;
-
-import com.educery.utils.Registry;
 
 /**
  * Represents an X/HTML element and its contents.

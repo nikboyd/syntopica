@@ -1,4 +1,4 @@
-package com.educery.concept.models;
+package com.educery.concepts;
 
 import java.util.*;
 
@@ -7,7 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.educery.utils.Registry;
-import com.educery.xml.tags.Tag;
+import com.educery.utils.Tag;
 
 /**
  * Describes a topic and its associations.
@@ -124,6 +124,10 @@ public class Topic implements Registry.KeySource {
 			return (VowelList.contains(first) ? Articles[1] : Articles[0] );
 		}
 		
+		/**
+		 * Indicates whether this number is plural.
+		 * @return whether this number is plural
+		 */
 		public boolean isPlural() {
 			return this == PluralNumber;
 		}

@@ -1,4 +1,4 @@
-package com.educery.concept.models;
+package com.educery.concepts;
 
 import java.util.*;
 
@@ -165,6 +165,11 @@ public class Selector implements Registry.KeySource {
 		return Fact.with(this).with(subject).with(topics);
 	}
 	
+	/**
+	 * Returns a new Fact from this predication.
+	 * @param topics the topics associated by this predicate
+	 * @return a new Fact
+	 */
 	public Fact buildFact(List<String> topics) {
 		Domain.register(this);
 		return Fact.with(this).with(topics);

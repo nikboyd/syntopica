@@ -1,4 +1,4 @@
-package com.educery.concept.models;
+package com.educery.concepts;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.educery.concept.models.Topic.Number;
+import com.educery.concepts.Topic.Number;
 import com.educery.utils.Registry;
-import com.educery.xml.tags.Tag;
+import com.educery.utils.Tag;
 
 /**
  * Expresses a statement of fact.

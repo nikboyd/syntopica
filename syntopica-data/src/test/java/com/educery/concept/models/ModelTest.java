@@ -6,7 +6,9 @@ import java.io.*;
 //import org.apache.commons.logging.LogFactory;
 import org.junit.*;
 
-import com.educery.xml.tags.*;
+import com.educery.sites.ModelSite;
+import com.educery.tags.*;
+import com.educery.utils.Tag;
 
 /**
  * Generates model pages from a sample model.

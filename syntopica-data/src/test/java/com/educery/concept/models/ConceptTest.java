@@ -3,6 +3,13 @@ package com.educery.concept.models;
 import java.util.*;
 
 import org.junit.*;
+
+import com.educery.concepts.Domain;
+import com.educery.concepts.Fact;
+import com.educery.concepts.FactReader;
+import com.educery.concepts.Selector;
+import com.educery.concepts.Topic;
+
 import static org.junit.Assert.*;
 
 @Ignore

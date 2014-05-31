@@ -4,15 +4,15 @@ improvement = feature improves: activities for: business.
 governor governs: business.
 governor serves: business as: source of: vision, mission, values.
 
-requestor oversees: activities for: business.
 requestor requests: improvements in: activity.
+requestor oversees: activities for: business.
 requestor serves: business as: source of: improvements, purposes.
 
+expector expects: improvements in: activity for: business.
 expector performs: activities for: business.
 expector uses: features of: solution.
 expector requests: actions of: components through: dialogs.
 expector requests: values from: components through: dialogs.
-expector expects: improvements in: activity for: business.
 expector serves: business as: source of: features.
 
 developer designs: component, dialog, interface.

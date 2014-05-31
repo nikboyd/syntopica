@@ -1,7 +1,8 @@
-package com.educery.xml.tags;
+package com.educery.tags;
 
 import com.educery.graphics.Direction;
 import com.educery.graphics.Point;
+import com.educery.utils.Tag;
 
 /**
  * A model element. These represent a named rectangle in a model diagram.
@@ -20,9 +21,13 @@ import com.educery.graphics.Point;
  */
 public class ModelElement extends TextElement implements Tag.Factory {
 	
-	public static int Width = 140;
-	public static int Height = 44;
-	private static int[] Offsets = { Width / 2, Height / 2 + 5 };
+	public  static final int Width = 140;
+	public  static final int Height = 44;
+	private static final int[] Offsets = { Width / 2, Height / 2 + 5 };
+
+	private static final String Cyan = "#add8e6";
+	private static final String Grey = "#bfbfbf";
+	private static final String Bluish = "#d8e5e5";
 	
 	// styling for a SVG text rectangle
 	private static Tag RectangleBase =
@@ -52,6 +57,18 @@ public class ModelElement extends TextElement implements Tag.Factory {
 		result.name = name;
 		return result;
 	}
+	
+	public ModelElement withGrey() {
+		return this.withColor(Grey);
+	}
+	
+	public ModelElement withCyan() {
+		return this.withColor(Cyan);
+	}
+	
+	public ModelElement withBlue() {
+		return this.withColor(Bluish);
+	}
 
 	/**
 	 * Configures this model element with a color.
@@ -71,6 +88,11 @@ public class ModelElement extends TextElement implements Tag.Factory {
 	 */
 	public ModelElement at(int x, int y) {
 		setLocation(Point.at(x, y));
+		return this;
+	}
+	
+	public ModelElement at(Point p) {
+		setLocation(p);
 		return this;
 	}
 		

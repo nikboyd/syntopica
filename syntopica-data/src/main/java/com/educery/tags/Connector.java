@@ -1,7 +1,9 @@
-package com.educery.xml.tags;
+package com.educery.tags;
 
 import java.util.*;
+
 import com.educery.graphics.*;
+import com.educery.utils.Tag;
 
 /**
  * A connector between a pair of model elements.
