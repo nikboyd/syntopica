@@ -112,16 +112,17 @@ public class ModelSite {
 	
 	private Tag.Factory[] buildTags(Fact fact) {
 		ModelElement[] elements = buildModels(fact);
-		Connector[] connectors = buildConnectors(fact.getPredicate(), elements);
+		Connector[] connectors = buildConnectors(fact, elements);
 		ArrayList<Tag.Factory> results = new ArrayList<>();
 		results.addAll(Arrays.asList(elements));
 		results.addAll(Arrays.asList(connectors));
 		return results.stream().toArray(Tag.Factory[]::new);
 	}
 
-	private Connector[] buildConnectors(Selector factSelector, ModelElement[] elements) {
+	private Connector[] buildConnectors(Fact fact, ModelElement[] elements) {
 		if (elements.length < 2) return new Connector[0];
-		String[] labels = factSelector.getParts();
+		String[] topics = fact.getTopics();
+		String[] labels = fact.getPredicate().getParts();
 		Connector[] results = new Connector[labels.length];
 		for (int index = 0; index < labels.length; index++) {
 			results[index] = Connector.named(labels[index]);
@@ -132,24 +133,25 @@ public class ModelSite {
 		}
 		elements[0].addTails(results);
 		for (int index = 0; index < results.length; index++) {
-			elements[index + 1].addHeads(results[index]);
+			int headCount = (Topic.getNumber(topics[index + 1]).isPlural() ? 2 : 1);
+			elements[index + 1].addHeads(results[index].withHeads(headCount));
 		}
 		return results;
 	}
 	
 	private ModelElement[] buildModels(Fact fact) {
-		Point p = Point.at(50, 50);
-		String[] topics = fact.getTopics();
-		ModelElement[] results = new ModelElement[topics.length];
-		for (int index = 0; index < topics.length; index++) {
-			results[index] = ModelElement.named(topics[index]);
+		Point p = Point.at(10, 10);
+		List<String> topics = fact.getRelatedSubjects();
+		ModelElement[] results = new ModelElement[topics.size()];
+		for (int index = 0; index < results.length; index++) {
+			results[index] = ModelElement.named(topics.get(index));
 			if (index > 0) {
-				Point delta = Point.at(index * 160, 0);
+				Point delta = Point.at(0, index * 100);
 				results[index].withGrey().at(p.plus(delta));
 			}
 			else {
 				results[index].withCyan().at(p);
-				p = p.plus(Point.at(-20, 150));
+				p = p.plus(Point.at(220, 0));
 			}
 		}
 		return results;

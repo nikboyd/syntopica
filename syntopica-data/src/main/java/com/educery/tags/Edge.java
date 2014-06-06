@@ -119,12 +119,19 @@ public class Edge {
 		 * @return an anchor Point
 		 */
 		public Point assignHead(Point tip, Point end) {
-			Edge edge = getBestEdge(tip, end);
-			if (edge.accepts(tip, end)) {
-				return edge.assign(tip, end);
+			Point delta = end.minus(tip);
+			int deltaY = delta.getY();
+			if (deltaY < 0) deltaY = 0 - deltaY;
+
+			if (deltaY < OptimalY) {
+				Edge edge = getBestEdge(tip, end);
+				if (edge.accepts(tip, end)) {
+					return edge.assign(tip, end);
+				}
 			}
+
 			
-			edge = getNextEdge(tip, end);
+			Edge edge = getNextEdge(tip, end);
 			if (edge.accepts(tip, end)) {
 				return edge.assign(tip, end);
 			}
@@ -195,7 +202,7 @@ public class Edge {
 
 	private static final int Center = 1;
 	private static final int Anchors = 3;
-	static final int OptimalY = 4 * ModelElement.Height;
+	static final int OptimalY = 2 * ModelElement.Height;
 	
 	private static final Index[] BestIndex = {
 		Index.Top, Index.Top, Index.Top,

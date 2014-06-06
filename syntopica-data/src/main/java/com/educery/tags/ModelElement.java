@@ -1,6 +1,5 @@
 package com.educery.tags;
 
-import com.educery.graphics.Direction;
 import com.educery.graphics.Point;
 import com.educery.utils.Tag;
 
@@ -58,14 +57,26 @@ public class ModelElement extends TextElement implements Tag.Factory {
 		return result;
 	}
 	
+	/**
+	 * Colors this element grey.
+	 * @return this ModelElement
+	 */
 	public ModelElement withGrey() {
 		return this.withColor(Grey);
 	}
 	
+	/**
+	 * Colors this element cyan.
+	 * @return this ModelElement
+	 */
 	public ModelElement withCyan() {
 		return this.withColor(Cyan);
 	}
 	
+	/**
+	 * Colors this element blue.
+	 * @return this ModelElement
+	 */
 	public ModelElement withBlue() {
 		return this.withColor(Bluish);
 	}
@@ -91,24 +102,35 @@ public class ModelElement extends TextElement implements Tag.Factory {
 		return this;
 	}
 	
+	/**
+	 * Locates this element at a point.
+	 * @param p a point
+	 * @return this ModelElement
+	 */
 	public ModelElement at(Point p) {
 		setLocation(p);
 		return this;
 	}
-		
-	/**
-	 * An offset x position.
-	 * @return a position
-	 */
+	
+	/** {@inheritDoc} */
+	@Override
+	public int getWidth() {
+		return Width;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int getHeight() {
+		return Height;
+	}
+
+	/** {@inheritDoc} */
 	@Override
 	public int getOffsetX() {
 		return getX() + Offsets[0];
 	}
 	
-	/**
-	 * An offset y position.
-	 * @return a position
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public int getOffsetY() {
 		return getY() + Offsets[1];
@@ -132,20 +154,6 @@ public class ModelElement extends TextElement implements Tag.Factory {
 	private Tag drawUnfilledRectangle() {
 		return Tag.rectangle().withValues(RectangleBase)
 				.withX(getX()).withY(getY());
-	}
-	
-	@Override
-	public int getWidth() {
-		return Width;
-	}
-
-	@Override
-	public int getHeight() {
-		return Height;
-	}
-	
-	public Direction pathOrientation(ModelElement element) {
-		return Direction.RightWard;
 	}
 
 } // ModelElement

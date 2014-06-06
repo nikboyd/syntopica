@@ -86,6 +86,16 @@ public class Point {
 	public void setY(int y) {
 		this.positions[1] = y;
 	}
+	
+	/**
+	 * Computes a division.
+	 * @param factor a factor
+	 * @return a new Point
+	 */
+	public Point reduced(int factor) {
+		if (factor == 0) return new Point();
+		return Point.at(getX() / factor, getY() / factor);
+	}
 
 	/**
 	 * Computes a product.

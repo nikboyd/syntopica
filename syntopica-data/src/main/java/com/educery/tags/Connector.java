@@ -137,8 +137,14 @@ public class Connector implements Tag.Factory {
 		boolean opposites = headHoriz ^ tailHoriz;
 
 		if (opposites) {
-			Point mid = Point.at(tip.getX(), end.getY());
-			this.path = Path.from(tip, mid, end);
+			if (tailHoriz) {
+				Point mid = Point.at(tip.getX(), end.getY());
+				this.path = Path.from(tip, mid, end);
+			}
+			else {
+				Point mid = Point.at(end.getX(), tip.getY());
+				this.path = Path.from(tip, mid, end);
+			}
 		}
 		else {
 			int changeY = delta.getY() / 3;
@@ -218,59 +224,6 @@ public class Connector implements Tag.Factory {
 		this.filledHeads = filledHeads;
 		return this;
 	}
-	
-	/** {@inheritDoc} */
-	@Override
-	public Tag drawElement() {
-		Tag result = Tag.graphic().with(drawSegmentedLine());
-		for (int index = 0; index < this.headCount; index++) {
-			result.with(drawArrow(index));
-		}
-		return (this.label.isEmpty() ? result : 
-				result.with(drawTextBox()));
-	}
-	
-	private Tag drawTextBox() {
-		Point[] segment = getTextSegment();
-		TextBox box = TextBox.named(this.label);
-		int bx = (segment[0].getX() + segment[1].getX() - box.getWidth()) / 2;
-		int by = (segment[0].getY() + segment[1].getY() - box.getHeight()) / 2;
-		box = box.withColor(White).at(bx, by);
-		return box.drawElement();
-	}
-	
-	private Point[] getTextSegment() {
-		return (this.path.length() < 4 ? getHead() : getTail());
-	}
-	
-	private Tag drawSegmentedLine() {
-		return Tag.polyline().withValues(LineStyle).with(Points, formatPath());
-	}
-	
-	private Tag drawArrow(int index) {
-		return Tag.polygon().with(Points, drawArrowPath(index).format()).withValues(getArrowStyle());
-	}
-
-	private String formatPath() {
-		return getPath().withHead(getTip().plus(headAdjustment())).format();
-	}
-	
-	private Tag getArrowStyle() {
-		return (this.filledHeads ? FillStyle : LineStyle);
-	}
-	
-	private Path drawArrowPath(int index) {
-		return getDirection().buildArrow(getHead(), index);
-	}
-	
-	private Point headAdjustment() {
-		if (filledHeads) return Point.at(0, 0);
-		return getDirection().getTipOffset(this.headCount);
-	}
-
-	private Direction getDirection() {
-		return getPath().getDirection();
-	}
 
 	/**
 	 * Returns the head of this connector.
@@ -310,6 +263,69 @@ public class Connector implements Tag.Factory {
 	 */
 	public Path getPath() {
 		return this.path;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public Tag drawElement() {
+		Tag result = Tag.graphic().with(drawSegmentedLine());
+		for (int index = 0; index < getHeadCount(); index++) {
+			result.with(drawArrow(index));
+		}
+		return (this.label.isEmpty() ? result : 
+				result.with(drawTextBox()));
+	}
+	
+	private Tag drawTextBox() {
+		Point[] segment = getTextSegment();
+		TextBox box = TextBox.named(this.label);
+		int bx = (segment[0].getX() + segment[1].getX() - box.getWidth()) / 2;
+		int by = (segment[0].getY() + segment[1].getY() - box.getHeight()) / 2;
+		Point boxOrigin = Point.at(bx, by);
+		if (getHeadCount() > 1) {
+			Point offset = Direction.of(segment).getTipOffset(getHeadCount());
+			boxOrigin = boxOrigin.plus(offset.reduced(3));
+		}
+		box = box.withColor(White).at(boxOrigin);
+		return box.drawElement();
+	}
+	
+	private Point[] getTextSegment() {
+		return (this.path.length() < 4 ? getHead() : getTail());
+	}
+	
+	private Tag drawSegmentedLine() {
+		return Tag.polyline().withValues(LineStyle).with(Points, formatPath());
+	}
+	
+	private Tag drawArrow(int index) {
+		return Tag.polygon().with(Points, drawArrowPath(index).format()).withValues(getArrowStyle());
+	}
+
+	private String formatPath() {
+		Point offset = headAdjustment();
+		return getPath().withHead(getTip().plus(offset)).format();
+	}
+	
+	private Tag getArrowStyle() {
+		return (this.filledHeads ? FillStyle : LineStyle);
+	}
+	
+	private Path drawArrowPath(int index) {
+		return getDirection().buildArrow(getHead(), index);
+	}
+	
+	private Point headAdjustment() {
+		if (filledHeads) return Point.at(0, 0);
+		return getDirection().getTipOffset(getHeadCount());
+	}
+	
+	private int getHeadCount() {
+		return this.headCount;
+	}
+
+	private Direction getDirection() {
+		return getPath().getDirection();
 	}
 
 } // Connector

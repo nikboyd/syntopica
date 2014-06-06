@@ -144,6 +144,16 @@ public class Topic implements Registry.KeySource {
 	private Registry<Fact> facts = Registry.empty();
 	
 	/**
+	 * Returns an appropriate Number given a subject.
+	 * @param subject a subject
+	 * @return a Number
+	 */
+	public static Number getNumber(String subject) {
+		String singular = Number.convertToSingular(subject);
+		return Number.getNumber(!singular.equals(subject));
+	}
+	
+	/**
 	 * Returns a list of topic names extracted from a comma-separated list.
 	 * @param topicNames a comma-separated list
 	 * @return a list of topic names
@@ -159,7 +169,7 @@ public class Topic implements Registry.KeySource {
 	 */
 	public static Topic named(String title) {
 		Topic result = new Topic();
-		result.title = title.trim();
+		result.title = Number.convertToSingular(title);
 		return result;
 	}
 	

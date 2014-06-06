@@ -11,7 +11,7 @@ package com.educery.graphics;
 public class Direction {
 
 	private static final int CornerLeg = 10;
-	private static final int CornerBar = 15;
+	public static final int CornerBar = 15;
 	
 	private static final Point HeadOffset = Point.at(CornerBar, 0);
 	private static final Point HeadCorner = Point.at(CornerBar, CornerLeg);

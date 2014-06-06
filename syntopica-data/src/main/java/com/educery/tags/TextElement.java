@@ -51,10 +51,19 @@ public class TextElement implements Registry.KeySource, Tag.Factory {
 		this.border.locate(origin, Point.at(getWidth(), getHeight()));
 	}
 	
+	/**
+	 * Returns the indicated edge.
+	 * @param index an edge index
+	 * @return an Edge
+	 */
 	public Edge getEdge(Index index) {
 		return getBorder().getEdge(index);
 	}
 	
+	/**
+	 * Returns the border of this element.
+	 * @return a Border
+	 */
 	public Border getBorder() {
 		return this.border;
 	}
@@ -83,22 +92,44 @@ public class TextElement implements Registry.KeySource, Tag.Factory {
 		return this.location;
 	}
 	
+	/**
+	 * Adds the heads of the supplied connectors to the border of this element.
+	 * @param heads connectors
+	 */
 	public void addHeads(Connector ... heads) {
 		getBorder().addHeads(heads);
 	}
 	
+	/**
+	 * Adds the tails of the supplied connectors to the border of this element.
+	 * @param tails connectors
+	 */
 	public void addTails(Connector ... tails) {
 		getBorder().addTails(tails);
 	}
 	
+	/**
+	 * Assigns a connector head to this element.
+	 * @param end the connector end location
+	 * @return the assigned Point
+	 */
 	public Point assignHead(Point end) {
 		return getBorder().assignHead(getPole(), end);
 	}
 	
+	/**
+	 * Assigns a connector tail to this element.
+	 * @param tip the connector tip location
+	 * @return the assigned Point
+	 */
 	public Point assignTail(Point tip) {
 		return getBorder().assignTail(tip, getPole());
 	}
 	
+	/**
+	 * Returns the center point of this element.
+	 * @return a Point
+	 */
 	public Point getPole() {
 		return Point.at(getCenter(), getMiddle());
 	}
@@ -202,6 +233,10 @@ public class TextElement implements Registry.KeySource, Tag.Factory {
 		return getX();
 	}
 	
+	/**
+	 * Returns the margin left offset of this element.
+	 * @return a margin left
+	 */
 	public int getMarginLeft() {
 		return getLeft() - MarginOffset;
 	}
@@ -222,6 +257,10 @@ public class TextElement implements Registry.KeySource, Tag.Factory {
 		return getX() + getWidth();
 	}
 	
+	/**
+	 * Returns the margin right offset of this element.
+	 * @return a margin right
+	 */
 	public int getMarginRight() {
 		return getRight() + MarginOffset;
 	}
@@ -234,6 +273,10 @@ public class TextElement implements Registry.KeySource, Tag.Factory {
 		return getY();
 	}
 	
+	/**
+	 * Returns the margin top offset of this element.
+	 * @return a margin top
+	 */
 	public int getMarginTop() {
 		return getTop() - MarginOffset;
 	}
@@ -254,6 +297,10 @@ public class TextElement implements Registry.KeySource, Tag.Factory {
 		return getY() + getHeight();
 	}
 	
+	/**
+	 * Returns the margin offset of the bottom of this element.
+	 * @return a margin offset
+	 */
 	public int getMarginBottom() {
 		return getBottom() + MarginOffset;
 	}

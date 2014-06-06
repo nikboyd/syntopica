@@ -20,9 +20,10 @@ import com.educery.utils.Tag;
  */
 public class TextBox extends TextElement implements Tag.Factory {
 
-	private static int Width = 70;
-	private static int Height = 24;
-	private static int[] Offsets = { Width / 2, (Height * 2) / 3 };
+	private static int FontHeight = 18;
+	private static int LetterWidth = 10;
+//	private static int Width = 70;
+	private static int Height = FontHeight + 8;
 
 	// styling for a SVG text box
 	private static Tag TextStyle = 
@@ -32,7 +33,7 @@ public class TextBox extends TextElement implements Tag.Factory {
 		.withStyle(FontFamily, SansSerif)
 		.withStyle(FontStyle, Italic)
 		.withStyle(FontWeight, Normal)
-		.with(FontSize, 17)
+		.with(FontSize, FontHeight)
 		;
 	
 	/**
@@ -62,6 +63,16 @@ public class TextBox extends TextElement implements Tag.Factory {
 		this.color = color;
 		return this;
 	}
+	
+	/**
+	 * Configures this text box with a location.
+	 * @param p a point
+	 * @return this TextBox
+	 */
+	public TextBox at(Point p) {
+		setLocation(p);
+		return this;
+	}
 
 	/**
 	 * Configures this text box with a location.
@@ -70,7 +81,7 @@ public class TextBox extends TextElement implements Tag.Factory {
 	 * @return this TextBox
 	 */
 	public TextBox at(int x, int y) {
-		this.location = Point.at(x, y);
+		setLocation(Point.at(x, y));
 		return this;
 	}
 	
@@ -80,7 +91,7 @@ public class TextBox extends TextElement implements Tag.Factory {
 	 */
 	@Override
 	public int getOffsetX() {
-		return getX() + Offsets[0];
+		return getX() + (getWidth() / 2);
 	}
 	
 	/**
@@ -89,12 +100,12 @@ public class TextBox extends TextElement implements Tag.Factory {
 	 */
 	@Override
 	public int getOffsetY() {
-		return getY() + Offsets[1];
+		return getY() + (getHeight() * 2 / 3);
 	}
 	
 	@Override
 	public int getWidth() {
-		return Width;
+		return this.name.length() * LetterWidth;
 	}
 
 	@Override
