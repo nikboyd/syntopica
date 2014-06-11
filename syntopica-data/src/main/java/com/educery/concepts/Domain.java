@@ -1,6 +1,6 @@
 package com.educery.concepts;
 
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,6 +31,8 @@ public class Domain implements Registry.KeySource {
 	private String name = "";
 	private Registry<Topic> topics = Registry.empty();
 	private Registry<Selector> predicates = Registry.empty();
+	private HashMap<String, String> topicLinks = new HashMap<>();
+	private HashMap<String, String> pluralLinks = new HashMap<>();
 	
 	/**
 	 * Indicates whether a message contains a named domain.
@@ -75,6 +77,22 @@ public class Domain implements Registry.KeySource {
 	 * Constructs a new Domain.
 	 */
 	private Domain() { Current = this; }
+	
+	/**
+	 * The registered topic links.
+	 * @return a topic link map
+	 */
+	public HashMap<String, String> getTopicLinks() {
+		return this.topicLinks;
+	}
+	
+	/**
+	 * The registered plural links.
+	 * @return a plural link map
+	 */
+	public HashMap<String, String> getPluralLinks() {
+		return this.pluralLinks;
+	}
 	
 	/**
 	 * Returns the name of this domain.

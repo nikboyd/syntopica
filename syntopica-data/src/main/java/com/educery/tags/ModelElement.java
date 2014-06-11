@@ -27,6 +27,7 @@ public class ModelElement extends TextElement implements Tag.Factory {
 	private static final String Cyan = "#add8e6";
 	private static final String Grey = "#bfbfbf";
 	private static final String Bluish = "#d8e5e5";
+	private static final String PageType = ".html";
 	
 	// styling for a SVG text rectangle
 	private static Tag RectangleBase =
@@ -145,6 +146,14 @@ public class ModelElement extends TextElement implements Tag.Factory {
 	/** {@inheritDoc} */
 	@Override
 	public Tag drawElement() {
+		return drawAnchor().with(drawTextRectangle());
+	}
+	
+	private Tag drawAnchor() {
+		return Tag.xlinkWith(getPageName() + PageType);
+	}
+	
+	private Tag drawTextRectangle() {
 		return Tag.graphic()
 				.with(drawFilledRectangle())
 				.with(drawUnfilledRectangle())
@@ -154,6 +163,10 @@ public class ModelElement extends TextElement implements Tag.Factory {
 	private Tag drawUnfilledRectangle() {
 		return Tag.rectangle().withValues(RectangleBase)
 				.withX(getX()).withY(getY());
+	}
+	
+	private String getPageName() {
+		return getName().toLowerCase().replace(Blank, Period);
 	}
 
 } // ModelElement

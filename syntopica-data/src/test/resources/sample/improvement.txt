@@ -1,0 +1,24 @@
+valuable = value.html
+quality = ../../papers/rhetoric/quality/alignment.htm#business.qualities
+qualities = ../../papers/rhetoric/quality/alignment.htm#business.qualities
+
+Business activities are most valuable when they are aligned with specific and clearly formulated objectives. 
+Each business needs to have mission and vision statements that focus on the ends the business intends to effect in the world. 
+To effect these ends, a business has processes (a series of activities), especially processes that operate on information 
+(and so need information systems).
+Business information systems are products (with qualities) that provide services (which also have qualities). 
+Information services support and improve business operations by streamlining business processes 
+(which have their own qualities).
+
+An improvement changes the level of some measurable quality of a business activity, or it may enable the conduct 
+of a business activity that would be difficult, unaffordable, or impossible to conduct otherwise. 
+So, each business needs to determine its business process and improvement objectives. 
+Based on these processing and improvement objectives, a business needs to specify the product and service 
+qualities required of its information systems.
+
+Ideally, the qualities of a software solution and the services it provides will be aligned with and supportive of 
+the business objectives expressed in the business mission and vision statements. 
+So, a business needs to clearly define its objectives (as ends) and the means for achieving those objectives 
+(especially by using information systems) through the definition of measurable changes in the levels of the 
+qualities about which it is most concerned.
+	 

@@ -58,6 +58,7 @@ public class Tag implements Registry.KeySource {
 	private static final String Italics = "i";
 	private static final String Anchor = "a";
 	private static final String HyperLink = "href";
+	private static final String XLink = "xlink:";
 
 	private static final String Style = "style";
 	private static final String TextSpan = "tspan";
@@ -146,6 +147,15 @@ public class Tag implements Registry.KeySource {
 	 */
 	public static Tag linkWith(String reference) {
 		return Tag.named(Anchor).with(HyperLink, reference);
+	}
+	
+	/**
+	 * Returns a new Tag for an XLink element.
+	 * @param reference a reference
+	 * @return a new Tag
+	 */
+	public static Tag xlinkWith(String reference) {
+		return Tag.named(Anchor).with(XLink + HyperLink, reference);
 	}
 	
 	/**

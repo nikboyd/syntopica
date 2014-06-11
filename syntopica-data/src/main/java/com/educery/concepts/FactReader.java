@@ -23,6 +23,21 @@ public class FactReader implements Registry.KeySource {
 	
 	/**
 	 * Returns a new FactReader.
+	 * @param modelFile a model file containing facts
+	 * @return a new FactReader
+	 */
+	public static FactReader from(File modelFile) {
+		try {
+			return with(new FileInputStream(modelFile));
+		}
+		catch (Exception e ) {
+			Logger.error(e.getMessage(), e);
+			return null;
+		}
+	}
+	
+	/**
+	 * Returns a new FactReader.
 	 * @param stream a stream of fact messages
 	 * @return a new FactReader
 	 */

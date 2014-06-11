@@ -42,8 +42,8 @@ public class Topic implements Registry.KeySource {
 		private static final String[] Plurals = { "ues", "ies", "ess", Plural };
 		private static final String[] Singulars = { "ue", "y", "ess" };
 
-		private static final Number PluralNumber = new Number(Plurals);
-		private static final Number SingularNumber = new Number(Singulars);
+		public static final Number PluralNumber = new Number(Plurals);
+		public static final Number SingularNumber = new Number(Singulars);
 
 		static {
 			PluralNumber.replacements.put("ues", "ue");
@@ -300,7 +300,7 @@ public class Topic implements Registry.KeySource {
 	 * @param aNumber indicates whether a plural is needed
 	 * @return a topic name
 	 */
-	private String getSubject(Number aNumber) {
+	public String getSubject(Number aNumber) {
 		if (!aNumber.isPlural()) return getTitle();
 		return Number.convertToPlural(getTitle());
 	}
@@ -314,12 +314,19 @@ public class Topic implements Registry.KeySource {
 	}
 	
 	/**
+	 * Returns the link name of this topic.
+	 * @return a link name
+	 */
+	public String getLinkName() {
+		return getTitle().replace(Blank, Period);
+	}
+	
+	/**
 	 * Returns the page name of this topic.
 	 * @return a page file name
 	 */
 	public String getLinkFileName() {
-		String linkName = getTitle().replace(Blank, Period);
-		return linkName + PageType;
+		return getLinkName() + PageType;
 	}
 	
 	/**

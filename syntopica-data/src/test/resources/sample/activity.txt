@@ -1,0 +1,14 @@
+A business accomplishes its mission in the world through its activities. 
+As such, its activities need to be kept in alignment with the purposes of a business, and the 
+qualities associated with those activities warrant measurement in order to manage and improve their conduct.
+
+The activities of a business can be broadly categorized as those that are mission critical, mission central, 
+and mission peripheral, depending on whether and how the activities are related to the overall business mission and vision.
+Even though peripheral to its mission, some activities are supportive and essential, and thus still required to 
+accomplish the business mission.
+
+For example, a business of nearly any size will require human resources, and specific regulatory policies 
+will be in place within a legal framework for appropriately hiring and firing employees. 
+So, while the activities associated with employee management may not be considered a mission critical component 
+of the business, the associated issues will still require address and may warrant some level of automation 
+through some software solution(s).

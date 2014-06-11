@@ -27,9 +27,10 @@ public class ModelTest {
 	public void generatePages() {
 		String pageFolder = getClass().getResource("/pages").getFile();
 		String templateFolder = getClass().getResource("/templates").getFile();
+		String domainFolder = getClass().getResource("/sample").getFile();
 		ModelSite.withTemplates(templateFolder)
 			.withPages(pageFolder)
-			.withModel("/sample-domain.txt")
+			.withModel(domainFolder, "/domain.txt")
 			.generatePages();
 	}
 	

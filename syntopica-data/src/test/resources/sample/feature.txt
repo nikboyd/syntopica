@@ -1,0 +1,10 @@
+A software solution solves some specific (kind of) problem(s). 
+Problems typically involve multiple elements from the real world (where they are situated). 
+Thus, a problem can usually be decomposed into several component elements, 
+and these components are often represented in the structure of the software solution.
+
+Because software solutions intend to enable or improve the conduct of some business activities, 
+most software solutions provide some kind of user experience for collecting, manipulating, and 
+presenting information, whether using a desktop computer, a laptop computer, or a mobile device 
+(phone, tablet, etc.). Some of the software components surface these user experiences through dialogs.
+The dialogs engage users in conversations (of a kind) for collecting, manipulating, and presenting information.

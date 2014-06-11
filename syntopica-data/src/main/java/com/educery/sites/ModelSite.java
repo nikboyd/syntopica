@@ -7,9 +7,10 @@ import org.apache.commons.logging.*;
 import freemarker.template.*;
 
 import com.educery.concepts.*;
+import com.educery.concepts.Topic.Number;
 import com.educery.graphics.Point;
 import com.educery.tags.*;
-import com.educery.utils.Tag;
+import com.educery.utils.*;
 
 /**
  * Generates a web site from a domain model.
@@ -25,13 +26,16 @@ import com.educery.utils.Tag;
  * <li>provide locations for a model file and page folder during construction</li>
  * </ul>
  */
-public class ModelSite {
+public class ModelSite implements Registry.KeySource {
 
 	private static final Log Logger = LogFactory.getLog(ModelSite.class);
 
+	private static final String Slash = "/";
 	private static final String Format = "UTF-8";
+	private static final String PageTemplate = "page-template.html";
 
 	private File pageFolder;
+	private File domainFolder;
 	private Configuration cfg = new Configuration();
 	
 	/**
@@ -73,8 +77,9 @@ public class ModelSite {
 	 * @param modelFile a model file
 	 * @return this ModelSite
 	 */
-	public ModelSite withModel(String modelFile) {
-		FactReader.with(getClass().getResourceAsStream(modelFile)).readFacts();
+	public ModelSite withModel(String domainFolder, String modelFile) {
+		this.domainFolder = new File(domainFolder);
+		FactReader.from(new File(domainFolder + modelFile)).readFacts();
 		return this;
 	}
 
@@ -83,6 +88,7 @@ public class ModelSite {
 	 */
 	public void generatePages() {
 		List<Topic> topics = Domain.getCurrentDomain().getTopics().getItems();
+		for (Topic topic : topics) mapTopic(topic);
 		for (Topic topic : topics) generatePage(topic);
 		Logger.info("generated " + topics.size() + " pages");
 	}
@@ -92,21 +98,39 @@ public class ModelSite {
 		rootMap.put("topic", topic);
 		rootMap.put("domain", Domain.getCurrentDomain());
 		rootMap.put("diagram", buildDiagram(topic));
+		rootMap.put("discussion", buildDiscussion(topic));
 		
 		try {
 			File pageFile = new File(this.pageFolder, topic.getLinkFileName());
 			Writer writer = new OutputStreamWriter(new FileOutputStream(pageFile));
-			getTemplate("page-template.html").process(rootMap, writer);
+			getTemplate(PageTemplate).process(rootMap, writer);
 		}
 		catch (Exception e ) {
 			Logger.error(e.getMessage(), e);
 		}
 	}
 	
+	private void mapTopic(Topic topic) {
+		Domain domain = Domain.getCurrentDomain();
+		String key = topic.getSubject(Number.SingularNumber);
+		domain.getTopicLinks().put(key, topic.getReferenceLink(Number.SingularNumber));
+		domain.getPluralLinks().put(key, topic.getReferenceLink(Number.PluralNumber));
+	}
+	
+	public String buildDiscussion(Topic topic) {
+		String fileName = this.domainFolder + Slash + topic.getLinkName() + ".txt";
+		File topicFile = new File(fileName);
+		if (!topicFile.exists()) return "";
+		return TopicReader.from(topicFile).buildDiscussion();
+	}
+	
 	public String buildDiagram(Topic topic) {
-		int[] viewbox = { 10, 10, 500, 500 };
-		Tag.Factory[] tags = buildTags(topic.getFacts()[0]);
-		Canvas canvas = Canvas.with(12, 13).with(viewbox).with(tags);
+		Fact fact = topic.getFacts()[0];
+		int boxHeight = fact.getValenceCount() * 3;
+		int viewHeight = fact.getValenceCount() * 100;
+		int[] viewbox = { 10, 8, 350, viewHeight };
+		Tag.Factory[] tags = buildTags(fact);
+		Canvas canvas = Canvas.with(12, boxHeight).with(viewbox).with(tags);
 		return canvas.drawElement().format();
 	}
 	
@@ -131,6 +155,7 @@ public class ModelSite {
 				results[index].between(elements[index + 1], elements[0]);
 			}
 		}
+
 		elements[0].addTails(results);
 		for (int index = 0; index < results.length; index++) {
 			int headCount = (Topic.getNumber(topics[index + 1]).isPlural() ? 2 : 1);
@@ -159,6 +184,11 @@ public class ModelSite {
 
 	private Template getTemplate(String templateName) throws Exception {
 		return this.cfg.getTemplate(templateName);
+	}
+
+	@Override
+	public String getKey() {
+		return Empty;
 	}
 
 } // ModelSite
