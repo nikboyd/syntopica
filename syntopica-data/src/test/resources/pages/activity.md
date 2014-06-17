@@ -1,6 +1,6 @@
 ## Activity
 
-![activity](activity.svg)
+![activity](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/activity.svg)
 
 In the context of this [Model](model.md), an [Activity](activity.md)
 

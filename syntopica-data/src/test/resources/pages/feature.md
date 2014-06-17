@@ -1,6 +1,6 @@
 ## Feature
 
-![feature](feature.svg)
+![feature](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/feature.svg)
 
 In the context of this [Model](model.md), a [Feature](feature.md)
 

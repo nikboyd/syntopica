@@ -1,6 +1,6 @@
 ## Vision
 
-![vision](vision.svg)
+![vision](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/vision.svg)
 
 In the context of this [Model](model.md), a [Vision](vision.md)
 

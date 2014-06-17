@@ -1,6 +1,6 @@
 ## ${topic.subject}
 
-![${topic.linkName}](${topic.linkName}.svg)
+![${topic.linkName}](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/${topic.linkName}.svg)
 
 In the context of this [Model](model.md), ${topic.article} ${topic.getCapitalizedLink(pageType)}
 

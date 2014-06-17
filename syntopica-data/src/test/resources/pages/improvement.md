@@ -1,6 +1,6 @@
 ## Improvement
 
-![improvement](improvement.svg)
+![improvement](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/improvement.svg)
 
 In the context of this [Model](model.md), an [Improvement](improvement.md)
 

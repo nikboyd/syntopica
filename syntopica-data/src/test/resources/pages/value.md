@@ -1,6 +1,6 @@
 ## Value
 
-![value](value.svg)
+![value](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/value.svg)
 
 In the context of this [Model](model.md), a [Value](value.md)
 

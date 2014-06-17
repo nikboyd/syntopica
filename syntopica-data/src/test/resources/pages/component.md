@@ -1,6 +1,6 @@
 ## Component
 
-![component](component.svg)
+![component](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/component.svg)
 
 In the context of this [Model](model.md), a [Component](component.md)
 

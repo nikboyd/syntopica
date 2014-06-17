@@ -1,6 +1,6 @@
 ## Expector
 
-![expector](expector.svg)
+![expector](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/expector.svg)
 
 In the context of this [Model](model.md), an [Expector](expector.md)
 

@@ -1,6 +1,6 @@
 ## Dialog
 
-![dialog](dialog.svg)
+![dialog](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/dialog.svg)
 
 In the context of this [Model](model.md), a [Dialog](dialog.md)
 

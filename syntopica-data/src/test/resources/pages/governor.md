@@ -1,6 +1,6 @@
 ## Governor
 
-![governor](governor.svg)
+![governor](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/governor.svg)
 
 In the context of this [Model](model.md), a [Governor](governor.md)
 
