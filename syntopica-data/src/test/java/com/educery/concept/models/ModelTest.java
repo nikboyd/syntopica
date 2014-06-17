@@ -26,11 +26,15 @@ public class ModelTest {
 	@Test
 	public void generatePages() {
 		String pageFolder = getClass().getResource("/pages").getFile();
+		File pageDir = new File(pageFolder);
+		String basePath = pageDir.getParentFile().getParentFile().getParentFile().getPath();
+		pageFolder = basePath + "/src/test/resources/pages";
 		String templateFolder = getClass().getResource("/templates").getFile();
 		String domainFolder = getClass().getResource("/sample").getFile();
 		ModelSite.withTemplates(templateFolder)
 			.withPages(pageFolder)
 			.withModel(domainFolder, "/domain.txt")
+			.withMarkdown()
 			.generatePages();
 	}
 	

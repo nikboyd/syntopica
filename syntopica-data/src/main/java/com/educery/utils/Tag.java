@@ -50,6 +50,10 @@ public class Tag implements Registry.KeySource {
 	private static final String Quote = "\"";
 	private static final String SemiColon = ";";
 
+	private static final String LeftMark = "[";
+	private static final String RightMark = "]";
+	private static final String LeftEnd = "(";
+	private static final String RightEnd = ")";
 	private static final String LeftBracket = "<";
 	private static final String RightBracket = ">";
 	
@@ -72,7 +76,7 @@ public class Tag implements Registry.KeySource {
 
 	private String name = Empty;
 	private ArrayList<Tag> contentTags = new ArrayList<Tag>();
-	private ArrayList<String> names = new ArrayList<String>();
+	private ArrayList<String> valueNames = new ArrayList<String>();
 	private HashMap<String, String> namedValues = new HashMap<String, String>();
 	
 	/**
@@ -246,7 +250,7 @@ public class Tag implements Registry.KeySource {
 	 * @return this Tag
 	 */
 	public Tag withValues(Tag source) {
-		for (String key : source.names) {
+		for (String key : source.valueNames) {
 			this.with(key, source.getValue(key));
 		}
 		return this;
@@ -310,7 +314,7 @@ public class Tag implements Registry.KeySource {
 	 * @return this Tag
 	 */
 	public Tag with(String name, String value) {
-		if (!this.hasValue(name)) this.names.add(name);
+		if (!this.hasValue(name)) this.valueNames.add(name);
 		this.namedValues.put(name, value);
 		return this;
 	}
@@ -356,6 +360,21 @@ public class Tag implements Registry.KeySource {
 		buildTag(builder);
 		return builder.toString();
 	}
+	
+	public String format(String pageType) {
+		return (".md".equals(pageType) ? formatMarkdown() : format());
+	}
+	
+	public String formatMarkdown() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(LeftMark);
+		builder.append(getContent());
+		builder.append(RightMark);
+		builder.append(LeftEnd);
+		builder.append(getValue(HyperLink));
+		builder.append(RightEnd);
+		return builder.toString();
+	}
 
 	/**
 	 * Appends the attributes and content of this tag to a builder.
@@ -398,7 +417,7 @@ public class Tag implements Registry.KeySource {
 	 */
 	private void buildAttributes(StringBuilder builder) {
 		if (this.namedValues.isEmpty()) return;
-		for (String key : this.names) {
+		for (String key : this.valueNames) {
 			buildAttribute(key, builder);
 		}
 	}

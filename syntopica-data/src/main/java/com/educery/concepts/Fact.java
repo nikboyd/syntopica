@@ -227,26 +227,26 @@ public class Fact implements Registry.KeySource {
 	 * Formats the complete predicate of this fact as an HTML fragment.
 	 * @return the complete predicate of this fact formatted as an HTML fragment
 	 */
-	public String getFormattedPredicate(Topic context) {
+	public String getFormattedPredicate(Topic context, String pageType) {
 		String subject = getTopic(0);
 		String[] parts = getPredicate().getParts();
 		StringBuilder builder = new StringBuilder();
 		if (!this.definedTopic.isEmpty() && 
 			!context.getTitle().equals(subject)) {
-			builder.append(formatRelatedTopics(subject));
+			builder.append(formatRelatedTopics(subject, pageType));
 			builder.append(Blank);
 		}
 
 		builder.append(Tag.italics(parts[0]).format());
 		if (getValenceCount() > 1) {
 			builder.append(Blank);
-			builder.append(formatRelatedTopics(getTopic(1)));
+			builder.append(formatRelatedTopics(getTopic(1), pageType));
 			if (getValenceCount() > 2) {
 				for (int index = 2; index < getValenceCount(); index++) {
 					builder.append(Blank);
 					builder.append(parts[index - 1]);
 					builder.append(Blank);
-					builder.append(formatRelatedTopics(getTopic(index)));
+					builder.append(formatRelatedTopics(getTopic(index), pageType));
 				}
 			}
 		}
@@ -258,7 +258,7 @@ public class Fact implements Registry.KeySource {
 	 * @param topics a comma-separated list of topics
 	 * @return a comma-separated list of topics formatted as HTML fragments
 	 */
-	private String formatRelatedTopics(String topics) {
+	private String formatRelatedTopics(String topics, String pageType) {
 		List<String> topicNames = Topic.namesFrom(topics);
 		StringBuilder builder = new StringBuilder();
 		for (String topicName : topicNames) {
@@ -267,7 +267,7 @@ public class Fact implements Registry.KeySource {
 			Number aNumber = Number.getNumber(subject.length() > singularSubject.length());
 
 			if (builder.length() > 0) builder.append(Comma + Blank);
-			builder.append(getTopic(singularSubject).formatReferenceLink(aNumber));
+			builder.append(getTopic(singularSubject).formatReferenceLink(aNumber, pageType));
 		}
 		return builder.toString();
 	}

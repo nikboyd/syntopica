@@ -254,8 +254,8 @@ public class Topic implements Registry.KeySource {
 	 * @param aNumber indicates whether plural or singular
 	 * @return a formatted HTML fragment
 	 */
-	public String formatReferenceLink(Number aNumber) {
-		return Blank + getArticle(aNumber) + Blank + getReferenceLink(aNumber);
+	public String formatReferenceLink(Number aNumber, String pageType) {
+		return Blank + getArticle(aNumber) + Blank + getReferenceLink(aNumber, pageType);
 	}
 	
 	/**
@@ -267,6 +267,11 @@ public class Topic implements Registry.KeySource {
 				.withContent(getSubject()).format();
 	}
 	
+	public String getCapitalizedLink(String pageType) {
+		return Tag.linkWith(getLinkFileName(pageType))
+				.withContent(getSubject()).format(pageType);
+	}
+	
 	/**
 	 * Returns a link for this topic with a pluralized name (if so indicated).
 	 * @param aNumber indicates whether a plural is needed
@@ -276,6 +281,12 @@ public class Topic implements Registry.KeySource {
 		if (getFactRegistry().isEmpty()) return getSubject(aNumber);
 		return Tag.linkWith(getLinkFileName())
 				.withContent(getSubject(aNumber)).format();
+	}
+	
+	public String getReferenceLink(Number aNumber, String pageType) {
+		if (getFactRegistry().isEmpty()) return getSubject(aNumber);
+		return Tag.linkWith(getLinkFileName(pageType))
+				.withContent(getSubject(aNumber)).format(pageType);
 	}
 	
 	/**
@@ -327,6 +338,10 @@ public class Topic implements Registry.KeySource {
 	 */
 	public String getLinkFileName() {
 		return getLinkName() + PageType;
+	}
+	
+	public String getLinkFileName(String pageType) {
+		return getLinkName() + pageType;
 	}
 	
 	/**

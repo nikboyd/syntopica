@@ -32,11 +32,14 @@ public class ModelSite implements Registry.KeySource {
 
 	private static final String Slash = "/";
 	private static final String Format = "UTF-8";
-	private static final String PageTemplate = "page-template.html";
+	private static final String MarkDown = ".md";
+	private static final String HyperText = ".html";
+	private static final String PageTemplate = "page-template";
 
 	private File pageFolder;
 	private File domainFolder;
 	private Configuration cfg = new Configuration();
+	private String pageType = HyperText;
 	
 	/**
 	 * Returns a new ModelSite.
@@ -60,6 +63,11 @@ public class ModelSite implements Registry.KeySource {
 		} catch (IOException e) {
 			Logger.error(e.getMessage(), e);
 		}
+	}
+	
+	public ModelSite withMarkdown() {
+		this.pageType = MarkDown;
+		return this;
 	}
 
 	/**
@@ -99,11 +107,12 @@ public class ModelSite implements Registry.KeySource {
 		rootMap.put("domain", Domain.getCurrentDomain());
 		rootMap.put("diagram", buildDiagram(topic));
 		rootMap.put("discussion", buildDiscussion(topic));
+		rootMap.put("pageType", this.pageType);
 		
 		try {
-			File pageFile = new File(this.pageFolder, topic.getLinkFileName());
+			File pageFile = new File(this.pageFolder, topic.getLinkFileName(this.pageType));
 			Writer writer = new OutputStreamWriter(new FileOutputStream(pageFile));
-			getTemplate(PageTemplate).process(rootMap, writer);
+			getTemplate(PageTemplate + this.pageType).process(rootMap, writer);
 		}
 		catch (Exception e ) {
 			Logger.error(e.getMessage(), e);
@@ -113,8 +122,8 @@ public class ModelSite implements Registry.KeySource {
 	private void mapTopic(Topic topic) {
 		Domain domain = Domain.getCurrentDomain();
 		String key = topic.getSubject(Number.SingularNumber);
-		domain.getTopicLinks().put(key, topic.getReferenceLink(Number.SingularNumber));
-		domain.getPluralLinks().put(key, topic.getReferenceLink(Number.PluralNumber));
+		domain.getTopicLinks().put(key, topic.getReferenceLink(Number.SingularNumber, this.pageType));
+		domain.getPluralLinks().put(key, topic.getReferenceLink(Number.PluralNumber, this.pageType));
 	}
 	
 	public String buildDiscussion(Topic topic) {
