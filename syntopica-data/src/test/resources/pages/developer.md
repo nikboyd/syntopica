@@ -1,6 +1,8 @@
 ## Developer
 
-<div  style="float: right; margin: 20px"><img src="developer.svg"/></div>
+<div  style="float: right; margin: 20px">
+![developer](developer.svg)
+</div>
 
 In the context of this [Model](model.md), a [Developer](developer.md)
 

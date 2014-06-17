@@ -1,6 +1,8 @@
 ## ${topic.subject}
 
-<div  style="float: right; margin: 20px"><img src="${topic.linkName}.svg"/></div>
+<div  style="float: right; margin: 20px">
+![${topic.linkName}](${topic.linkName}.svg)
+</div>
 
 In the context of this [Model](model.md), ${topic.article} ${topic.getCapitalizedLink(pageType)}
 

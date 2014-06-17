@@ -1,6 +1,8 @@
 ## Value
 
-<div  style="float: right; margin: 20px"><img src="value.svg"/></div>
+<div  style="float: right; margin: 20px">
+![value](value.svg)
+</div>
 
 In the context of this [Model](model.md), a [Value](value.md)
 

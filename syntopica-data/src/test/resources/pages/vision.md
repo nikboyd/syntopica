@@ -1,6 +1,8 @@
 ## Vision
 
-<div  style="float: right; margin: 20px"><img src="vision.svg"/></div>
+<div  style="float: right; margin: 20px">
+![vision](vision.svg)
+</div>
 
 In the context of this [Model](model.md), a [Vision](vision.md)
 

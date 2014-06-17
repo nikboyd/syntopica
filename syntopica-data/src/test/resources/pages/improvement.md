@@ -1,6 +1,8 @@
 ## Improvement
 
-<div  style="float: right; margin: 20px"><img src="improvement.svg"/></div>
+<div  style="float: right; margin: 20px">
+![improvement](improvement.svg)
+</div>
 
 In the context of this [Model](model.md), an [Improvement](improvement.md)
 

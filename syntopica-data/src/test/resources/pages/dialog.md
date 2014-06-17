@@ -1,6 +1,8 @@
 ## Dialog
 
-<div  style="float: right; margin: 20px"><img src="dialog.svg"/></div>
+<div  style="float: right; margin: 20px">
+![dialog](dialog.svg)
+</div>
 
 In the context of this [Model](model.md), a [Dialog](dialog.md)
 

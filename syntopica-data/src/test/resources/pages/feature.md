@@ -1,6 +1,8 @@
 ## Feature
 
-<div  style="float: right; margin: 20px"><img src="feature.svg"/></div>
+<div  style="float: right; margin: 20px">
+![feature](feature.svg)
+</div>
 
 In the context of this [Model](model.md), a [Feature](feature.md)
 

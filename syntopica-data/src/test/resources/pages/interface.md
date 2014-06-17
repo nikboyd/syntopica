@@ -1,6 +1,8 @@
 ## Interface
 
-<div  style="float: right; margin: 20px"><img src="interface.svg"/></div>
+<div  style="float: right; margin: 20px">
+![interface](interface.svg)
+</div>
 
 In the context of this [Model](model.md), an [Interface](interface.md)
 

@@ -1,6 +1,8 @@
 ## Solution
 
-<div  style="float: right; margin: 20px"><img src="solution.svg"/></div>
+<div  style="float: right; margin: 20px">
+![solution](solution.svg)
+</div>
 
 In the context of this [Model](model.md), a [Solution](solution.md)
 
