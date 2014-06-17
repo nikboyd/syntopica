@@ -117,6 +117,16 @@ public class ModelSite implements Registry.KeySource {
 		catch (Exception e ) {
 			Logger.error(e.getMessage(), e);
 		}
+		
+		try {
+			File pageFile = new File(this.pageFolder, topic.getLinkName() + ".svg");
+			Writer writer = new OutputStreamWriter(new FileOutputStream(pageFile));
+			writer.write(buildDiagram(topic));
+			writer.close();
+		}
+		catch (Exception e ) {
+			Logger.error(e.getMessage(), e);
+		}
 	}
 	
 	private void mapTopic(Topic topic) {
