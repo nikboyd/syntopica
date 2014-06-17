@@ -1,6 +1,6 @@
-valuable = value.html
 quality = ../../papers/rhetoric/quality/alignment.htm#business.qualities
 qualities = ../../papers/rhetoric/quality/alignment.htm#business.qualities
+valuable = value.html
 
 Business activities are most valuable when they are aligned with specific and clearly formulated objectives. 
 Each business needs to have mission and vision statements that focus on the ends the business intends to effect in the world. 
