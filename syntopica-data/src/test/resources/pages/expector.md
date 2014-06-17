@@ -1,8 +1,6 @@
 ## Expector
 
-<div  style="float: right; margin: 20px">
 ![expector](expector.svg)
-</div>
 
 In the context of this [Model](model.md), an [Expector](expector.md)
 

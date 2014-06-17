@@ -1,8 +1,6 @@
 ## Activity
 
-<div  style="float: right; margin: 20px">
 ![activity](activity.svg)
-</div>
 
 In the context of this [Model](model.md), an [Activity](activity.md)
 

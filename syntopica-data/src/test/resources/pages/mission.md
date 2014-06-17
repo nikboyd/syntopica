@@ -1,8 +1,6 @@
 ## Mission
 
-<div  style="float: right; margin: 20px">
 ![mission](mission.svg)
-</div>
 
 In the context of this [Model](model.md), a [Mission](mission.md)
 

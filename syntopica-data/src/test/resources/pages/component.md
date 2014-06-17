@@ -1,8 +1,6 @@
 ## Component
 
-<div  style="float: right; margin: 20px">
 ![component](component.svg)
-</div>
 
 In the context of this [Model](model.md), a [Component](component.md)
 

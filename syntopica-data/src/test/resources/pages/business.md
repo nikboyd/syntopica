@@ -1,8 +1,6 @@
 ## Business
 
-<div  style="float: right; margin: 20px">
 ![business](business.svg)
-</div>
 
 In the context of this [Model](model.md), a [Business](business.md)
 

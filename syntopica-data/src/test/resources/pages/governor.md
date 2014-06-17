@@ -1,8 +1,6 @@
 ## Governor
 
-<div  style="float: right; margin: 20px">
 ![governor](governor.svg)
-</div>
 
 In the context of this [Model](model.md), a [Governor](governor.md)
 

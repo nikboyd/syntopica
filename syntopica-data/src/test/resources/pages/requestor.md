@@ -1,8 +1,6 @@
 ## Requestor
 
-<div  style="float: right; margin: 20px">
 ![requestor](requestor.svg)
-</div>
 
 In the context of this [Model](model.md), a [Requestor](requestor.md)
 

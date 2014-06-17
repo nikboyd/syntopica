@@ -1,8 +1,6 @@
 ## Source
 
-<div  style="float: right; margin: 20px">
 ![source](source.svg)
-</div>
 
 In the context of this [Model](model.md), a [Source](source.md)
 
