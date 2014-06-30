@@ -1,20 +1,18 @@
 ## Developer
 
-![developer](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/developer.svg)
+<img src="https://rawgithub.com/nikboyd/SampleDomain/master/developer.svg" align="right"/>
 
-In the context of this [Model](model.md), a [Developer](developer.md)
+In the context of this [Model](model.md), [developer](https://github.com/nikboyd/SampleDomain/blob/master/developer.md)
 
-```
-<i>designs</i>  a [component](component.md),  a [dialog](dialog.md),  an [interface](interface.md)
-<i>builds</i>  a [component](component.md),  a [dialog](dialog.md),  an [interface](interface.md)
-<i>tests</i>  a [component](component.md),  a [dialog](dialog.md),  an [interface](interface.md)
-<i>serves</i>  a [business](business.md) as  a [source](source.md) of  some estimates
-```
+* <i>designs</i> [component](https://github.com/nikboyd/SampleDomain/blob/master/component.md), [dialog](https://github.com/nikboyd/SampleDomain/blob/master/dialog.md), [interface](https://github.com/nikboyd/SampleDomain/blob/master/interface.md)
+* <i>builds</i> [component](https://github.com/nikboyd/SampleDomain/blob/master/component.md), [dialog](https://github.com/nikboyd/SampleDomain/blob/master/dialog.md), [interface](https://github.com/nikboyd/SampleDomain/blob/master/interface.md)
+* <i>tests</i> [component](https://github.com/nikboyd/SampleDomain/blob/master/component.md), [dialog](https://github.com/nikboyd/SampleDomain/blob/master/dialog.md), [interface](https://github.com/nikboyd/SampleDomain/blob/master/interface.md)
+* <i>serves</i> [business](https://github.com/nikboyd/SampleDomain/blob/master/business.md) as [source](https://github.com/nikboyd/SampleDomain/blob/master/source.md) of [estimates](https://github.com/nikboyd/SampleDomain/blob/master/estimate.md)
 
 ### Discussion
 
-There are potentially several kinds of [developers](developer.md).
-A [developer](developer.md) generally develops (or guides, or manages the development of) software [solutions](solution.md).
+There are potentially several kinds of [developers](https://github.com/nikboyd/SampleDomain/blob/master/developer.md).
+A [developer](https://github.com/nikboyd/SampleDomain/blob/master/developer.md) generally develops (or guides, or manages the development of) software [solutions](https://github.com/nikboyd/SampleDomain/blob/master/solution.md).
 Sometimes their responsibilities (and thus their interests) are combined in a single person or role within an organization.
 
 

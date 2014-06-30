@@ -1,12 +1,10 @@
 ## Mission
 
-![mission](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/mission.svg)
+<img src="https://rawgithub.com/nikboyd/SampleDomain/master/mission.svg" align="right"/>
 
-In the context of this [Model](model.md), a [Mission](mission.md)
+In the context of this [Model](model.md), [mission](https://github.com/nikboyd/SampleDomain/blob/master/mission.md)
 
-```
-<i>describes</i>  some intended effects of  a [business](business.md)
-```
+* <i>describes</i> [intended effects](https://github.com/nikboyd/SampleDomain/blob/master/intended.effect.md) of [business](https://github.com/nikboyd/SampleDomain/blob/master/business.md)
 
 ### Discussion
 

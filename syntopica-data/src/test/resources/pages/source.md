@@ -1,12 +1,10 @@
 ## Source
 
-![source](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/source.svg)
+<img src="https://rawgithub.com/nikboyd/SampleDomain/master/source.svg" align="right"/>
 
-In the context of this [Model](model.md), a [Source](source.md)
+In the context of this [Model](model.md), [source](https://github.com/nikboyd/SampleDomain/blob/master/source.md)
 
-```
-<i>describes</i>  some [features](feature.md) for  some [developers](developer.md)
-```
+* <i>describes</i> [features](https://github.com/nikboyd/SampleDomain/blob/master/feature.md) for [developers](https://github.com/nikboyd/SampleDomain/blob/master/developer.md)
 
 ### Discussion
 

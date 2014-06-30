@@ -1,12 +1,10 @@
 ## Dialog
 
-![dialog](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/dialog.svg)
+<img src="https://rawgithub.com/nikboyd/SampleDomain/master/dialog.svg" align="right"/>
 
-In the context of this [Model](model.md), a [Dialog](dialog.md)
+In the context of this [Model](model.md), [dialog](https://github.com/nikboyd/SampleDomain/blob/master/dialog.md)
 
-```
-<i>reveals</i>  some [features](feature.md) through  some [interfaces](interface.md)
-```
+* <i>reveals</i> [features](https://github.com/nikboyd/SampleDomain/blob/master/feature.md) through [interfaces](https://github.com/nikboyd/SampleDomain/blob/master/interface.md)
 
 ### Discussion
 

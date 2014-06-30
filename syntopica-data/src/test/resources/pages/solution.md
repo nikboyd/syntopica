@@ -1,13 +1,11 @@
 ## Solution
 
-![solution](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/solution.svg)
+<img src="https://rawgithub.com/nikboyd/SampleDomain/master/solution.svg" align="right"/>
 
-In the context of this [Model](model.md), a [Solution](solution.md)
+In the context of this [Model](model.md), [solution](https://github.com/nikboyd/SampleDomain/blob/master/solution.md)
 
-```
-<i>exhibits</i>  some [features](feature.md)
-<i>has</i>  some [components](component.md)
-```
+* <i>exhibits</i> [features](https://github.com/nikboyd/SampleDomain/blob/master/feature.md)
+* <i>has</i> [components](https://github.com/nikboyd/SampleDomain/blob/master/component.md)
 
 ### Discussion
 

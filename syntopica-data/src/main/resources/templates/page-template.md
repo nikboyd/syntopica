@@ -1,14 +1,12 @@
 ## ${topic.subject}
 
-![${topic.linkName}](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/${topic.linkName}.svg)
+${site.formatImageLink(topic)}
 
-In the context of this [Model](model.md), ${topic.article} ${topic.getCapitalizedLink(pageType)}
+In the context of this [Model](model.md), ${site.formatPageLink(topic)}
 
-```
 <#list topic.facts as fact>
-${fact.getFormattedPredicate(topic, pageType)}
+* ${site.formatFact(fact,topic)}
 </#list>
-```
 
 ### Discussion
 

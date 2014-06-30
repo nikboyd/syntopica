@@ -1,12 +1,10 @@
 ## Interface
 
-![interface](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/interface.svg)
+<img src="https://rawgithub.com/nikboyd/SampleDomain/master/interface.svg" align="right"/>
 
-In the context of this [Model](model.md), an [Interface](interface.md)
+In the context of this [Model](model.md), [interface](https://github.com/nikboyd/SampleDomain/blob/master/interface.md)
 
-```
-<i>exposes</i>  a model information
-```
+* <i>exposes</i> [model information](https://github.com/nikboyd/SampleDomain/blob/master/model.information.md)
 
 ### Discussion
 

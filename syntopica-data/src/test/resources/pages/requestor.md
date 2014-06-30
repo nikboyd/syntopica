@@ -1,22 +1,20 @@
 ## Requestor
 
-![requestor](https://raw.githubusercontent.com/nikboyd/Syntopica/master/syntopica-data/src/test/resources/pages/requestor.svg)
+<img src="https://rawgithub.com/nikboyd/SampleDomain/master/requestor.svg" align="right"/>
 
-In the context of this [Model](model.md), a [Requestor](requestor.md)
+In the context of this [Model](model.md), [requestor](https://github.com/nikboyd/SampleDomain/blob/master/requestor.md)
 
-```
-<i>requests</i>  some [improvements](improvement.md) in  an [activity](activity.md)
-<i>oversees</i>  some [activities](activity.md) for  a [business](business.md)
-<i>serves</i>  a [business](business.md) as  a [source](source.md) of  some [improvements](improvement.md),  some purposes
-```
+* <i>requests</i> [improvements](https://github.com/nikboyd/SampleDomain/blob/master/improvement.md) in [activity](https://github.com/nikboyd/SampleDomain/blob/master/activity.md)
+* <i>oversees</i> [activities](https://github.com/nikboyd/SampleDomain/blob/master/activity.md) for [business](https://github.com/nikboyd/SampleDomain/blob/master/business.md)
+* <i>serves</i> [business](https://github.com/nikboyd/SampleDomain/blob/master/business.md) as [source](https://github.com/nikboyd/SampleDomain/blob/master/source.md) of [improvements](https://github.com/nikboyd/SampleDomain/blob/master/improvement.md), [purposes](https://github.com/nikboyd/SampleDomain/blob/master/purpose.md)
 
 ### Discussion
 
-There are potentially several kinds of [requestors](requestor.md).
-A [requestor](requestor.md) generally oversees and requests [improvements](improvement.md) in some [business](business.md) [activity](activity.md)(s),
+There are potentially several kinds of [requestors](https://github.com/nikboyd/SampleDomain/blob/master/requestor.md).
+A [requestor](https://github.com/nikboyd/SampleDomain/blob/master/requestor.md) generally oversees and requests [improvements](https://github.com/nikboyd/SampleDomain/blob/master/improvement.md) in some [business](https://github.com/nikboyd/SampleDomain/blob/master/business.md) [activity](https://github.com/nikboyd/SampleDomain/blob/master/activity.md)(s),
 or they may have specific domain knowledge and expertise.
-They also ensure that the conduct of [business](business.md) [activities](activity.md) remain in alignment with the purposes of the [business](business.md),
-esp. with its [mission](mission.md) and [vision](vision.md).
+They also ensure that the conduct of [business](https://github.com/nikboyd/SampleDomain/blob/master/business.md) [activities](https://github.com/nikboyd/SampleDomain/blob/master/activity.md) remain in alignment with the purposes of the [business](https://github.com/nikboyd/SampleDomain/blob/master/business.md),
+esp. with its [mission](https://github.com/nikboyd/SampleDomain/blob/master/mission.md) and [vision](https://github.com/nikboyd/SampleDomain/blob/master/vision.md).
 
 
 <h3 align="center"><b>&sect; &sect; &sect;</b></h3>
