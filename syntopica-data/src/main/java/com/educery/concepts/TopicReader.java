@@ -1,7 +1,7 @@
 package com.educery.concepts;
 
 import java.io.*;
-import java.util.HashMap;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,6 +57,14 @@ public class TopicReader implements Registry.KeySource {
 	private TopicReader() { }
 	
 	/**
+	 * Contains the links defined in a discussion file.
+	 * @return a link map
+	 */
+	public Map<String, String> getLinkMap() {
+		return this.linkMap;
+	}
+	
+	/**
 	 * Builds a topic discussion.
 	 * @return a topic discussion
 	 */
@@ -82,6 +90,15 @@ public class TopicReader implements Registry.KeySource {
 		}
 		
 		return discussion;
+	}
+	
+	/**
+	 * Reads a discussion from its backing store.
+	 * @return the content of a discussion
+	 */
+	public String readDiscussion() {
+		readTopic();
+		return this.builder.toString();
 	}
 	
 	private void readTopic() {

@@ -46,6 +46,7 @@ public class Tag implements Registry.KeySource {
 
 	} // Factory
 
+	private static final String Bang = "!";
 	private static final String Slash = "/";
 	private static final String Quote = "\"";
 	private static final String SemiColon = ";";
@@ -60,9 +61,15 @@ public class Tag implements Registry.KeySource {
 	private static final String Canvas = "svg";
 	private static final String Graphic = "g";
 	private static final String Italics = "i";
+
 	private static final String Anchor = "a";
 	private static final String HyperLink = "href";
-	private static final String XLink = "xlink:";
+	private static final String XLink = "xlink:" + HyperLink;
+	private static final String MarkDown = ".md";
+
+	private static final String Image = "img";
+	private static final String Source = "src";
+	private static final String LinkBase = "xlink:base";
 
 	private static final String Style = "style";
 	private static final String TextSpan = "tspan";
@@ -73,6 +80,10 @@ public class Tag implements Registry.KeySource {
 	private static final String Polygon = "polygon";
 	private static final String Height = "height";
 	private static final String Width = "width";
+	private static final String Align = "align";
+	
+	private static final String[] Links = { XLink, HyperLink, Source };
+	private static final List<String> LinkTypes = Arrays.asList(Links);
 
 	private String name = Empty;
 	private ArrayList<Tag> contentTags = new ArrayList<Tag>();
@@ -145,6 +156,15 @@ public class Tag implements Registry.KeySource {
 	}
 	
 	/**
+	 * Returns a new Tag for an image element.
+	 * @param reference a reference
+	 * @return a new Tag
+	 */
+	public static Tag imageWith(String reference) {
+		return Tag.named(Image).with(Source, reference);
+	}
+	
+	/**
 	 * Returns a new Tag for an HTML link element.
 	 * @param reference a reference
 	 * @return a new Tag
@@ -159,7 +179,7 @@ public class Tag implements Registry.KeySource {
 	 * @return a new Tag
 	 */
 	public static Tag xlinkWith(String reference) {
-		return Tag.named(Anchor).with(XLink + HyperLink, reference);
+		return Tag.named(Anchor).with(XLink, reference);
 	}
 	
 	/**
@@ -179,6 +199,25 @@ public class Tag implements Registry.KeySource {
 	 */
 	private Tag() {
 		this.namedValues.put(Empty, Empty);
+		this.namedValues.put(LinkBase, Empty);
+	}
+	
+	/**
+	 * Adds the supplied link base to this element.
+	 * @param linkBase a link base reference
+	 * @return this Tag
+	 */
+	public Tag withBase(String linkBase) {
+		return with(LinkBase, linkBase);
+	}
+	
+	/**
+	 * Adds the supplied alignment to this element.
+	 * @param alignment an alignment
+	 * @return this Tag
+	 */
+	public Tag withAlign(String alignment) {
+		return with(Align, alignment);
 	}
 	
 	/**
@@ -344,6 +383,30 @@ public class Tag implements Registry.KeySource {
 	}
 	
 	/**
+	 * Indicates whether this is an image.
+	 * @return whether this is an image
+	 */
+	public boolean isImage() {
+		return getKey().equals(Image);
+	}
+	
+	/**
+	 * Indicates whether this is an anchor.
+	 * @return whether this is an anchor
+	 */
+	public boolean isAnchor() {
+		return getKey().equals(Anchor);
+	}
+	
+	/**
+	 * Indicates whether this is a mark down link.
+	 * @return whether this is a mark down link
+	 */
+	public boolean isMarkdown() {
+		return getLink().endsWith(MarkDown);
+	}
+	
+	/**
 	 * Returns the content of this tag.
 	 * @return the tag content
 	 */
@@ -357,23 +420,25 @@ public class Tag implements Registry.KeySource {
 	 */
 	public String format() {
 		StringBuilder builder = new StringBuilder();
-		buildTag(builder);
+		if (this.isAnchor() && this.isMarkdown()) {
+			buildMarkdown(builder);
+		}
+		else {
+			buildTag(builder);
+		}
 		return builder.toString();
 	}
 	
-	public String format(String pageType) {
-		return (".md".equals(pageType) ? formatMarkdown() : format());
-	}
-	
-	public String formatMarkdown() {
-		StringBuilder builder = new StringBuilder();
+	private void buildMarkdown(StringBuilder builder) {
+		if (this.isImage()) {
+			builder.append(Bang);
+		}
 		builder.append(LeftMark);
 		builder.append(getContent());
 		builder.append(RightMark);
 		builder.append(LeftEnd);
-		builder.append(getValue(HyperLink));
+		builder.append(getLinkBase() + getLink());
 		builder.append(RightEnd);
-		return builder.toString();
 	}
 
 	/**
@@ -382,7 +447,7 @@ public class Tag implements Registry.KeySource {
 	 */
 	private void buildTag(StringBuilder builder) {
 		builder.append(LeftBracket);
-		builder.append(this.name);
+		builder.append(getKey());
 		buildAttributes(builder);
 
 		if (this.hasContent()) {
@@ -429,11 +494,18 @@ public class Tag implements Registry.KeySource {
 	 */
 	private void buildAttribute(String key, StringBuilder builder) {
 		if (key.isEmpty()) return;
+		if (key.equals(LinkBase)) return;
+		
+		String value = getValue(key);
+		if (LinkTypes.contains(key)) {
+			value = getLinkBase() + value;
+		}
+
 		builder.append(Blank);
 		builder.append(key);
 		builder.append(Equals.trim());
 		builder.append(Quote);
-		builder.append(getValue(key));
+		builder.append(value);
 		builder.append(Quote);
 	}
 	
@@ -444,12 +516,20 @@ public class Tag implements Registry.KeySource {
 	private void buildTail(StringBuilder builder) {
 		builder.append(LeftBracket);
 		builder.append(Slash);
-		builder.append(this.name);
+		builder.append(getKey());
 		builder.append(RightBracket);
 	}
 	
 	private boolean hasValue(String valueName) {
 		return this.namedValues.containsKey(valueName);
+	}
+	
+	private String getLink() {
+		return (this.hasValue(HyperLink) ? getValue(HyperLink) : getValue(XLink));
+	}
+	
+	private String getLinkBase() {
+		return getValue(LinkBase);
 	}
 	
 	private String getValue(String valueName) {

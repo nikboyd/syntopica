@@ -8,7 +8,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.educery.concepts.Topic.Number;
 import com.educery.utils.Registry;
-import com.educery.utils.Tag;
+//import com.educery.utils.Tag;
 
 /**
  * Expresses a statement of fact.
@@ -120,6 +120,10 @@ public class Fact implements Registry.KeySource {
 		return this;
 	}
 	
+	public boolean isDefined() {
+		return !this.definedTopic.isEmpty();
+	}
+	
 	/**
 	 * The domain within which this fact is construed.
 	 * @return a Domain
@@ -149,7 +153,7 @@ public class Fact implements Registry.KeySource {
 	 * @param index indicates which topic
 	 * @return a topic
 	 */
-	private String getTopic(int index) {
+	public String getTopic(int index) {
 		return this.topics.get(index);
 	}
 
@@ -227,61 +231,61 @@ public class Fact implements Registry.KeySource {
 	 * Formats the complete predicate of this fact as an HTML fragment.
 	 * @return the complete predicate of this fact formatted as an HTML fragment
 	 */
-	public String getFormattedPredicate(Topic context, String pageType) {
-		String subject = getTopic(0);
-		String[] parts = getPredicate().getParts();
-		StringBuilder builder = new StringBuilder();
-		if (!this.definedTopic.isEmpty() && 
-			!context.getTitle().equals(subject)) {
-			builder.append(formatRelatedTopics(subject, pageType));
-			builder.append(Blank);
-		}
-
-		builder.append(Tag.italics(parts[0]).format());
-		if (getValenceCount() > 1) {
-			builder.append(Blank);
-			builder.append(formatRelatedTopics(getTopic(1), pageType));
-			if (getValenceCount() > 2) {
-				for (int index = 2; index < getValenceCount(); index++) {
-					builder.append(Blank);
-					builder.append(parts[index - 1]);
-					builder.append(Blank);
-					builder.append(formatRelatedTopics(getTopic(index), pageType));
-				}
-			}
-		}
-		return builder.toString();
-	}
+//	public String getFormattedPredicate(Topic context, String pageType) {
+//		String subject = getTopic(0);
+//		String[] parts = getPredicate().getParts();
+//		StringBuilder builder = new StringBuilder();
+//		if (!this.definedTopic.isEmpty() && 
+//			!context.getTitle().equals(subject)) {
+//			builder.append(formatRelatedTopics(subject, pageType));
+//			builder.append(Blank);
+//		}
+//
+//		builder.append(Tag.italics(parts[0]).format());
+//		if (getValenceCount() > 1) {
+//			builder.append(Blank);
+//			builder.append(formatRelatedTopics(getTopic(1), pageType));
+//			if (getValenceCount() > 2) {
+//				for (int index = 2; index < getValenceCount(); index++) {
+//					builder.append(Blank);
+//					builder.append(parts[index - 1]);
+//					builder.append(Blank);
+//					builder.append(formatRelatedTopics(getTopic(index), pageType));
+//				}
+//			}
+//		}
+//		return builder.toString();
+//	}
 	
 	/**
 	 * Formats the topics related to this fact as HTML fragments.
 	 * @param topics a comma-separated list of topics
 	 * @return a comma-separated list of topics formatted as HTML fragments
 	 */
-	private String formatRelatedTopics(String topics, String pageType) {
-		List<String> topicNames = Topic.namesFrom(topics);
-		StringBuilder builder = new StringBuilder();
-		for (String topicName : topicNames) {
-			String subject = topicName.trim();
-			String singularSubject = Number.convertToSingular(subject);
-			Number aNumber = Number.getNumber(subject.length() > singularSubject.length());
-
-			if (builder.length() > 0) builder.append(Comma + Blank);
-			builder.append(getTopic(singularSubject).formatReferenceLink(aNumber, pageType));
-		}
-		return builder.toString();
-	}
+//	private String formatRelatedTopics(String topics, String pageType) {
+//		List<String> topicNames = Topic.namesFrom(topics);
+//		StringBuilder builder = new StringBuilder();
+//		for (String topicName : topicNames) {
+//			String subject = topicName.trim();
+//			String singularSubject = Number.convertToSingular(subject);
+//			Number aNumber = Number.getNumber(subject.length() > singularSubject.length());
+//
+//			if (builder.length() > 0) builder.append(Comma + Blank);
+//			builder.append(getTopic(singularSubject).formatReferenceLink(aNumber, pageType));
+//		}
+//		return builder.toString();
+//	}
 	
 	/**
 	 * Returns a topic with a given name.
 	 * @param topicName a topic name
 	 * @return a Topic
 	 */
-	private Topic getTopic(String topicName) {
-		return getDomain().containsTopic(topicName) ? 
-				getDomain().getTopic(topicName) : 
-				Topic.named(topicName);
-	}
+//	private Topic getTopic(String topicName) {
+//		return getDomain().containsTopic(topicName) ? 
+//				getDomain().getTopic(topicName) : 
+//				Topic.named(topicName);
+//	}
 
 	/**
 	 * Dumps a sentence.

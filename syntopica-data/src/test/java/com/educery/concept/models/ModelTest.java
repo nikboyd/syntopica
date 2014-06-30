@@ -25,6 +25,8 @@ public class ModelTest {
 	 */
 	@Test
 	public void generatePages() {
+		String linkBase = "https://github.com/nikboyd/SampleDomain/blob/master";
+		String imageBase = "https://rawgithub.com/nikboyd/SampleDomain/master";
 		String pageFolder = getClass().getResource("/pages").getFile();
 		File pageDir = new File(pageFolder);
 		String basePath = pageDir.getParentFile().getParentFile().getParentFile().getPath();
@@ -32,6 +34,7 @@ public class ModelTest {
 		String templateFolder = getClass().getResource("/templates").getFile();
 		String domainFolder = getClass().getResource("/sample").getFile();
 		ModelSite.withTemplates(templateFolder)
+			.withBases(linkBase, imageBase)
 			.withPages(pageFolder)
 			.withModel(domainFolder, "/domain.txt")
 			.withMarkdown()

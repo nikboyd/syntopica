@@ -143,12 +143,14 @@ public class Domain implements Registry.KeySource {
 	}
 	
 	/**
-	 * Returns a topic (if defined).
+	 * Returns a topic, esp. if defined.
 	 * @param topicName a topic name
-	 * @return a Topic, or null
+	 * @return a Topic
 	 */
 	public Topic getTopic(String topicName) {
-		return getTopics().getItem(topicName);
+		return (this.containsTopic(topicName) ?
+				getTopics().getItem(topicName) : 
+				Topic.named(topicName));
 	}
 	
 	/**
