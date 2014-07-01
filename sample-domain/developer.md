@@ -1,6 +1,6 @@
 ## Developer
 
-<img src="https://rawgithub.com/nikboyd/Syntopica/master/sample-domain/developer.svg" align="right"/>
+<img src="developer.svg?raw=true" align="right"/>
 
 In the context of this [Model](model.md), [developer](https://github.com/nikboyd/Syntopica/blob/master/sample-domain/developer.md)
 

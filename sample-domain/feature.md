@@ -1,6 +1,6 @@
 ## Feature
 
-<img src="https://rawgithub.com/nikboyd/Syntopica/master/sample-domain/feature.svg" align="right"/>
+<img src="feature.svg?raw=true" align="right"/>
 
 In the context of this [Model](model.md), [feature](https://github.com/nikboyd/Syntopica/blob/master/sample-domain/feature.md)
 

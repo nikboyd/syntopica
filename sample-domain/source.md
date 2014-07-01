@@ -1,6 +1,6 @@
 ## Source
 
-<img src="https://rawgithub.com/nikboyd/Syntopica/master/sample-domain/source.svg" align="right"/>
+<img src="source.svg?raw=true" align="right"/>
 
 In the context of this [Model](model.md), [source](https://github.com/nikboyd/Syntopica/blob/master/sample-domain/source.md)
 

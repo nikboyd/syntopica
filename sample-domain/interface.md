@@ -1,6 +1,6 @@
 ## Interface
 
-<img src="https://rawgithub.com/nikboyd/Syntopica/master/sample-domain/interface.svg" align="right"/>
+<img src="interface.svg?raw=true" align="right"/>
 
 In the context of this [Model](model.md), [interface](https://github.com/nikboyd/Syntopica/blob/master/sample-domain/interface.md)
 

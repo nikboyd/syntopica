@@ -1,6 +1,6 @@
 ## Improvement
 
-<img src="https://rawgithub.com/nikboyd/Syntopica/master/sample-domain/improvement.svg" align="right"/>
+<img src="improvement.svg?raw=true" align="right"/>
 
 In the context of this [Model](model.md), [improvement](https://github.com/nikboyd/Syntopica/blob/master/sample-domain/improvement.md)
 

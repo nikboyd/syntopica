@@ -1,6 +1,6 @@
 ## Dialog
 
-<img src="https://rawgithub.com/nikboyd/Syntopica/master/sample-domain/dialog.svg" align="right"/>
+<img src="dialog.svg?raw=true" align="right"/>
 
 In the context of this [Model](model.md), [dialog](https://github.com/nikboyd/Syntopica/blob/master/sample-domain/dialog.md)
 

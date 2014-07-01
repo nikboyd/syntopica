@@ -1,6 +1,6 @@
 ## Business
 
-<img src="https://rawgithub.com/nikboyd/Syntopica/master/sample-domain/business.svg" align="right"/>
+<img src="business.svg?raw=true" align="right"/>
 
 In the context of this [Model](model.md), [business](https://github.com/nikboyd/Syntopica/blob/master/sample-domain/business.md)
 

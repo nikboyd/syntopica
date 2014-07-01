@@ -1,6 +1,6 @@
 ## Governor
 
-<img src="https://rawgithub.com/nikboyd/Syntopica/master/sample-domain/governor.svg" align="right"/>
+<img src="governor.svg?raw=true" align="right"/>
 
 In the context of this [Model](model.md), [governor](https://github.com/nikboyd/Syntopica/blob/master/sample-domain/governor.md)
 

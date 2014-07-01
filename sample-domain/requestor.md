@@ -1,6 +1,6 @@
 ## Requestor
 
-<img src="https://rawgithub.com/nikboyd/Syntopica/master/sample-domain/requestor.svg" align="right"/>
+<img src="requestor.svg?raw=true" align="right"/>
 
 In the context of this [Model](model.md), [requestor](https://github.com/nikboyd/Syntopica/blob/master/sample-domain/requestor.md)
 

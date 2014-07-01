@@ -1,6 +1,6 @@
 ## Value
 
-<img src="https://rawgithub.com/nikboyd/Syntopica/master/sample-domain/value.svg" align="right"/>
+<img src="value.svg?raw=true" align="right"/>
 
 In the context of this [Model](model.md), [value](https://github.com/nikboyd/Syntopica/blob/master/sample-domain/value.md)
 
