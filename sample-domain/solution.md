@@ -1,6 +1,6 @@
 ## Solution
 
-<img src="solution.svg?raw=true" align="right"/>
+<img src="https://github.com/nikboyd/Syntopica/raw/master/sample-domain/solution.svg" align="right"/>
 
 In the context of this [Model](model.md), [solution](https://github.com/nikboyd/Syntopica/blob/master/sample-domain/solution.md)
 

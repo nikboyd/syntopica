@@ -1,6 +1,6 @@
 ## Component
 
-<img src="component.svg?raw=true" align="right"/>
+<img src="https://github.com/nikboyd/Syntopica/raw/master/sample-domain/component.svg" align="right"/>
 
 In the context of this [Model](model.md), [component](https://github.com/nikboyd/Syntopica/blob/master/sample-domain/component.md)
 

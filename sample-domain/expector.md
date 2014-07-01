@@ -1,6 +1,6 @@
 ## Expector
 
-<img src="expector.svg?raw=true" align="right"/>
+<img src="https://github.com/nikboyd/Syntopica/raw/master/sample-domain/expector.svg" align="right"/>
 
 In the context of this [Model](model.md), [expector](https://github.com/nikboyd/Syntopica/blob/master/sample-domain/expector.md)
 
