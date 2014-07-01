@@ -25,12 +25,12 @@ public class ModelTest {
 	 */
 	@Test
 	public void generatePages() {
-		String linkBase = "https://github.com/nikboyd/SampleDomain/blob/master";
-		String imageBase = "https://rawgithub.com/nikboyd/SampleDomain/master";
+		String linkBase = "https://github.com/nikboyd/Syntopica/blob/master/sample-domain";
+		String imageBase = "https://rawgithub.com/nikboyd/Syntopica/master/sample-domain";
 		String pageFolder = getClass().getResource("/pages").getFile();
 		File pageDir = new File(pageFolder);
-		String basePath = pageDir.getParentFile().getParentFile().getParentFile().getPath();
-		pageFolder = basePath + "/src/test/resources/pages";
+		String basePath = pageDir.getParentFile().getParentFile().getParentFile().getParentFile().getPath();
+		pageFolder = basePath + "/sample-domain";
 		String templateFolder = getClass().getResource("/templates").getFile();
 		String domainFolder = getClass().getResource("/sample").getFile();
 		ModelSite.withTemplates(templateFolder)
