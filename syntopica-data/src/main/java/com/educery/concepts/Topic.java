@@ -7,7 +7,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.educery.utils.Registry;
-//import com.educery.utils.Tag;
 
 /**
  * Describes a topic and its associations.
@@ -248,38 +247,7 @@ public class Topic implements Registry.KeySource {
 	Registry<Fact> getFactRegistry() {
 		return this.facts;
 	}
-	
-	/**
-	 * Formats a reference link as an HTML fragment.
-	 * @param aNumber indicates whether plural or singular
-	 * @return a formatted HTML fragment
-	 */
-//	public String formatReferenceLink(Number aNumber, String pageType) {
-//		return Blank + getArticle(aNumber) + Blank + getReferenceLink(aNumber, Empty, pageType);
-//	}
-	
-	/**
-	 * Returns a link for this topic with its name capitalized.
-	 * @param linkBase a link base path
-	 * @param pageType indicates a page type
-	 * @return a page reference link
-	 */
-//	public String getCapitalizedLink(String pageType) {
-//		return Tag.linkWith(getLinkFileName(pageType))
-//				.withContent(getSubject()).format();
-//	}
 
-	/**
-	 * Returns a link for this topic with a pluralized name (if so indicated).
-	 * @param aNumber indicates whether a plural is needed
-	 * @return a page reference link
-	 */
-//	public String getReferenceLink(Number aNumber) {
-//		if (getFactRegistry().isEmpty()) return getSubject(aNumber);
-//		return Tag.linkWith(getLinkFileName())
-//				.withContent(getSubject(aNumber)).format();
-//	}
-	
 	/**
 	 * Returns a singular article for this topic.
 	 * @return an article

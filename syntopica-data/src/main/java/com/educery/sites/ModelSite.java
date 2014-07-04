@@ -33,19 +33,26 @@ public class ModelSite implements Registry.KeySource {
 
 	private static final String Slash = "/";
 	private static final String Format = "UTF-8";
+
+	private static final String Text = ".txt";
+	private static final String Graphics = ".svg";
 	private static final String MarkDown = ".md";
 	private static final String HyperText = ".html";
+
+	private static final String Images = "images";
 	private static final String PageTemplate = "page-template";
+
 	private static final String NewLine = "\n";
 	private static final String Break = "<br/>";
 
 	private File pageFolder;
+	private File imageFolder;
 	private File domainFolder;
 	private String pageType = HyperText;
 	private Configuration cfg = new Configuration();
 
-	private String linkBase = "";
-	private String imageBase = "";
+	private String linkBase = Empty;
+	private String imageBase = Empty;
 	private HashMap<String, String> topicLinks = new HashMap<>();
 	private HashMap<String, String> pluralLinks = new HashMap<>();
 
@@ -73,18 +80,27 @@ public class ModelSite implements Registry.KeySource {
 		}
 	}
 	
-	public ModelSite withBases(String ... linkBase) {
-		if (linkBase.length > 0) {
-			this.linkBase = linkBase[0];
+	/**
+	 * Configures this site with the base URLs for links.
+	 * @param linkBases the bases for links
+	 * @return this ModelSite
+	 */
+	public ModelSite withBases(String ... linkBases) {
+		if (linkBases.length > 0) {
+			this.linkBase = linkBases[0];
 			if (!this.linkBase.endsWith(Slash)) this.linkBase += Slash;
 		}
-		if (linkBase.length > 1) {
-			this.imageBase = linkBase[1];
+		if (linkBases.length > 1) {
+			this.imageBase = linkBases[1];
 			if (!this.imageBase.endsWith(Slash)) this.imageBase += Slash;
 		}
 		return this;
 	}
 	
+	/**
+	 * Configures this site for mark down (rather than HTML).
+	 * @return this ModelSite
+	 */
 	public ModelSite withMarkdown() {
 		this.pageType = MarkDown;
 		return this;
@@ -97,6 +113,7 @@ public class ModelSite implements Registry.KeySource {
 	 */
 	public ModelSite withPages(String pageFolder) {
 		this.pageFolder = new File(pageFolder);
+		this.imageFolder = new File(pageFolder + Slash + Images);
 		return this;
 	}
 
@@ -127,18 +144,50 @@ public class ModelSite implements Registry.KeySource {
 		return this.pluralLinks;
 	}
 	
+	/**
+	 * The folder in which to generate page files.
+	 * @return a folder
+	 */
+	public File getPageFolder() {
+		return this.pageFolder;
+	}
+	
+	/**
+	 * The page type.
+	 * @return a page type
+	 */
 	public String getPageType() {
 		return this.pageType;
 	}
 	
+	/**
+	 * The link base path.
+	 * @return a base path
+	 */
 	public String getLinkBase() {
 		return this.linkBase;
 	}
 	
+	/**
+	 * The image base path.
+	 * @return a base path
+	 */
 	public String getImageBase()  {
 		return this.imageBase;
 	}
 	
+	/**
+	 * The folder in which to generate image (SVG) files.
+	 * @return a folder
+	 */
+	public File getImageFolder() {
+		return this.imageFolder;
+	}
+	
+	/**
+	 * The current model domain.
+	 * @return a Domain
+	 */
 	public Domain getDomain() {
 		return Domain.getCurrentDomain();
 	}
@@ -147,14 +196,15 @@ public class ModelSite implements Registry.KeySource {
 	 * Generates the model site pages.
 	 */
 	public void generatePages() {
+		getImageFolder().mkdirs();
 		List<Topic> topics = getDomain().getTopics().getItems();
 		for (Topic topic : topics) mapTopic(topic);
 		for (Topic topic : topics) generatePage(topic);
 		Logger.info("generated " + topics.size() + " pages");
 	}
 	
-	private void generatePage(Topic topic) {
-		HashMap<String, Object> rootMap = new HashMap<String, Object>();
+	private void generatePage(final Topic topic) {
+		final HashMap<String, Object> rootMap = new HashMap<String, Object>();
 		rootMap.put("topic", topic);
 		rootMap.put("domain", getDomain());
 		rootMap.put("diagram", buildDiagram(topic));
@@ -162,19 +212,25 @@ public class ModelSite implements Registry.KeySource {
 		rootMap.put("pageType", getPageType());
 		rootMap.put("site", this);
 		
+		File pageFile = new File(getPageFolder(), topic.getLinkFileName(getPageType()));
+		writePage(pageFile, new PageWriter() {
+			@Override public void writePage(Writer writer) throws Exception {
+				getTemplate(PageTemplate + getPageType()).process(rootMap, writer);
+			}			
+		});
+
+		File imageFile = new File(getImageFolder(), topic.getLinkName() + Graphics);
+		writePage(imageFile, new PageWriter() {
+			@Override public void writePage(Writer writer) throws Exception {
+				writer.write(buildDiagram(topic));
+			}			
+		});
+	}
+	
+	private void writePage(File pageFile, PageWriter pageWriter) {
 		try {
-			File pageFile = new File(this.pageFolder, topic.getLinkFileName(getPageType()));
 			Writer writer = new OutputStreamWriter(new FileOutputStream(pageFile));
-			getTemplate(PageTemplate + getPageType()).process(rootMap, writer);
-		}
-		catch (Exception e ) {
-			Logger.error(e.getMessage(), e);
-		}
-		
-		try {
-			File pageFile = new File(this.pageFolder, topic.getLinkName() + ".svg");
-			Writer writer = new OutputStreamWriter(new FileOutputStream(pageFile));
-			writer.write(buildDiagram(topic));
+			pageWriter.writePage(writer);
 			writer.close();
 		}
 		catch (Exception e ) {
@@ -188,6 +244,12 @@ public class ModelSite implements Registry.KeySource {
 		getPluralLinks().put(key, formatPageLink(topic, Number.PluralNumber));
 	}
 	
+	/**
+	 * Formats a fact for a generated page, including topic links.
+	 * @param fact a fact
+	 * @param context a context
+	 * @return a formatted fact
+	 */
 	public String formatFact(Fact fact, Topic context) {
 		String subject = fact.getTopic(0);
 		String[] parts = fact.getPredicate().getParts();
@@ -233,22 +295,43 @@ public class ModelSite implements Registry.KeySource {
 		return builder.toString();
 	}
 	
+	/**
+	 * Formats a page link for a topic.
+	 * @param topic a topic
+	 * @return a formatted topic link
+	 */
 	public String formatPageLink(Topic topic) {
 		return formatPageLink(topic, Number.SingularNumber);
 	}
 	
+	/**
+	 * Formats a page link for a topic.
+	 * @param topic a topic
+	 * @param aNumber a number (singular or plural)
+	 * @return a formatted topic link
+	 */
 	public String formatPageLink(Topic topic, Number aNumber) {
 		String link = getLinkBase() + topic.getLinkName() + getPageType();
 		return Tag.linkWith(link).withContent(topic.getSubject(aNumber)).format();
 	}
 	
+	/**
+	 * Formats an image link for a topic.
+	 * @param topic a topic
+	 * @return a formatted image reference
+	 */
 	public String formatImageLink(Topic topic) {
-		String link = getImageBase() + topic.getLinkName() + ".svg";
+		String link = getImageBase() + Images + Slash + topic.getLinkName() + Graphics;
 		return Tag.imageWith(link).withAlign("right").format();
 	}
 	
+	/**
+	 * Builds a discussion for a topic, including links to other domain topics.
+	 * @param topic a topic
+	 * @return a formatted discussion
+	 */
 	public String buildDiscussion(Topic topic) {
-		String fileName = this.domainFolder + Slash + topic.getLinkName() + ".txt";
+		String fileName = this.domainFolder + Slash + topic.getLinkName() + Text;
 		File topicFile = new File(fileName);
 		if (!topicFile.exists()) return "";
 		return buildDiscussion(topicFile);
@@ -282,6 +365,11 @@ public class ModelSite implements Registry.KeySource {
 		return discussion;
 	}
 	
+	/**
+	 * Builds a topic diagram (in SVG).
+	 * @param topic a topic
+	 * @return a diagram of a topic
+	 */
 	public String buildDiagram(Topic topic) {
 		Fact fact = topic.getFacts()[0];
 		int boxHeight = fact.getValenceCount() * 3;
@@ -344,9 +432,19 @@ public class ModelSite implements Registry.KeySource {
 		return this.cfg.getTemplate(templateName);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getKey() {
 		return Empty;
 	}
+	
+	/**
+	 * Writes a page using a supplied Writer.
+	 */
+	private static interface PageWriter {
+		
+		public void writePage(Writer writer) throws Exception;
+
+	} // PageWriter
 
 } // ModelSite
