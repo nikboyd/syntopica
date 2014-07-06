@@ -1,7 +1,5 @@
 package com.educery.tags;
 
-import java.util.*;
-
 import com.educery.graphics.*;
 import com.educery.utils.Tag;
 
@@ -11,74 +9,13 @@ import com.educery.utils.Tag;
  * <h4>Connector Responsibilities:</h4>
  * <ul>
  * <li>knows a path between two model elements</li>
- * <li>draws a connector between model elements using SVG</li>
+ * <li>draws a connector between anchors on model elements using SVG</li>
  * </ul>
+ * 
+ * @see Path
+ * @see Anchor
  */
 public class Connector implements Tag.Factory {
-	
-	/**
-	 * An anchor staples a connector end point to the edge of an element.
-	 * 
-	 * <h4>Anchor Responsibilities:</h4>
-	 * <ul>
-	 * <li>knows a point of connection</li>
-	 * <li>knows the attached connectors</li>
-	 * </ul>
-	 */
-	public static class Anchor {
-		
-		private Point location = new Point();
-		private ArrayList<Connector> connectors = new ArrayList<Connector>();
-
-		/**
-		 * The connection point.
-		 * @param p a connection point
-		 */
-		public void setLocation(Point p) {
-			this.location.setX(p.getX());
-			this.location.setY(p.getY());
-		}
-		
-		/**
-		 * The connection point.
-		 */
-		public Point getLocation() {
-			return this.location;
-		}
-
-		/**
-		 * Indicates whether this anchor has any connectors.
-		 * @return whether this anchor has any connectors
-		 */
-		public boolean isEmpty() {
-			return this.connectors.isEmpty();
-		}
-
-		/**
-		 * A connector count.
-		 * @return a count
-		 */
-		public int count() {
-			return this.connectors.size();
-		}
-
-		/**
-		 * Adds connectors to this anshor.
-		 * @param c the connectors
-		 */
-		public void add(Connector ... c) {
-			this.connectors.addAll(Arrays.asList(c));
-		}
-		
-		/**
-		 * The connectors attached to this anchor.
-		 * @return the Connectors, or empty
-		 */
-		public Connector[] getConnectors() {
-			return this.connectors.stream().toArray(Connector[]::new);
-		}
-		
-	} // Anchor
 	
 //	private static final Log Logger = LogFactory.getLog(Connector.class);
 	

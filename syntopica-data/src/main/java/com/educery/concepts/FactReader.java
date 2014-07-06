@@ -8,7 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import com.educery.utils.Registry;
 
 /**
- * Reads a domain model from a file.
+ * Reads facts from a domain model file.
  * 
  * <h4>FactReader Responsibilities:</h4>
  * <ul>

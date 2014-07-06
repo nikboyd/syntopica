@@ -15,8 +15,7 @@ import com.educery.utils.Registry;
  * <ul>
  * <li>knows a title</li>
  * <li>knows a discussion (if given)</li>
- * <li>knows some associations (if given)</li>
- * <li></li>
+ * <li>knows some associated facts (if configured)</li>
  * </ul>
  */
 public class Topic implements Registry.KeySource {

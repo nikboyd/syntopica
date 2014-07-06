@@ -1,18 +1,22 @@
 package com.educery.tags;
 
 import com.educery.graphics.Point;
-import com.educery.tags.Edge.Border;
+import com.educery.tags.Border;
 import com.educery.tags.Edge.Index;
 import com.educery.utils.Registry;
 import com.educery.utils.Tag;
 
 /**
- * Describes an element that contains text in a box (rectangle).
+ * A boxed (rectangular) element that contains some text.
  * 
  * <h4>TextElement Responsibilities:</h4>
  * <ul>
- * <li>knows some text, a color, and a location</li>
+ * <li>knows some text, a color, a location, and a border</li>
  * </ul>
+ * 
+ * @see Border
+ * @see TextBox
+ * @see ModelElement
  */
 public class TextElement implements Registry.KeySource, Tag.Factory {
 

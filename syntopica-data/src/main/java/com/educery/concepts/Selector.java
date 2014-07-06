@@ -16,7 +16,7 @@ import com.educery.utils.Registry;
  * <li>knows a predicate (a verb + some parts)</li>
  * <li>knows a valence count (number of terms)</li>
  * <li>produces a message selector</li>
- * <li></li>
+ * <li>produces a fact from supplied topics</li>
  * </ul>
  */
 public class Selector implements Registry.KeySource {
