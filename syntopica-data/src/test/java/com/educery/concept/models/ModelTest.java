@@ -17,7 +17,7 @@ public class ModelTest {
 
 	private static final String PageBase = "/sample-domain";
 	private static final String LinkBase = "https://github.com/nikboyd/sample-domain/blob/master";
-	private static final String ImageBase = LinkBase.replace("github", "rawgithub").replace("blob/", "");
+	private static final String ImageBase = LinkBase.replace("github", "rawgithub").replace("/blob", "");
 
 	/**
 	 * Generates web pages from a model.
@@ -40,7 +40,7 @@ public class ModelTest {
 	 * @return a companion repo folder
 	 */
 	private String getPagesFolder(String domainFolder) {
-		// domainFolder = /git-code/Syntopica/syntopica-data/target/test-classes/sample
+		// domainFolder = /git-code/syntopica/syntopica-data/target/test-classes/sample
 		// pagesFolder  = /git-code/sample-domain
 		File result = new File(domainFolder);
 		for (int parent = 0; parent < 5; parent++) {

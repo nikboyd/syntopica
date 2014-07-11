@@ -39,6 +39,7 @@ public class ModelSite implements Registry.KeySource {
 	private static final String MarkDown = ".md";
 	private static final String HyperText = ".html";
 
+	private static final String Topics = "topics";
 	private static final String Images = "images";
 	private static final String PageTemplate = "page-template";
 
@@ -87,14 +88,18 @@ public class ModelSite implements Registry.KeySource {
 	 */
 	public ModelSite withBases(String ... linkBases) {
 		if (linkBases.length > 0) {
-			this.linkBase = linkBases[0];
-			if (!this.linkBase.endsWith(Slash)) this.linkBase += Slash;
+			this.linkBase = buildBase(linkBases[0], Topics + Slash);
 		}
 		if (linkBases.length > 1) {
-			this.imageBase = linkBases[1];
-			if (!this.imageBase.endsWith(Slash)) this.imageBase += Slash;
+			this.imageBase = buildBase(linkBases[1], Images + Slash);
 		}
 		return this;
+	}
+	
+	private static String buildBase(String siteBase, String baseFolder) {
+		String result = siteBase;
+		if (!result.endsWith(Slash)) result += Slash;
+		return result + baseFolder;
 	}
 	
 	/**
@@ -112,8 +117,10 @@ public class ModelSite implements Registry.KeySource {
 	 * @return this ModelSite
 	 */
 	public ModelSite withPages(String pageFolder) {
-		this.pageFolder = new File(pageFolder);
+		this.pageFolder = new File(pageFolder + Slash + Topics);
 		this.imageFolder = new File(pageFolder + Slash + Images);
+		this.pageFolder.mkdirs();
+		this.imageFolder.mkdirs();
 		return this;
 	}
 
@@ -321,7 +328,7 @@ public class ModelSite implements Registry.KeySource {
 	 * @return a formatted image reference
 	 */
 	public String formatImageLink(Topic topic) {
-		String link = getImageBase() + Images + Slash + topic.getLinkName() + Graphics;
+		String link = getImageBase() + topic.getLinkName() + Graphics;
 		return Tag.imageWith(link).withAlign("right").format();
 	}
 	

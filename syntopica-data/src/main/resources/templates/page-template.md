@@ -2,7 +2,7 @@
 
 ${site.formatImageLink(topic)}
 
-In the context of this [Model](model.md), ${site.formatPageLink(topic)}
+In the context of this [model](../README.md), ${site.formatPageLink(topic)}
 
 <#list topic.facts as fact>
 * ${site.formatFact(fact,topic)}
