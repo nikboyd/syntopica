@@ -65,34 +65,6 @@ public class TopicReader implements Registry.KeySource {
 	}
 	
 	/**
-	 * Builds a topic discussion.
-	 * @return a topic discussion
-	 */
-	public String buildDiscussion() {
-		readTopic();
-		String discussion = this.builder.toString();
-		Domain domain = Domain.getCurrentDomain();
-
-		for (String subject : domain.getTopicLinks().keySet()) {
-			if (discussion.contains(subject)) {
-				String plural = Number.convertToPlural(subject);
-				discussion = discussion .replace(plural, domain.getPluralLinks().get(subject));
-				discussion = discussion.replace(Blank + subject, Blank + domain.getTopicLinks().get(subject));
-				discussion = discussion.replace(NewLine + NewLine, Break + Break);
-			}
-		}
-		
-		for (String subject : this.linkMap.keySet()) {
-			if (discussion.contains(subject)) {
-				String link = Tag.linkWith(this.linkMap.get(subject)).withContent(subject).format();
-				discussion = discussion.replace(Blank + subject, Blank + link);
-			}
-		}
-		
-		return discussion;
-	}
-	
-	/**
 	 * Reads a discussion from its backing store.
 	 * @return the content of a discussion
 	 */

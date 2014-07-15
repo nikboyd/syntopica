@@ -110,6 +110,14 @@ public class ModelSite implements Registry.KeySource {
 		this.pageType = MarkDown;
 		return this;
 	}
+	
+	/**
+	 * Indicates whether this site uses markdown format.
+	 * @return
+	 */
+	public boolean usesMarkdown() {
+		return getPageType().equals(MarkDown);
+	}
 
 	/**
 	 * Configures this site with a page folder.
@@ -358,7 +366,9 @@ public class ModelSite implements Registry.KeySource {
 				String plural = Number.convertToPlural(subject);
 				discussion = discussion .replace(plural, getPluralLinks().get(subject));
 				discussion = discussion.replace(Blank + subject, Blank + getTopicLinks().get(subject));
-				discussion = discussion.replace(NewLine + NewLine, Break + Break);
+				if (!this.usesMarkdown()) {
+					discussion = discussion.replace(NewLine + NewLine, Break + Break);
+				}
 			}
 		}
 		
