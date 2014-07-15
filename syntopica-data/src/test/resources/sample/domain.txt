@@ -20,8 +20,8 @@ developer builds: component, dialog, interface.
 developer tests: component, dialog, interface.
 developer serves: business as: source of: estimates.
 
-vision describes: intended outcomes of: business.
-mission describes: intended effects of: business.
+vision describes: outcomes of: business.
+mission describes: effects of: business.
 value measures: quality of: concern for: business.
 value measures: quantity of: money.
 
