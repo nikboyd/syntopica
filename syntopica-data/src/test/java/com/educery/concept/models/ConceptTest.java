@@ -1,64 +1,33 @@
 package com.educery.concept.models;
 
 import java.util.*;
-
 import org.junit.*;
-
-import com.educery.concepts.Domain;
-import com.educery.concepts.Fact;
-import com.educery.concepts.FactReader;
-import com.educery.concepts.Selector;
-import com.educery.concepts.Topic;
-
 import static org.junit.Assert.*;
 
-@Ignore
-public class ConceptTest {
-	
-//	private static final Log Logger = LogFactory.getLog(ConceptTest.class);
-	
-	@Test
-	public void readFacts() throws Exception {
-		FactReader.with(getClass().getResourceAsStream("/sample.txt")).readFacts();
-		Domain.getCurrentDomain().dump();
-	}
-	
-	@Test
-	public void binaryTemplate() {
-		Selector p = Selector.withVerb("has");
-		p.dump();
-	}
-	
-	@Test
-	public void trinaryTemplate() {
-		Selector p = Selector.withVerb("has").with("for");
-		p.dump();
+import com.educery.concepts.*;
+import com.educery.utils.*;
 
-		Fact f = p.buildFact("Sample", "Dimple", "Example");
-		f.dumpMessage();
-		f.dumpSentence();
+//@Ignore
+public class ConceptTest implements Logging {
 
-		Domain.getCurrentDomain().dump();
-		List<Topic> topics = Domain.getCurrentDomain().getTopics().getItems();
-		assertFalse(topics.isEmpty());
-	}
-	
-	@Test
-	public void unaryConcept() {
-		Selector p = Selector.withUnary("works");
-		p.dump();
-	}
-	
-	@Test
-	public void binaryConcept() {
-		Selector p = Selector.withVerb("has");
-		p.dump();
-	}
-	
-	@Test
-	public void complexConcept() {
-		Selector p = Selector.withVerb("has", "for");
-		p.dump();
-	}
+    @Test public void variousConcepts() {
+        Selector.withVerb("has").dump();
+        Selector.withUnary("works").dump();
+        Selector.withVerb("has").dump();
+        Selector.withVerb("has", "for").dump();
+    }
+
+    @Test public void trinaryTemplate() {
+        Selector s = Selector.withVerb("has").with("for");
+        s.dump();
+
+        Fact f = s.buildFact("Sample", "Dimple", "Example");
+        f.dumpMessage();
+        f.dumpSentence();
+
+        Domain.getCurrentDomain().dump();
+        List<Topic> topics = Domain.getCurrentDomain().getTopics().getItems();
+        assertFalse(topics.isEmpty());
+    }
 
 } // ConceptTest

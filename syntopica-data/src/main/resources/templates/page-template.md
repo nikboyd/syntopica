@@ -1,11 +1,11 @@
 ## ${topic.subject}
 
-${site.formatImageLink(topic)}
+${topic.formatImageLink()}
 
-In the context of this [model](../README.md), ${site.formatPageLink(topic)}
+In the context of this [model](../README.md), ${topic.formatPageLink()}
 
 <#list topic.facts as fact>
-* ${site.formatFact(fact,topic)}
+* ${topic.formatFact(fact)}
 </#list>
 
 ### Discussion
@@ -13,3 +13,13 @@ In the context of this [model](../README.md), ${site.formatPageLink(topic)}
 ${discussion}
 
 <h4 align="center"><b>&sect; &sect; &sect;</b></h4>
+
+<#list site.linkedTopics as topic>
+${topic.formatRefLinks()}
+</#list>
+
+<#list site.linkedTopics as topic>
+<#if topic.hasLinkedTopics()>
+${topic.formatLinkedReferences()}
+</#if>
+</#list>

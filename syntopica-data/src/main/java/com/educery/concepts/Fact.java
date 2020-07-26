@@ -1,17 +1,16 @@
 package com.educery.concepts;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.educery.concepts.Topic.Number;
-import com.educery.utils.Registry;
+import com.educery.utils.*;
+import com.educery.concepts.Number;
+import com.educery.graphics.Point;
+import com.educery.tags.Connector;
+import com.educery.tags.ModelElement;
+import static com.educery.utils.Utils.*;
 
 /**
  * Expresses a statement of fact.
- * 
+ *
  * <h4>Fact Responsibilities:</h4>
  * <ul>
  * <li>knows the predicate from which it was derived</li>
@@ -22,241 +21,191 @@ import com.educery.utils.Registry;
  * </ul>
  */
 public class Fact implements Registry.KeySource {
-	
-	private static final Log Logger = LogFactory.getLog(Fact.class);
 
-	private Domain domain;
-	private Selector predicate;
-	private String definedTopic = Empty;
-	private ArrayList<String> topics = new ArrayList<String>();
-	
-	/**
-	 * Parses a message to produce a fact.
-	 * @param message a message
-	 * @return a new Fact
-	 */
-	public static Fact parseFrom(String message) {
-		String definedTopic = Empty;
-		String[] terms = message.split(Blank);
-		
-		String topic = Empty;
-		String selector = Empty;
-		ArrayList<String> topics = new ArrayList<String>();
-		for (int index = 0; index < terms.length; index++) {
-			String term = terms[index].trim().replace(Period, Blank);
-			if (!term.isEmpty()) {
-				if (term.equals(Equals.trim())) {
-					definedTopic = topic.trim();
-					topic = Empty;
-				}
-				else
-				if (term.endsWith(Colon)) {
-					selector += term;
-					topics.add(topic.trim());
-					topic = Empty;
-				}
-				else {
-					topic += term;
-					topic += Blank;
-				}
-			}
-		}
+    private Domain domain;
+    public Domain getDomain() { return this.domain; }
 
-		topics.add(topic.trim());
-		if (Domain.accepts(selector, topics)) {
-			Domain.named(topics.get(1));
-			return null;
-		}
+    private Selector predicate;
+    public Selector getPredicate() { return this.predicate; }
 
-		Selector p = Selector.fromSelector(selector);
-		Fact result = p.buildFact(topics);
-		if (!definedTopic.isEmpty()) {
-			result.define(Topic.named(definedTopic));
-			definedTopic = Empty;
-		}
-		return result;
-	}
-	
-	/**
-	 * Returns a new Fact.
-	 * @param p a predicate
-	 * @return a new Fact
-	 */
-	public static Fact with(Selector p) {
-		Fact result = new Fact();
-		result.predicate = p;
-		return result;
-	}
-	
-	/**
-	 * Constructs a new Fact. Prevents external construction 
-	 * without use of the static factory method.
-	 */
-	private Fact() { }
+    private String definedTopic = Empty;
+    public String definedTopic() { return this.definedTopic; }
+    public boolean isDefined() { return !definedTopic().isEmpty(); }
+    public boolean defines(Topic topic) { return isDefined() && definedTopic().equals(topic.getTitle()); }
 
-	/**
-	 * Adds topics to this fact.
-	 * @param topics some topics
-	 * @return this Fact
-	 */
-	public Fact with(String ... topics) {
-		return this.with(Arrays.asList(topics));
-	}
-	
-	/**
-	 * Adds topics to this fact.
-	 * @param topics some topics
-	 * @return this Fact
-	 */
-	public Fact with(List<String> topics) {
-		if (topics.size() < 1) throw reportMissingSubject();
-		if (topics.size() > getValenceCount()) throw reportExcessiveTopics();
-		
-		// register the subject of this statement of fact
-		this.domain = Domain.getCurrentDomain();
-		getDomain().registerTopic(Topic.named(topics.get(0))).with(this);
-		this.topics.addAll(topics);
-		return this;
-	}
-	
-	public boolean isDefined() {
-		return !this.definedTopic.isEmpty();
-	}
-	
-	/**
-	 * The domain within which this fact is construed.
-	 * @return a Domain
-	 */
-	public Domain getDomain() {
-		return this.domain;
-	}
+    static final String[] NoTopics = { };
+    private final ArrayList<String> topics = new ArrayList();
+    public String getTopic(int index) { return this.topics.get(index); }
+    public String[] getTopics() { return unwrap(this.topics, NoTopics); }
+    public ArrayList<String> getTopicList() { return new ArrayList(this.topics); }
+    public int topicCount() { return this.topics.size(); }
+    public String mainTopic() { return getTopic(0); }
 
-	/**
-	 * Returns the predicate from which this fact was derived.
-	 * @return a Predication
-	 */
-	public Selector getPredicate() {
-		return this.predicate;
-	}
-	
-	/**
-	 * The topics associated with this fact.
-	 * @return a list of Topics
-	 */
-	public String[] getTopics() {
-		return this.topics.stream().toArray(String[]::new);
-	}
-	
-	/**
-	 * Return a specific topic.
-	 * @param index indicates which topic
-	 * @return a topic
-	 */
-	public String getTopic(int index) {
-		return this.topics.get(index);
-	}
+    public List<String> getRelatedSubjects() {
+        return map(select(this.topics, item -> !(item.trim().isEmpty())), item -> Number.asSingular(item)); }
 
-	/**
-	 * Returns a sentence that expresses this fact.
-	 * @return a sentence
-	 */
-	public String getSentence() {
-		return getMessage().replace(Colon, Empty);
-	}
-	
-	/**
-	 * Returns a message that expresses this fact.
-	 * @return a message
-	 */
-	public String getMessage() {
-		String[] topics = getTopics();
-		String[] parts = getPredicate().getSelectorParts();
-		StringBuilder builder = new StringBuilder();
-		for (int index = 0; index < topics.length; index++) {
-			builder.append(Blank);
-			builder.append(topics[index]);
-			if (index < parts.length) {
-				builder.append(Blank);
-				builder.append(parts[index]);
-			}
-		}
-		return builder.toString().trim() + Period;
-	}
-	
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		return getMessage();
-	}
+    /**
+     * Parses a message to produce a fact.
+     *
+     * @param message a message
+     * @return a new Fact
+     */
+    public static Fact parseFrom(String message) {
+        String definedTopic = Empty;
+        String[] terms = message.split(Blank);
 
-	/** {@inheritDoc} */
-	@Override
-	public String getKey() {
-		return getPredicate().getKey();
-	}
-	
-	/**
-	 * The valence count of the associated predicate.
-	 * @return a count
-	 */
-	public int getValenceCount() {
-		return getPredicate().getValenceCount();
-	}
-	
-	/**
-	 * Makes this Fact a definition.
-	 * @param topic a defined topic
-	 * @return this Fact
-	 */
-	public Fact define(Topic topic) {
-		this.definedTopic = topic.getTitle();
-		topic.getFactRegistry().register(this);
-		getDomain().getTopics().register(topic);
-		return this;
-	}
-	
-	/**
-	 * Returns the (potentially) related subjects.
-	 * @return the related subjects
-	 */
-	public List<String> getRelatedSubjects() {
-		return this.topics.stream()
-				.filter(s -> !(s.trim().isEmpty()))
-				.map(s -> Number.convertToSingular(s))
-				.collect(Collectors.toList());
-	}
+        String topic = Empty;
+        String selector = Empty;
+        ArrayList<String> topics = new ArrayList();
+        for (String term : terms) {
+            String aTerm = term.trim().replace(Period, Blank);
+            if (!aTerm.isEmpty()) {
+                if (aTerm.equals(Tag.Equals.trim())) {
+                    definedTopic = topic.trim();
+                    topic = Empty;
+                } else if (aTerm.endsWith(Colon)) {
+                    selector += aTerm;
+                    topics.add(topic.trim());
+                    topic = Empty;
+                } else {
+                    topic += aTerm;
+                    topic += Blank;
+                }
+            }
+        }
 
-	/**
-	 * Dumps a sentence.
-	 */
-	public void dumpSentence() {
-		Logger.info(getPrefix() + getSentence());
-	}
+        topics.add(topic.trim());
+        if (Domain.accepts(selector, topics)) {
+            Domain.named(topics.get(1));
+            return null;
+        }
 
-	/**
-	 * Dumps a message.
-	 */
-	public void dumpMessage() {
-		Logger.info(getPrefix() + getMessage());
-		Logger.info(getRelatedSubjects().toString());
-	}
-	
-	/**
-	 * Returns a prefix that describes this fact.
-	 * @return a fact description prefix
-	 */
-	private String getPrefix() {
-		return (this.definedTopic.isEmpty() ? 
-				getClass().getSimpleName() : 
-				this.definedTopic) + Equals;
-	}
+        Selector p = Selector.fromSelector(selector);
+        Fact result = p.buildFact(topics);
+        if (!definedTopic.isEmpty()) {
+            result.define(Topic.named(definedTopic));
+            definedTopic = Empty;
+        }
+        return result;
+    }
 
-	private RuntimeException reportMissingSubject() {
-		return new IllegalArgumentException("missing required subject for predicate " + getKey());
-	}
-	
-	private RuntimeException reportExcessiveTopics() {
-		return new IllegalArgumentException("too many topics for predicate " + getKey());
-	}
+    private Fact() {} // prevents inappropriate external construction.
+    public Fact(Selector p) { this.predicate = p; this.domain = Domain.getCurrentDomain(); }
+    public Fact with(String... topics) { return this.with(wrap(topics)); }
+    public Fact with(List<String> topics) {
+        if (topics.size() < 1) {
+            throw reportMissingSubject();
+        }
+        if (topics.size() > getValenceCount()) {
+            throw reportExcessiveTopics();
+        }
+
+        // register the subject of this statement of fact
+        this.topics.addAll(topics);
+        getDomain().registerTopic(Topic.named(mainTopic())).with(this);
+        return this;
+    }
+
+    public String getSentence() { return getMessage().replace(Colon, Empty); }
+    public String getMessage() {
+        String[] parts = getPredicate().getSelectorParts();
+        StringBuilder builder = new StringBuilder();
+        for (int index = 0; index < topicCount(); index++) {
+            builder.append(Blank);
+            builder.append(getTopic(index));
+            if (index < parts.length) {
+                builder.append(Blank);
+                builder.append(parts[index]);
+            }
+        }
+        return builder.toString().trim() + Period;
+    }
+
+    @Override public String toString() { return getMessage(); }
+    @Override public String getKey() { return getPredicate().getKey(); }
+    public int getValenceCount() { return getPredicate().getValenceCount(); }
+
+    public Fact define(Topic topic) {
+        this.definedTopic = topic.getTitle();
+        topic.facts().register(this);
+        getDomain().getTopics().register(topic);
+        return this;
+    }
+
+    public Tag.Factory[] buildTags() {
+        ModelElement[] elements = buildModels();
+        Connector[] connectors = buildConnectors(elements);
+        ArrayList<Tag.Factory> results = new ArrayList<>();
+        results.addAll(wrap(elements));
+        results.addAll(wrap(connectors));
+        return results.stream().toArray(Tag.Factory[]::new);
+    }
+
+    private Connector[] buildConnectors(ModelElement[] elements) {
+        if (elements.length < 2) return new Connector[0];
+        String[] topics = getTopics();
+        String[] labels = getPredicate().getParts();
+        Connector[] results = new Connector[labels.length];
+        for (int index = 0; index < labels.length; index++) {
+            results[index] = Connector.named(labels[index]);
+            if (index > 0) {
+                results[index].emptyHeads();
+            }
+            if (index < elements.length - 1) {
+                results[index].between(elements[index + 1], elements[0]);
+            }
+        }
+
+        elements[0].addTails(results);
+        for (int index = 0; index < results.length; index++) {
+            int headCount = (Topic.getNumber(topics[index + 1]).isPlural() ? 2 : 1);
+            elements[index + 1].addHeads(results[index].withHeads(headCount));
+        }
+        return results;
+    }
+
+    private ModelElement[] buildModels() {
+        Point p = Point.at(10, 10);
+        List<String> subjects = getRelatedSubjects();
+        ModelElement[] results = new ModelElement[subjects.size()];
+        for (int index = 0; index < results.length; index++) {
+            results[index] = ModelElement.named(subjects.get(index));
+            if (index > 0) {
+                Point delta = Point.at(0, index * 100);
+                results[index].withGrey().at(p.plus(delta));
+            } else {
+                results[index].withCyan().at(p);
+                p = p.plus(Point.at(220, 0));
+            }
+        }
+        return results;
+    }
+
+    static final String NewLine = "\n";
+    public String formatRefLinks() {
+        StringBuilder builder = new StringBuilder();
+        getTopicList().forEach((subject) -> {
+            if (builder.length() > 0) builder.append(NewLine);
+            builder.append(getDomain().getTopic(subject).formatRefLink());
+        });
+        getTopicList().forEach((subject) -> {
+            if (builder.length() > 0) builder.append(NewLine);
+            builder.append(getDomain().getTopic(subject).formatRefLink(Number.PluralNumber));
+        });
+        return builder.toString();
+    }
+
+    public void dumpSentence() { report(getPrefix() + getSentence()); }
+    public void dumpMessage() {
+        report(getPrefix() + getMessage());
+        report(getRelatedSubjects().toString()); }
+
+    private String getPrefix() { return (this.isDefined() ? definedTopic() : getClass().getSimpleName()) + Tag.Equals; }
+
+    private RuntimeException reportMissingSubject() {
+        return new IllegalArgumentException("missing required subject for predicate " + getKey()); }
+
+    private RuntimeException reportExcessiveTopics() {
+        return new IllegalArgumentException("too many topics for predicate " + getKey()); }
 
 } // Fact

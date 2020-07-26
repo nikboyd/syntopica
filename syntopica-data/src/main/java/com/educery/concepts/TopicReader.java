@@ -3,114 +3,41 @@ package com.educery.concepts;
 import java.io.*;
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.educery.concepts.Topic.Number;
 import com.educery.utils.*;
+import static com.educery.utils.Exceptional.*;
 
 /**
  * Reads a topic discussion from a file.
- * 
+ *
  * <h4>TopicReader Responsibilities:</h4>
  * <ul>
  * <li>reads a topic discussion</li>
  * <li>prepares a topic discussion for page rendering</li>
  * </ul>
  */
-public class TopicReader implements Registry.KeySource {
+public class TopicReader extends LineReader {
 
-	private static final Log Logger = LogFactory.getLog(TopicReader.class);
-	private static final String NewLine = "\n";
-	private static final String Break = "<br/>";
-	
-	private BufferedReader reader;
-	private StringBuilder builder = new StringBuilder();
-	private HashMap<String, String> linkMap = new HashMap<>();
+    private static final String Break = "<br/>";
 
-	/**
-	 * Returns a new TopicReader.
-	 * @param modelFile a model file
-	 * @return a new TopicReader
-	 */
-	public static TopicReader from(File modelFile) {
-		try {
-			return with(new FileInputStream(modelFile));
-		}
-		catch (Exception e ) {
-			Logger.error(e.getMessage(), e);
-			return null;
-		}
-	}
+    private final HashMap<String, String> linkMap = new HashMap<>();
+    public Map<String, String> getLinkMap() { return this.linkMap; }
 
-	/**
-	 * Returns a new TopicReader.
-	 * @param stream a topic stream
-	 * @return a new TopicReader
-	 */
-	public static TopicReader with(InputStream stream) {
-		TopicReader result = new TopicReader();
-		result.reader = new BufferedReader(new InputStreamReader(stream));
-		return result;
-	}
-	
-	private TopicReader() { }
-	
-	/**
-	 * Contains the links defined in a discussion file.
-	 * @return a link map
-	 */
-	public Map<String, String> getLinkMap() {
-		return this.linkMap;
-	}
-	
-	/**
-	 * Reads a discussion from its backing store.
-	 * @return the content of a discussion
-	 */
-	public String readDiscussion() {
-		readTopic();
-		return this.builder.toString();
-	}
-	
-	private void readTopic() {
-		try {
-			for (String line = readLine(); line != null; line = readLine() ) {
-				if (line.contains(Equals)) {
-					readLink(line);
-				}
-				else {
-					readTopic(line);
-				}
-			}
-			this.reader.close();
-		}
-		catch (Exception e ) {
-			Logger.error(e.getMessage(), e);
-		}
-	}
-	
-	/**
-	 * Reads a single line (statement) from the message stream.
-	 * @return a single statement
-	 * @throws Exception if raised during the read
-	 */
-	private String readLine() throws Exception {
-		return this.reader.readLine();
-	}
-	
-	private void readLink(String line) {
-		String[] links = line.split(Equals);
-		this.linkMap.put(links[0].trim(), links[1].trim());
-	}
-	
-	private void readTopic(String line) {
-		this.builder.append(line.trim() + NewLine);
-	}
+    protected TopicReader(InputStream stream) { super(stream); }
+    public static TopicReader with(InputStream stream) { return new TopicReader(stream); }
+    public static TopicReader from(File modelFile) { return nullOrTryLoudly(() -> with(new FileInputStream(modelFile))); }
 
-	@Override
-	public String getKey() {
-		return Empty;
-	}
+    private final StringBuilder builder = new StringBuilder();
+    private void append(String text) { this.builder.append(text); }
+    public String readDiscussion() { builder.setLength(0); readTopic(); return this.builder.toString(); }
+    private void readTopic() { readLines(line -> readLine(line)); }
+
+    private static final String NewLine = "\n";
+    private void readTopic(String line) { append(line.trim()); append(NewLine); }
+    private void readLine(String line) { if (line.contains(Tag.Equals)) readLink(line); else readTopic(line); }
+    private void readLink(String line) { saveLink(line.split(Tag.Equals.trim())); }
+    private void saveLink(String... links) {
+        String definedTerm = links[0].trim();
+//        Domain.getCurrentDomain().getTopic(definedTerm).makeDefined();
+        this.linkMap.put(definedTerm, links[1].trim()); }
 
 } // TopicReader
