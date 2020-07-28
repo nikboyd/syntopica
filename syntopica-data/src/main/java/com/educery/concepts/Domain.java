@@ -26,10 +26,12 @@ public class Domain implements Registry.KeySource {
 
     private String name = "";
     private final Registry<Topic> topics = Registry.empty();
-    public Registry<Topic> getTopics() { return this.topics; }
+    public Registry<Topic> topics() { return this.topics; }
+    public Registry<Topic> getTopics() { return topics(); }
 
     private final Registry<Selector> predicates = Registry.empty();
-    public Registry<Selector> getPredicates() { return this.predicates; }
+    public Registry<Selector> predicates() { return this.predicates; }
+    public Registry<Selector> getPredicates() { return predicates(); }
 
     private final HashMap<String, String> topicLinks = new HashMap<>();
     public HashMap<String, String> getTopicLinks() { return this.topicLinks; }

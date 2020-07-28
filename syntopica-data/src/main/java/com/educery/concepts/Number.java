@@ -2,6 +2,7 @@ package com.educery.concepts;
 
 import java.util.*;
 import com.educery.utils.*;
+import static com.educery.utils.Utils.*;
 
 /**
  * Converts between singular and plural forms of a subject.
@@ -35,7 +36,9 @@ public class Number implements Logging {
     }
 
     public boolean isPlural() { return this == PluralNumber; }
-    public static boolean isSingular(String subject) { return Number.asSingular(subject).equals(subject.trim()); }
+
+    public static Number getNumber(String subject) { return isSingular(subject) ? SingularNumber : PluralNumber; }
+    public static boolean isSingular(String subject) { return !endsPlurally(subject); }
     public static String asSingular(String subject) { return PluralNumber.convert(subject); }
     public static String asPlural(String subject) { return toPlural(SingularNumber.convert(subject)); }
     private static String toPlural(String subject) { return subject.endsWith(Plural) ? subject : subject + Plural; }
@@ -62,11 +65,30 @@ public class Number implements Logging {
         return subject;
     }
 
-    static final Character[] Vowels = { 'a', 'e', 'i', 'o', 'u', 'h' };
-    static final List<Character> VowelList = Utils.wrap(Vowels);
-    public boolean needsAn(String subject) { return VowelList.contains(subject.trim().charAt(0)); }
+    static final String[] PluralEnds = {
+        "aes", "bs", "cs", "ds", "es",
+        "fs", "gs", "hs", "ies", "js",
+        "ks", "ls", "ms", "ns", "oes",
+        "ps", "qs", "rs", "sses", "ts",
+        "ues", "vs", "ws", "xes", "zs", // no ys!
+    };
+    static final List<String> EndsList = wrap(PluralEnds);
 
-    static final String[] Articles = { "a", "an", "some" };
-    public String getArticle(String s) { return isPlural() ? Articles[2] : needsAn(s) ? Articles[1] : Articles[0]; }
+    static final Character[] Vowels = { 'a', 'e', 'i', 'o', 'u', };
+    static final Character[] Vowelish = { 'a', 'e', 'i', 'o', 'u', 'h' };
+    static final List<Character> VowelList = wrap(Vowelish);
+    private static String normal(String s) { return s.trim().toLowerCase(); }
+    private Character head(String s) { return normal(s).charAt(0); }
+    private Character tail(String s) { return s.charAt(s.length() - 1); }
+    public boolean needsAn(String s) { return VowelList.contains(head(s)); }
+    public static boolean endsPlurally(String s) {
+        String norm = normal(s); return matchAny(EndsList, (end) -> norm.endsWith(end)); }
+
+    static final String An = "an";
+    static final String Some = "some";
+    static final String[] Articles = { "a", An, Some };
+    public static String getArticle(String s) { return getNumber(s).getProperArticle(s); }
+    public String getProperArticle(String s) {
+        return isPlural() ? Articles[2] : needsAn(s) ? Articles[1] : Articles[0]; }
 
 } // Number

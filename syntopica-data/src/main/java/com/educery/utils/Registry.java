@@ -45,7 +45,10 @@ public class Registry<ItemType extends Registry.KeySource> implements Logging {
     private final HashMap<String, ItemType> items = new HashMap();
     public ItemType register(ItemType item) { return addItem(item); }
     private ItemType addItem(ItemType item) {
-        if (okKey(item) && !hasItem(item.getKey())) adopt(item); return item; }
+        if (!okKey(item)) return item; // invalid!
+        if (!hasItem(item.getKey())) adopt(item);
+        return this.items.get(item.getKey()); }
+
     public void remove(ItemType item) { if (okKey(item)) {
         if (hasItem(item.getKey())) orphan(item); else reportMissing(item); } }
 

@@ -56,13 +56,16 @@ public class ModelSite implements Site {
     }
 
     static final String Slash = "/";
-    public ModelSite withBases(String... linkBases) {
+    public ModelSite withBases(String domainFolder, String... linkBases) {
+        this.domainFolder = new File(domainFolder);
+
         if (linkBases.length > 0) {
             this.linkBase = buildBase(linkBases[0], Topics + Slash);
         }
         if (linkBases.length > 1) {
             this.imageBase = buildBase(linkBases[1], Images + Slash);
         }
+
         Site.SiteSource.register(this);
         return this;
     }
@@ -90,9 +93,9 @@ public class ModelSite implements Site {
 
     private File domainFolder;
     @Override public File domainFolder() { return this.domainFolder; }
+
+    public ModelSite withModel(String modelFile) { readDomainFacts(modelFile); return this; }
     private void readDomainFacts(String modelFile) { FactReader.from(new File(domainFolder, modelFile)).readFacts(); }
-    public ModelSite withModel(String domainFolder, String modelFile) {
-        this.domainFolder = new File(domainFolder); readDomainFacts(modelFile); return this; }
 
     public void mapTopic(Topic topic) {
         String key = topic.getTitle();

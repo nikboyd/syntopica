@@ -23,10 +23,9 @@ public class ModelTest implements Logging {
         String templateFolder = getClass().getResource("/templates").getFile();
         String domainFolder = getClass().getResource("/sample").getFile();
         ModelSite.withTemplates(templateFolder)
-                .withBases(LinkBase, ImageBase)
+                .withBases(domainFolder, LinkBase, ImageBase)
                 .withPages(getPagesFolder(domainFolder))
-                .withModel(domainFolder, "/domain.txt")
-                .withMarkdown()
+                .withModel("/domain.txt").withMarkdown()
                 .generatePages();
     }
 

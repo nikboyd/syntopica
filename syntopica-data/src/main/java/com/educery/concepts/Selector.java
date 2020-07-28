@@ -46,8 +46,7 @@ public class Selector implements Registry.KeySource {
 
     public static Selector fromSelector(String selector) {
         if (!selector.endsWith(Colon)) return withUnary(selector);
-        String[] parts = selector.split(Colon);
-        return Selector.withParts(wrap(parts));
+        return Selector.withParts(wrap(selector.split(Colon)));
     }
 
     private static Selector withParts(List<String> parts) {
@@ -80,10 +79,16 @@ public class Selector implements Registry.KeySource {
 
     public void dump() { report("predicate selector = " + getSelector()); }
     @Override public String getKey() { return getSelector(); }
+
+    private String selector = Empty;
     public String getSelector() {
-        StringBuilder builder = new StringBuilder();
-        for (String part : getSelectorParts()) builder.append(part);
-        return builder.toString(); }
+        if (this.selector.isEmpty() && !this.parts.isEmpty()) {
+            // build and cache selector
+            StringBuilder builder = new StringBuilder();
+            for (String part : getSelectorParts()) builder.append(part);
+            this.selector = builder.toString();
+        }
+        return this.selector; }
 
     public String[] getSelectorParts() {
         int count = getValenceCount();

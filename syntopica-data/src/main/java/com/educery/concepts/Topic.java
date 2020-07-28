@@ -67,7 +67,7 @@ public class Topic implements Registry.KeySource, Logging {
     public Fact[] getFacts() { return unwrap(facts().getItems(), NoFacts); }
 
     public String getArticle() { return getArticle(Number.SingularNumber); }
-    public String getArticle(Number aNumber) { return aNumber.getArticle(getTitle()); }
+    public String getArticle(Number aNumber) { return Number.getArticle(getTitle()); }
 
     public String getSubject() { return capitalize(getTitle()); }
     public String getSubject(Number aNumber) { return capitalize(getTitle(aNumber)); }
@@ -92,7 +92,7 @@ public class Topic implements Registry.KeySource, Logging {
         String[] parts = fact.getPredicate().getParts();
         StringBuilder builder = new StringBuilder();
         if (fact.defines(this)) {
-            builder.append(Number.SingularNumber.getArticle(subject));
+            builder.append(Number.getArticle(subject));
             builder.append(Blank);
             builder.append(formatRelatedTopics(subject));
             builder.append(Blank);
@@ -101,7 +101,7 @@ public class Topic implements Registry.KeySource, Logging {
         builder.append(Tag.italics(parts[0]).format());
         if (fact.getValenceCount() > 1) {
             builder.append(Blank);
-            builder.append(Number.SingularNumber.getArticle(fact.getTopic(1)));
+            builder.append(Number.getArticle(fact.getTopic(1)));
             builder.append(Blank);
             builder.append(formatRelatedTopics(fact.getTopic(1)));
 
@@ -110,7 +110,7 @@ public class Topic implements Registry.KeySource, Logging {
                     builder.append(Blank);
                     builder.append(parts[index - 1]);
                     builder.append(Blank);
-                    builder.append(Number.SingularNumber.getArticle(fact.getTopic(index)));
+                    builder.append(Number.getArticle(fact.getTopic(index)));
                     builder.append(Blank);
                     builder.append(formatRelatedTopics(fact.getTopic(index)));
                 }
@@ -119,16 +119,16 @@ public class Topic implements Registry.KeySource, Logging {
         return builder.toString();
     }
 
+    static final String OR = " or ";
     private String formatRelatedTopics(String topics) {
         StringBuilder builder = new StringBuilder();
-        Topic.listFrom(topics).forEach((topic) -> topic.formatRelatedTopic(builder));
+        Topic.listFrom(topics).forEach((topic) -> {
+            if (builder.length() > 0) builder.append(OR);
+            builder.append(topic.formatPageLink());
+        });
         return builder.toString(); }
 
-    static final String NewLine = "\n";
-    public void formatRelatedTopic(StringBuilder builder) {
-        if (builder.length() > 0) builder.append(NewLine);
-        builder.append(formatPageLink()); }
-
+    public String formatReference() { return getArticle() + Blank + formatPageLink(); }
     public String formatPageLink() { return formatPageLink(Number.SingularNumber); }
     public String formatPageLink(Number aNumber) {
         return Tag.linkWith(getLinkFileName()).withContent(getSubject(aNumber)).format(); }
@@ -157,6 +157,7 @@ public class Topic implements Registry.KeySource, Logging {
         return canvas.drawElement().format();
     }
 
+    static final String NewLine = "\n";
     static final String Break = "<br/>";
     public String buildDiscussion() {
         if (!domainFile().exists()) return "";

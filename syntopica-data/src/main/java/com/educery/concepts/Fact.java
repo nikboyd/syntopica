@@ -1,11 +1,9 @@
 package com.educery.concepts;
 
 import java.util.*;
+import com.educery.tags.*;
 import com.educery.utils.*;
-import com.educery.concepts.Number;
 import com.educery.graphics.Point;
-import com.educery.tags.Connector;
-import com.educery.tags.ModelElement;
 import static com.educery.utils.Utils.*;
 
 /**
@@ -22,11 +20,13 @@ import static com.educery.utils.Utils.*;
  */
 public class Fact implements Registry.KeySource {
 
-    private Domain domain;
-    public Domain getDomain() { return this.domain; }
+    private final Domain domain;
+    public Domain domain() { return this.domain; }
+    public Domain getDomain() { return domain(); }
 
     private Selector predicate;
-    public Selector getPredicate() { return this.predicate; }
+    public Selector predicate() { return this.predicate; }
+    public Selector getPredicate() { return predicate(); }
 
     private String definedTopic = Empty;
     public String definedTopic() { return this.definedTopic; }
@@ -77,34 +77,33 @@ public class Fact implements Registry.KeySource {
         topics.add(topic.trim());
         if (Domain.accepts(selector, topics)) {
             Domain.named(topics.get(1));
-            return null;
+            return null; // domain registered!
         }
 
         Selector p = Selector.fromSelector(selector);
         Fact result = p.buildFact(topics);
         if (!definedTopic.isEmpty()) {
-            result.define(Topic.named(definedTopic));
-            definedTopic = Empty;
+            result.define(Domain.getCurrentDomain().getTopic(definedTopic));
         }
         return result;
     }
 
-    private Fact() {} // prevents inappropriate external construction.
-    public Fact(Selector p) { this.predicate = p; this.domain = Domain.getCurrentDomain(); }
+    // prevents inappropriate external construction.
+    private Fact() { this.domain = Domain.getCurrentDomain(); }
+
+    public Fact(Selector p) { this(); this.predicate = p; }
     public Fact with(String... topics) { return this.with(wrap(topics)); }
     public Fact with(List<String> topics) {
-        if (topics.size() < 1) {
-            throw reportMissingSubject();
-        }
-        if (topics.size() > getValenceCount()) {
-            throw reportExcessiveTopics();
-        }
+        this.topics.addAll(checkTopics(topics));
 
         // register the subject of this statement of fact
-        this.topics.addAll(topics);
-        getDomain().registerTopic(Topic.named(mainTopic())).with(this);
+        domain().registerTopic(domain().getTopic(mainTopic()).with(this));
         return this;
     }
+    private List<String> checkTopics(List<String> topics) {
+        if (topics.size() < 1) throw reportMissingSubject();
+        if (topics.size() > getValenceCount()) throw reportExcessiveTopics();
+        return topics; }
 
     public String getSentence() { return getMessage().replace(Colon, Empty); }
     public String getMessage() {
@@ -129,8 +128,7 @@ public class Fact implements Registry.KeySource {
         this.definedTopic = topic.getTitle();
         topic.facts().register(this);
         getDomain().getTopics().register(topic);
-        return this;
-    }
+        return this; }
 
     public Tag.Factory[] buildTags() {
         ModelElement[] elements = buildModels();

@@ -2,7 +2,7 @@
 
 ${topic.formatImageLink()}
 
-In the context of this [model](../README.md), ${topic.formatPageLink()}
+In the context of this [model](../README.md), ${topic.formatReference()}
 
 <#list topic.facts as fact>
 * ${topic.formatFact(fact)}
