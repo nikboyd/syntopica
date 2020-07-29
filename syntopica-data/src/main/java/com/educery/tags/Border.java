@@ -1,7 +1,6 @@
 package com.educery.tags;
 
 import com.educery.graphics.Point;
-import com.educery.tags.Anchor;
 import com.educery.tags.Edge.Index;
 
 /**

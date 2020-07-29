@@ -1,5 +1,6 @@
-package com.educery.utils;
+package com.educery.tags;
 
+import com.educery.utils.Registry;
 import java.util.*;
 import static com.educery.utils.Utils.*;
 
@@ -83,8 +84,8 @@ public class Tag implements Registry.KeySource {
     static final String Text = "text";
     public static Tag textBox() { return Tag.named(Text); }
 
-    static final String Canvas = "svg";
-    public static Tag context() { return Tag.named(Canvas); }
+    static final String SvgContext = "svg";
+    public static Tag context() { return Tag.named(SvgContext); }
 
     static final String Graphic = "g";
     public static Tag graphic() { return Tag.named(Graphic); }
@@ -94,7 +95,7 @@ public class Tag implements Registry.KeySource {
     public Tag withContent(String content) { return with(Empty, content); }
 
     static final String Image = "img";
-    public boolean isImage() { return getKey().equals(Image); }
+    public boolean isImage() { return getKey().equals(Image) || Canvas.hasActiveCanvas(); }
     public static Tag imageWith(String reference) { return Tag.named(Image).with(Source, reference); }
 
     private final HashMap<String, String> namedValues = new HashMap();
@@ -209,6 +210,7 @@ public class Tag implements Registry.KeySource {
     }
 
     static final String Slash = "/";
+    static final String NewLine = "\n";
     static final String LeftBracket = "<";
     static final String RightBracket = ">";
     private void buildTags(StringBuilder builder) { tags().forEach((tag) -> tag.buildTag(builder)); }
@@ -224,15 +226,26 @@ public class Tag implements Registry.KeySource {
             buildTail(builder);
         }
         else { // simple head
-            buildHead(builder);
+            buildHeadOnly(builder);
         }
+
+        if (this.isImage()) {
+            builder.append(NewLine);
+        }
+    }
+
+    private void buildHeadOnly(StringBuilder builder) {
+        builder.append(LeftBracket);
+        builder.append(getKey());
+        buildAttributes(builder);
+        builder.append(Slash);
+        builder.append(RightBracket);
     }
 
     private void buildHead(StringBuilder builder) {
         builder.append(LeftBracket);
         builder.append(getKey());
         buildAttributes(builder);
-        if (!hasContent()) builder.append(Slash);
         builder.append(RightBracket);
     }
 

@@ -3,7 +3,6 @@ package com.educery.tags;
 import java.util.*;
 
 import com.educery.graphics.Point;
-import com.educery.tags.Anchor;
 
 /**
  * A model element (rectangle) edge. Each edge contains three anchors.

@@ -1,8 +1,8 @@
 package com.educery.concepts;
 
-import com.educery.concepts.Number;
 import java.util.*;
 import com.educery.utils.*;
+import com.educery.tags.*;
 
 /**
  * Contains the topics of a discourse domain.

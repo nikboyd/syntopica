@@ -130,13 +130,14 @@ public class Fact implements Registry.KeySource {
         getDomain().getTopics().register(topic);
         return this; }
 
+    static final Tag.Factory[] NoTags = { };
     public Tag.Factory[] buildTags() {
         ModelElement[] elements = buildModels();
         Connector[] connectors = buildConnectors(elements);
         ArrayList<Tag.Factory> results = new ArrayList<>();
         results.addAll(wrap(elements));
         results.addAll(wrap(connectors));
-        return results.stream().toArray(Tag.Factory[]::new);
+        return unwrap(results, NoTags);
     }
 
     private Connector[] buildConnectors(ModelElement[] elements) {

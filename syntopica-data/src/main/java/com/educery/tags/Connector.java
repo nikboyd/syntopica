@@ -1,7 +1,6 @@
 package com.educery.tags;
 
 import com.educery.graphics.*;
-import com.educery.utils.Tag;
 
 /**
  * A connector between a pair of model elements.

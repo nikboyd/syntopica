@@ -1,9 +1,9 @@
 package com.educery.tags;
 
-import java.util.ArrayList;
-
-import com.educery.utils.Registry;
-import com.educery.utils.Tag;
+import java.util.*;
+import com.educery.utils.*;
+import static com.educery.utils.Utils.*;
+import java.io.Closeable;
 
 /**
  * A drawing canvas. This represents a SVG viewbox.
@@ -15,17 +15,23 @@ import com.educery.utils.Tag;
  * <li>draws a diagram using SVG</li>
  * </ul>
  */
-public class Canvas implements Registry.KeySource, Tag.Factory {
+public class Canvas implements Registry.KeySource, Tag.Factory, Closeable {
 
-    private static final String Measure = "cm";
-    private static final String Viewbox = "viewbox";
-    private static final String Namespace = "http://www.w3.org/2000/svg";
-    private static final String LinkNamespace = "http://www.w3.org/1999/xlink";
+    static final String Measure = "cm";
+    static final String Viewbox = "viewbox";
+    static final String Namespace = "http://www.w3.org/2000/svg";
+    static final String LinkNamespace = "http://www.w3.org/1999/xlink";
+
+    static Canvas ActiveCanvas = null;
+    public static boolean hasActiveCanvas() { return hasSome(ActiveCanvas); }
+    public Canvas activate() { ActiveCanvas = this; return this; }
+    @Override public void close() { ActiveCanvas = null; }
 
     private int width = 0;
     private int height = 0;
-    private int[] viewbox = {0, 0, 0, 0};
-    private ArrayList<Tag.Factory> elements = new ArrayList<Tag.Factory>();
+    private int[] viewbox = { 0, 0, 0, 0 };
+    private final ArrayList<Tag.Factory> elements = emptyList();
+    private Canvas() { }
 
     /**
      * Returns a new Canvas.
@@ -41,15 +47,6 @@ public class Canvas implements Registry.KeySource, Tag.Factory {
         return result;
     }
 
-    private Canvas() {
-    }
-
-    /**
-     * Configures this canvas with a view box.
-     *
-     * @param viewbox a view box
-     * @return this Canvas
-     */
     public Canvas with(int[] viewbox) {
         if (viewbox.length == 4) {
             for (int index = 0; index < 4; index++) {
@@ -59,12 +56,6 @@ public class Canvas implements Registry.KeySource, Tag.Factory {
         return this;
     }
 
-    /**
-     * Adds some element(s) to this canvas.
-     *
-     * @param elements some element(s)
-     * @return this Canvas
-     */
     public Canvas with(Tag.Factory... elements) {
         for (Tag.Factory element : elements) {
             this.elements.add(element);
@@ -72,11 +63,7 @@ public class Canvas implements Registry.KeySource, Tag.Factory {
         return this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Tag drawElement() {
+    @Override public Tag drawElement() {
         Tag result = buildContext();
         for (Tag.Factory element : this.elements) {
             result.with(element.drawElement());

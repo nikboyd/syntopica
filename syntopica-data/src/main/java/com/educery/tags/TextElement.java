@@ -4,7 +4,6 @@ import com.educery.graphics.Point;
 import com.educery.tags.Border;
 import com.educery.tags.Edge.Index;
 import com.educery.utils.Registry;
-import com.educery.utils.Tag;
 
 /**
  * A boxed (rectangular) element that contains some text.

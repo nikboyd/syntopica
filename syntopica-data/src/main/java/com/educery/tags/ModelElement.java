@@ -1,7 +1,7 @@
 package com.educery.tags;
 
 import com.educery.graphics.Point;
-import com.educery.utils.Tag;
+import com.educery.utils.Site;
 
 /**
  * A model element. These represent a named rectangle in a model diagram.
@@ -167,8 +167,10 @@ public class ModelElement extends TextElement implements Tag.Factory {
         return drawAnchor().with(drawTextRectangle());
     }
 
+    private String pageType() { return Site.getSite().pageType(); }
+
     private Tag drawAnchor() {
-        return Tag.xlinkWith(getPageName() + PageType);
+        return Tag.xlinkWith(getPageName() + pageType());
     }
 
     private Tag drawTextRectangle() {

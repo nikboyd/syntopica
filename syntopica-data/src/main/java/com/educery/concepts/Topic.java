@@ -152,9 +152,13 @@ public class Topic implements Registry.KeySource, Logging {
         int boxHeight = fact.getValenceCount() * 3;
         int viewHeight = fact.getValenceCount() * 100;
         int[] viewbox = {10, 8, 350, viewHeight};
-        Tag.Factory[] tags = fact.buildTags();
-        Canvas canvas = Canvas.with(12, boxHeight).with(viewbox).with(tags);
-        return canvas.drawElement().format();
+
+        // note: canvas.close() deactivates the canvas
+        try (Canvas canvas = Canvas.with(12, boxHeight).activate()) {
+            Tag.Factory[] tags = fact.buildTags();
+            canvas.with(viewbox).with(tags);
+            return canvas.drawElement().format();
+        }
     }
 
     static final String NewLine = "\n";

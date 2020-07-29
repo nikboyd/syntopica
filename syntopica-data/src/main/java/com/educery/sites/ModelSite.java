@@ -4,14 +4,11 @@ import java.io.*;
 import java.util.*;
 import freemarker.template.*;
 
-import com.educery.tags.*;
 import com.educery.utils.*;
 import com.educery.concepts.*;
-import com.educery.graphics.Point;
 import com.educery.concepts.Number;
 import static com.educery.utils.Utils.*;
 import static com.educery.utils.Exceptional.*;
-import static org.apache.commons.lang3.StringUtils.*;
 
 /**
  * Generates a web site from a domain model.
