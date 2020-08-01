@@ -3,6 +3,7 @@ package com.educery.tags;
 import java.util.*;
 
 import com.educery.graphics.Point;
+import static com.educery.utils.Utils.*;
 
 /**
  * A model element (rectangle) edge. Each edge contains three anchors.
@@ -25,17 +26,12 @@ public class Edge {
     /**
      * Indicates a direction (2-dimensional).
      */
-    public static enum Index {
-        Left, Right, Top, Bottom
-    }
+    public static enum Index { Left, Right, Top, Bottom }
 
     /**
      * Indicates either a vertical or horizontal orientation.
      */
-    public static enum Orientation {
-        Horizontal,
-        Vertical
-    }
+    public static enum Orientation { Horizontal, Vertical }
 
     /**
      * Indicates the orientation of the available directions.
@@ -44,46 +40,27 @@ public class Edge {
         Orientation.Vertical,
         Orientation.Vertical,
         Orientation.Horizontal,
-        Orientation.Horizontal,};
+        Orientation.Horizontal,
+    };
 
-    private Index index;
-    private Anchor[] anchors = {new Anchor(), new Anchor(), new Anchor()};
-    private HashMap<String, Anchor> anchorMap = new HashMap<String, Anchor>();
+    private final Index index;
+    public Edge(int index) { this.index = Index.values()[index]; }
+    public Index getIndex() { return this.index; }
 
-    /**
-     * Constructs a new Edge.
-     *
-     * @param index indicates which edge is this
-     */
-    public Edge(int index) {
-        this.index = Index.values()[index];
+    private final Anchor[] anchors = { new Anchor(), new Anchor(), new Anchor() };
+    public int count() { int result = 0; for (Anchor a : this.anchors) result += a.count(); return result; }
+    private Anchor getAnchor(int index) { return this.anchors[index]; }
+    public boolean isEmpty() { return count() == 0; }
+    public List<Connector> getConnectors() {
+        ArrayList<Connector> results = emptyList();
+        for (Anchor a : this.anchors) {
+            if (a.count() > 0) results.addAll(wrap(a.getConnectors()));
+        }
+        return results;
     }
 
-    /**
-     * The edge index.
-     *
-     * @return an index
-     */
-    public Index getIndex() {
-        return this.index;
-    }
-
-    /**
-     * Returns the anchor at a point.
-     *
-     * @param p a point
-     * @return an Anchor
-     */
-    public Anchor getAnchor(Point p) {
-        return this.anchorMap.get(p.format());
-    }
-
-    /**
-     * Sets the locations of the anchors for this edge.
-     *
-     * @param p the center anchor location
-     * @param length the length of this edge
-     */
+    private final HashMap<String, Anchor> anchorMap = new HashMap();
+    public Anchor getAnchor(Point p) { return this.anchorMap.get(p.format()); }
     public void setCenter(Point p, int length) {
         Orientation o = Directions[getIndex().ordinal()];
         Point delta = (o == Orientation.Horizontal
@@ -92,103 +69,28 @@ public class Edge {
 
         for (int index = 0; index < Anchors; index++) {
             Point location = p.plus(delta.times(index - Center));
-            this.anchors[index].setLocation(location);
-            this.anchorMap.put(location.format(), this.anchors[index]);
+            getAnchor(index).setLocation(location);
+            this.anchorMap.put(location.format(), getAnchor(index));
         }
     }
 
-    /**
-     * Assigns the best available anchor to a connector tip.
-     *
-     * @param tip a connector tip
-     * @param end a connector end
-     * @return an Anchor, or null
-     */
-    public Point assign(Point tip, Point end) {
-        Anchor result = getBestAnchor(tip, end);
-        return (result == null ? null : result.getLocation());
-    }
-
-    /**
-     * Indicates whether a best available anchor exists.
-     *
-     * @param tip a connector tip
-     * @param end a connector end
-     * @return whether a best available anchor exists
-     */
-    public boolean accepts(Point tip, Point end) {
-        Anchor result = getBestAnchor(tip, end);
-        return (result != null);
-    }
-
-    /**
-     * Returns the allocated connectors.
-     *
-     * @return a Connector list
-     */
-    public List<Connector> getConnectors() {
-        ArrayList<Connector> results = new ArrayList<Connector>();
-        for (Anchor a : this.anchors) {
-            if (a.count() > 0) {
-                results.addAll(Arrays.asList(a.getConnectors()));
-            }
-        }
-        return results;
-    }
-
-    /**
-     * Counts the allocated connectors.
-     *
-     * @return a connector count
-     */
-    public int count() {
-        int result = 0;
-        for (Anchor a : this.anchors) {
-            result += a.count();
-        }
-        return result;
-    }
-
-    /**
-     * Indicates whether any connectors have been acquired by this edge.
-     *
-     * @return whether this edge has been connected yet
-     */
-    public boolean isEmpty() {
-        return count() == 0;
-    }
-
-    /**
-     * Returns the best available anchor given a connection.
-     *
-     * @param tip a connection tip
-     * @param end a connection end
-     * @return an Anchor, or null
-     */
+    // assigns the best anchor for a connector
+    public Point assignBest(Point tip, Point end) { return nullOr((r) -> r.getLocation(), getBestAnchor(tip, end)); }
+    public boolean accepts(Point tip, Point end) { return hasSome(getBestAnchor(tip, end)); }
     private Anchor getBestAnchor(Point tip, Point end) {
         Anchor result = getAnchor(Center);
-        if (result.isEmpty()) {
-            return result;
-        }
+        if (result.isEmpty()) return result;
 
         Point pole = end.minus(tip).signs();
         if (getIndex().ordinal() < Index.Top.ordinal()) {
             result = getAnchor(Center + pole.getY());
-            if (result.isEmpty()) {
-                return result;
-            }
+            if (result.isEmpty()) return result;
         } else {
             result = getAnchor(Center + pole.getX());
-            if (result.isEmpty()) {
-                return result;
-            }
+            if (result.isEmpty()) return result;
         }
 
         return null;
-    }
-
-    private Anchor getAnchor(int index) {
-        return this.anchors[index];
     }
 
 } // Edge

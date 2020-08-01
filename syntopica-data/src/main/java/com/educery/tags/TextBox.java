@@ -19,107 +19,32 @@ import com.educery.graphics.Point;
  */
 public class TextBox extends TextElement implements Tag.Factory {
 
-    private static int FontHeight = 18;
-    private static int LetterWidth = 10;
-//	private static int Width = 70;
-    private static int Height = FontHeight + 8;
+    // force proper construction via factory
+    protected TextBox(String name) { super(name); }
+    public static TextBox named(String name) { return new TextBox(name); }
+    public TextBox withColor(String color) { this.color = color; return this; }
+
+    public TextBox at(Point p) { setLocation(p); return this; }
+    public TextBox at(int x, int y) { setLocation(Point.at(x, y)); return this; }
+
+    @Override public int getOffsetX() { return getX() + (getWidth() / 2); }
+    @Override public int getOffsetY() { return getY() + (getHeight() * 2 / 3); }
+
+    @Override public int getWidth() { return getName().length() * LetterWidth; }
+    @Override public int getHeight() { return Height; }
 
     // styling for a SVG text box
-    private static Tag TextStyle
-            = Tag.named("text-style")
-                    .withStyle(Fill, Black)
-                    .withStyle(TextAnchor, Middle)
-                    .withStyle(FontFamily, SansSerif)
-                    .withStyle(FontStyle, Italic)
-                    .withStyle(FontWeight, Normal)
-                    .with(FontSize, FontHeight);
-
-    /**
-     * Constructs a new TextBox.
-     */
-    private TextBox() {
-        super();
-    }
-
-    /**
-     * Returns a new TextBox.
-     *
-     * @param name a text box name
-     * @return a new TextBox
-     */
-    public static TextBox named(String name) {
-        TextBox result = new TextBox();
-        result.name = name;
-        return result;
-    }
-
-    /**
-     * Configures this text box with a color.
-     *
-     * @param color a color
-     * @return this TextBox
-     */
-    public TextBox withColor(String color) {
-        this.color = color;
-        return this;
-    }
-
-    /**
-     * Configures this text box with a location.
-     *
-     * @param p a point
-     * @return this TextBox
-     */
-    public TextBox at(Point p) {
-        setLocation(p);
-        return this;
-    }
-
-    /**
-     * Configures this text box with a location.
-     *
-     * @param x an x position
-     * @param y an y position
-     * @return this TextBox
-     */
-    public TextBox at(int x, int y) {
-        setLocation(Point.at(x, y));
-        return this;
-    }
-
-    /**
-     * An offset x position.
-     *
-     * @return a position
-     */
-    @Override
-    public int getOffsetX() {
-        return getX() + (getWidth() / 2);
-    }
-
-    /**
-     * An offset y position.
-     *
-     * @return a position
-     */
-    @Override
-    public int getOffsetY() {
-        return getY() + (getHeight() * 2 / 3);
-    }
-
-    @Override
-    public int getWidth() {
-        return this.name.length() * LetterWidth;
-    }
-
-    @Override
-    public int getHeight() {
-        return Height;
-    }
-
-    @Override
-    protected Tag getTextStyle() {
-        return TextStyle;
-    }
+    static final int LetterWidth = 10;
+    static final int BoxFontHeight = 18;
+    static final int Height = BoxFontHeight + 8;
+    @Override protected Tag getTextStyle() { return TextBoxStyle; }
+    static final Tag TextBoxStyle =
+        Tag.named(TextStyle)
+            .withStyle(Fill, Black)
+            .withStyle(TextAnchor, Middle)
+            .withStyle(FontFamily, SansSerif)
+            .withStyle(FontStyle, Italic)
+            .withStyle(FontWeight, Normal)
+            .with(FontSize, BoxFontHeight);
 
 } // TextBox

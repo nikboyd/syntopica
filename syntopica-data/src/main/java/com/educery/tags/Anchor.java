@@ -1,9 +1,8 @@
 package com.educery.tags;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
+import java.util.*;
 import com.educery.graphics.Point;
+import static com.educery.utils.Utils.*;
 
 /**
  * A connector anchor. Each anchor "staples" a connector end point to the edge of a model element.
@@ -20,60 +19,19 @@ import com.educery.graphics.Point;
  */
 public class Anchor {
 
-    private Point location = new Point();
-    private ArrayList<Connector> connectors = new ArrayList();
-
-    /**
-     * The connection point.
-     *
-     * @param p a connection point
-     */
+    private final Point location = new Point();
+    public Point getLocation() { return this.location; }
+    public boolean locates(Point p) { return getLocation().equals(p); }
     public void setLocation(Point p) {
         this.location.setX(p.getX());
         this.location.setY(p.getY());
     }
 
-    /**
-     * The connection point.
-     */
-    public Point getLocation() {
-        return this.location;
-    }
-
-    /**
-     * Indicates whether this anchor has any connectors.
-     *
-     * @return whether this anchor has any connectors
-     */
-    public boolean isEmpty() {
-        return this.connectors.isEmpty();
-    }
-
-    /**
-     * A connector count.
-     *
-     * @return a count
-     */
-    public int count() {
-        return this.connectors.size();
-    }
-
-    /**
-     * Adds connectors to this anchor.
-     *
-     * @param c the connectors
-     */
-    public void add(Connector... c) {
-        this.connectors.addAll(Arrays.asList(c));
-    }
-
-    /**
-     * The connectors attached to this anchor.
-     *
-     * @return the Connectors, or empty
-     */
-    public Connector[] getConnectors() {
-        return this.connectors.stream().toArray(Connector[]::new);
-    }
+    static final Connector[] NoConnectors = { };
+    private final ArrayList<Connector> connectors = new ArrayList();
+    public void add(Connector... c) { this.connectors.addAll(Arrays.asList(c)); }
+    public Connector[] getConnectors() { return unwrap(this.connectors, NoConnectors); }
+    public boolean isEmpty() { return this.connectors.isEmpty(); }
+    public int count() { return this.connectors.size(); }
 
 } // Anchor

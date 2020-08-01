@@ -1,7 +1,7 @@
 package com.educery.tags;
 
-import com.educery.graphics.Point;
 import com.educery.utils.Site;
+import com.educery.graphics.Point;
 
 /**
  * A model element. These represent a named rectangle in a model diagram.
@@ -20,173 +20,53 @@ import com.educery.utils.Site;
  */
 public class ModelElement extends TextElement implements Tag.Factory {
 
+    // force proper construction via factory
+    protected ModelElement(String name) { super(name); }
+    public static ModelElement named(String name) { return new ModelElement(name); }
+    public ModelElement withColor(String color) { this.color = color; return this; }
+
+    static final String Grey = "#bfbfbf";
+    public ModelElement withGrey() { return this.withColor(Grey); }
+
+    static final String Cyan = "#add8e6";
+    public ModelElement withCyan() { return this.withColor(Cyan); }
+
+    static final String Bluish = "#d8e5e5";
+    public ModelElement withBlue() { return this.withColor(Bluish); }
+
+    public ModelElement at(int x, int y) { setLocation(Point.at(x, y)); return this; }
+    public ModelElement at(Point p) { setLocation(p); return this; }
+
     public static final int Width = 140;
     public static final int Height = 44;
-    private static final int[] Offsets = {Width / 2, Height / 2 + 5};
+    @Override public int getWidth() { return Width; }
+    @Override public int getHeight() { return Height; }
 
-    private static final String Cyan = "#add8e6";
-    private static final String Grey = "#bfbfbf";
-    private static final String Bluish = "#d8e5e5";
-    private static final String PageType = ".html";
+    static final int[] Offsets = { Width / 2, Height / 2 + 5 };
+    @Override public int getOffsetX() { return getX() + Offsets[0]; }
+    @Override public int getOffsetY() { return getY() + Offsets[1]; }
 
-    // styling for a SVG text rectangle
-    private static Tag RectangleBase
-            = Tag.named("rect-style")
-                    .withStyle(Fill, None)
-                    .withStyle(FillOpacity, 0)
-                    .withStyle(StrokeWidth, 2)
-                    .withStyle(Stroke, Black)
-                    .withWidth(Width)
-                    .withHeight(Height);
-
-    /**
-     * Constructs a new ModelElement.
-     */
-    private ModelElement() {
-        super();
-    }
-
-    /**
-     * Returns a new ModelElement.
-     *
-     * @param name a model element name
-     * @return a new ModelElement
-     */
-    public static ModelElement named(String name) {
-        ModelElement result = new ModelElement();
-        result.name = name;
-        return result;
-    }
-
-    /**
-     * Colors this element grey.
-     *
-     * @return this ModelElement
-     */
-    public ModelElement withGrey() {
-        return this.withColor(Grey);
-    }
-
-    /**
-     * Colors this element cyan.
-     *
-     * @return this ModelElement
-     */
-    public ModelElement withCyan() {
-        return this.withColor(Cyan);
-    }
-
-    /**
-     * Colors this element blue.
-     *
-     * @return this ModelElement
-     */
-    public ModelElement withBlue() {
-        return this.withColor(Bluish);
-    }
-
-    /**
-     * Configures this model element with a color.
-     *
-     * @param color a color
-     * @return this ModelElement
-     */
-    public ModelElement withColor(String color) {
-        this.color = color;
-        return this;
-    }
-
-    /**
-     * Configures this model element with a location.
-     *
-     * @param x an x position
-     * @param y an y position
-     * @return this ModelElement
-     */
-    public ModelElement at(int x, int y) {
-        setLocation(Point.at(x, y));
-        return this;
-    }
-
-    /**
-     * Locates this element at a point.
-     *
-     * @param p a point
-     * @return this ModelElement
-     */
-    public ModelElement at(Point p) {
-        setLocation(p);
-        return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getWidth() {
-        return Width;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getHeight() {
-        return Height;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getOffsetX() {
-        return getX() + Offsets[0];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getOffsetY() {
-        return getY() + Offsets[1];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getKey() {
-        return this.name;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Tag drawElement() {
-        return drawAnchor().with(drawTextRectangle());
-    }
-
+    @Override public Tag drawElement() { return drawAnchor().with(drawTextRectangle()); }
+    private Tag drawTextRectangle() { return Tag.graphic().with(componentTags()); }
+    private Tag drawAnchor() { return Tag.xlinkWith(getPageName() + pageType()); }
     private String pageType() { return Site.getSite().pageType(); }
 
-    private Tag drawAnchor() {
-        return Tag.xlinkWith(getPageName() + pageType());
-    }
+    // styling for a SVG text rectangle
+    static final Tag RectangleBase =
+        Tag.named("rect-style")
+            .withStyle(Fill, None)
+            .withStyle(FillOpacity, 0)
+            .withStyle(StrokeWidth, 2)
+            .withStyle(Stroke, Black)
+            .withHeight(Height)
+            .withWidth(Width)
+            ;
 
-    private Tag drawTextRectangle() {
-        return Tag.graphic()
-                .with(drawFilledRectangle())
-                .with(drawUnfilledRectangle())
-                .with(drawTextElement());
-    }
+    private String getPageName() { return getName().toLowerCase().replace(Blank, Period); }
+    private Tag[] componentTags() {
+        Tag[] tags = { drawFilledRectangle(), drawUnfilledRectangle(), drawTextElement() }; return tags; }
 
     private Tag drawUnfilledRectangle() {
-        return Tag.rectangle().withValues(RectangleBase)
-                .withX(getX()).withY(getY());
-    }
-
-    private String getPageName() {
-        return getName().toLowerCase().replace(Blank, Period);
-    }
+        return Tag.rectangle().withValues(RectangleBase).withX(getX()).withY(getY()); }
 
 } // ModelElement

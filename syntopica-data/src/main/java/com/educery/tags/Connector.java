@@ -16,7 +16,6 @@ import com.educery.graphics.*;
  */
 public class Connector implements Tag.Factory {
 
-//	private static final Log Logger = LogFactory.getLog(Connector.class);
     private static final String Points = "points";
 
     // styling for a SVG connector line

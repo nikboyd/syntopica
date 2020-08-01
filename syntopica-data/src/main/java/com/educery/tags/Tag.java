@@ -20,6 +20,7 @@ public class Tag implements Registry.KeySource {
      */
     public static interface Factory {
 
+        public static final String TextStyle = "text-style";
         public static final String TextAnchor = "text-anchor";
         public static final String FontFamily = "font-family";
         public static final String FontWeight = "font-weight";
