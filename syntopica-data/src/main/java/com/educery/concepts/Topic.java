@@ -82,10 +82,14 @@ public class Topic implements Registry.KeySource, Logging {
     public String formatPageLink(Number aNumber, String linkBase, String pageType) {
         return Tag.linkWith(getLinkFileName(pageType)).withBase(linkBase).withContent(getTitle(aNumber)).format(); }
 
-    public String getLinkName() { return getTitle().replace(Blank, Period); }
+    public String getLinkName() { return formatLinkName(getTitle()); }
     public String getLinkFileName(String pageType) { return getLinkName() + pageType; }
     public String getLinkFileName() { return getLinkFileName(PageType); }
+
     private static final String PageType = ".md";
+    private String formatLinkName(String link) { return link.replace(Blank, Period); }
+    private String formatLink(String subject) { return formatLinkName(subject) + PageType; }
+    public String buildLink(String s) { return Tag.linkWith(formatLink(s)).withContent(s).format(); }
 
     public String formatFact(Fact fact) {
         String subject = fact.mainTopic();
@@ -131,7 +135,7 @@ public class Topic implements Registry.KeySource, Logging {
     public String formatReference() { return getArticle() + Blank + formatPageLink(); }
     public String formatPageLink() { return formatPageLink(Number.SingularNumber); }
     public String formatPageLink(Number aNumber) {
-        return Tag.linkWith(getLinkFileName()).withContent(getSubject(aNumber)).format(); }
+        return Tag.linkWith(getLinkFileName()).withContent(getTitle(aNumber)).format(); }
 
     public Site site() { return Site.getSite(); }
     public String linkBase() { return site().linkBase(); }
@@ -165,33 +169,71 @@ public class Topic implements Registry.KeySource, Logging {
     static final String Break = "<br/>";
     public String buildDiscussion() {
         if (!domainFile().exists()) return "";
-        TopicReader reader = TopicReader.from(domainFile());
-        String text = reader.readDiscussion();
-        Map<String, String> linkMap = reader.getLinkMap();
-        linkedTopics().putAll(linkMap);
 
         // replace known links
+        TopicReader reader = TopicReader.from(domainFile());
+        String text = reader.readDiscussion();
         for (String subject : site().topicLinks().keySet()) {
-            if (text.contains(subject)) {
-                String plural = Number.asPlural(subject);
-                text = text.replace(plural, site().pluralLinks().get(subject));
-                text = text.replace(Blank + subject, Blank + site().topicLinks().get(subject));
-                text = text.replace(capitalize(subject) + Blank, site().topicLinks().get(subject) + Blank);
-                if (!site().usesMarkdown()) {
-                    text = text.replace(NewLine + NewLine, Break + Break);
-                }
-            }
+            text = fixLeadingSubject(subject, text);
+            text = fixPluralSubject(subject, text);
+            text = fixSubjectLinks(subject, text);
+            text = fixLineBreaks(text);
         }
 
         // replace assigned links
+        Map<String, String> linkMap = reader.getLinkMap();
+        linkedTopics().putAll(linkMap);
         for (String subject : linkMap.keySet()) {
-            if (text.contains(subject)) {
-                String link = Tag.linkWith(subject + MarkDown).withContent(subject).format();
-                text = text.replace(Blank + subject, Blank + link);
-            }
+            text = fixLinkedSubject(subject, text);
         }
 
         return text;
+    }
+
+    private String fixLeadingSubject(String subject, String text) {
+        String cap = capitalize(subject);
+        String capLink = capitalizeLink(subject);
+        // replace leading sentence subject with fixed link
+        return text.contains(cap) ? text.replace(cap + Blank, capLink + Blank) : text;
+    }
+
+    private String fixPluralSubject(String subject, String text) {
+        String plural = Number.asPlural(subject);
+        String pluralLink = site().pluralLinks().get(subject);
+        return text.contains(plural) ? text.replace(plural, pluralLink) : text;
+    }
+
+    private String fixSubjectLinks(String subject, String text) {
+        String topicLink = site().topicLinks().get(subject);
+        if (text.contains(subject)) {
+            text = text.replace(Blank + subject, Blank + topicLink);
+            text = text.replace(subject + Blank, topicLink + Blank);
+        }
+        return text;
+    }
+
+    private String fixLinkedSubject(String subject, String text) {
+        if (text.contains(subject)) {
+            String link = buildLink(subject);
+            text = text.replace(Blank + subject, Blank + link);
+            text = text.replace(subject + Blank, link + Blank);
+        }
+        return text;
+    }
+
+    private String fixLineBreaks(String text) {
+        if (!site().usesMarkdown()) {
+            text = text.replace(NewLine + NewLine, Break + Break);
+        }
+        return text;
+    }
+
+    private String capitalizeLink(String subject) {
+        String topicLink = site().topicLinks().get(subject);
+        String cap = capitalize(subject);
+        String subStart = "[" + subject.charAt(0);
+        String capStart = "[" + cap.charAt(0);
+        return topicLink.replace(subStart, capStart);
     }
 
 } // Topic

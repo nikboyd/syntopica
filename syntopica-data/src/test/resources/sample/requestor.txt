@@ -1,5 +1,6 @@
-There are potentially several kinds of requestors.
+There are potentially several kinds of requestor.
 A requestor generally oversees and requests improvements in some business activity(s), 
 or they may have specific domain knowledge and expertise. 
-They also ensure that the conduct of business activities remain in alignment with the purposes of the business, 
+They also ensure that the conduct of business activities remain 
+in alignment with the purposes of the business, 
 esp. with its mission and vision.

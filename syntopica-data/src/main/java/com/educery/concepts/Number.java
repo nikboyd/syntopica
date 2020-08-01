@@ -17,19 +17,21 @@ import static com.educery.utils.Utils.*;
 public class Number implements Logging {
 
     static final String Plural = "s";
-    static final String[] Plurals = {"sses", "ues", "ies"};
-    static final String[] Singulars = {"ss", "ue", "y"};
+    static final String[] Plurals = { "sses", "ues", "ies", "ays", };
+    static final String[] Singulars = { "ss", "ue", "ay", "y" };
     public static final Number PluralNumber = new Number(Plurals);
     public static final Number SingularNumber = new Number(Singulars);
     public static Number getNumber(boolean plural) { return plural ? PluralNumber : SingularNumber; }
 
     static {
         PluralNumber.replacements.put("ues", "ue");
+        PluralNumber.replacements.put("ays", "ay");
         PluralNumber.replacements.put("ies", "y");
         PluralNumber.replacements.put("sses", "ss");
         // PluralNumber.replacements.put(Plural, Empty);
         PluralNumber.replacements.put(Empty, Empty);
         SingularNumber.replacements.put("ue", "ues");
+        SingularNumber.replacements.put("ay", "ays");
         SingularNumber.replacements.put("y", "ies");
         SingularNumber.replacements.put("ss", "sses");
         SingularNumber.replacements.put(Empty, Empty);
@@ -70,7 +72,7 @@ public class Number implements Logging {
         "fs", "gs", "hs", "ies", "js",
         "ks", "ls", "ms", "ns", "oes",
         "ps", "qs", "rs", "sses", "ts",
-        "ues", "vs", "ws", "xes", "zs", // no ys!
+        "ues", "vs", "ws", "xes", "ays", "zs",
     };
     static final List<String> EndsList = wrap(PluralEnds);
 

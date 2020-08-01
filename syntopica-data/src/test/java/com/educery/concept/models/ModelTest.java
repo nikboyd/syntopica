@@ -11,9 +11,9 @@ import com.educery.utils.Logging;
  */
 public class ModelTest implements Logging {
 
-    private static final String PageBase = "/sample-domain";
-    private static final String LinkBase = "https://github.com/nikboyd/sample-domain/blob/master";
-    private static final String ImageBase = LinkBase.replace("github", "rawgithub").replace("/blob", "");
+    private static final String PageBase = "/software-requirements";
+    private static final String LinkBase = "https://gitlab.com/nikboyd/software-requirements";
+    private static final String ImageBase = "..";
 
     /**
      * Generates web pages from a model.
@@ -23,7 +23,7 @@ public class ModelTest implements Logging {
         String templateFolder = getClass().getResource("/templates").getFile();
         String domainFolder = getClass().getResource("/sample").getFile();
         ModelSite.withTemplates(templateFolder)
-                .withBases(domainFolder, LinkBase, "..")
+                .withBases(domainFolder, LinkBase, ImageBase)
                 .withPages(getPagesFolder(domainFolder))
                 .withModel("/domain.txt").withMarkdown()
                 .generatePages();
@@ -31,7 +31,7 @@ public class ModelTest implements Logging {
 
     private String getPagesFolder(String domainFolder) {
         // domainFolder = /git-code/syntopica/syntopica-data/target/test-classes/sample
-        // pagesFolder  = /git-code/sample-domain
+        // pagesFolder  = /git-code/software-requirements
         File result = new File(domainFolder);
         for (int parent = 0; parent < 5; parent++) {
             result = result.getParentFile();

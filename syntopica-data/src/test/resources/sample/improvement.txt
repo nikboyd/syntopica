@@ -1,4 +1,3 @@
-quality = https://educery.dev/papers/modeling/quality-alignment/#business-quality-inventory
 valuable = value.md
 
 Business activities are most valuable when they are aligned 
