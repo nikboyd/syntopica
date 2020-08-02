@@ -1,13 +1,11 @@
 Syntopica
 =========
 
-This project incorporates some ideas about 
-[natural conceptual models](http://educery.com/papers/educe/models/), 
-and offers a prospect for using the 
-[EDUCE patterns](http://educery.com/educe/patterns/educe-overview.html) 
+This project incorporates some ideas about [conceptual models][cenceptual-models], 
+and offers a prospect for using the [EDUCE patterns][educe-patterns] 
 for transforming conceptual models into named software elements.
 
-The syntopica library offers a framework for modeling concepts as Facts, 
+The **syntopica** library offers a framework for modeling concepts as Facts, 
 each of which relates multiple Topics within a bounded context (a Domain).
 
 The syntax for expressing Facts are simple statements, like the following:
@@ -30,8 +28,7 @@ Project Vision
 ==============
 
 The overall purpose of this project will be to push the envelope of software design, using concepts from 
-[EDUCE](http://educery.com/educe/patterns/educe-overview.html) 
-to drive design. Much of this can serve as an adjunct to DDD. 
+[EDUCE][educe-overview] to drive design. Much of this can serve as an adjunct to [DDD][fowler-ddd]. 
 So, the tools can help automate some of those efforts, maintain coordination
 between the concepts within an ubiquitous language and the code, 
 ideally connecting the two through web hosted, hyper-linked
@@ -51,3 +48,8 @@ Eventual Goals
 * generate code skeletons from conceptual models, e.g., with StringTemplate, or FreeMarker
 * develop similarity measures for conceptual models, esp. fact comparison, predicate completion, ...
 * develop semantic search functions
+
+[educe-patterns]: https://educery.dev/educe/pattern-language/#educe-pattern-language
+[educe-overview]: https://educery.dev/educe/patterns/
+[conceptual-models]: https://educery.dev/papers/modeling/natural-conceptual-modeling/#modeling-language
+[fowler-ddd]: https://martinfowler.com/tags/domain%20driven%20design.html
