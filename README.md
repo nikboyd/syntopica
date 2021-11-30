@@ -65,5 +65,5 @@ Eventual Goals
 [fowler-ddd]: https://martinfowler.com/tags/domain%20driven%20design.html
 [bounded-context]: https://martinfowler.com/bliki/BoundedContext.html
 [ubiquitous-language]: https://martinfowler.com/bliki/UbiquitousLanguage.html
-[sw-requirements]: https://gitlab.com/nikboyd/software-requirements#overview
-[eco-depot]: https://gitlab.com/nikboyd/eco-depot#eco-depot-hazmat-facility-conceptual-model
+[sw-requirements]: https://github.com/nikboyd/software-requirements#overview
+[eco-depot]: https://github.com/nikboyd/eco-depot#eco-depot-hazmat-facility-conceptual-model

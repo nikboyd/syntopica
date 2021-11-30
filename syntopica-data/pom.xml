@@ -63,7 +63,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
+<!--
     <repositories>
         <repository>
             <id>gitlab-maven</id>
@@ -76,7 +76,7 @@
             <url>https://gitlab.example.com/api/v4/projects/20288991/packages/maven</url>
         </repository>
     </distributionManagement>
-
+-->
     <build>
         <plugins>
             <plugin>

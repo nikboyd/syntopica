@@ -106,7 +106,7 @@ public class Main implements Logging {
 
         reportEach("",
             "see the syntopica project site for more details and options",
-            "https://gitlab.com/nikboyd/syntopica/-/tree/master#syntopica");
+            "https://github.com/nikboyd/syntopica/#syntopica");
 
         reportEach("",
             "Happy Modeling!", "");
