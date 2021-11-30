@@ -1,3 +1,16 @@
 There are potentially several kinds of developer. 
-A developer generally develops (or guides, or manages the development of) software solutions. 
+A developer generally _**develops**_ (or guides, or manages the development of) software solutions. 
 Sometimes their responsibilities (and thus their interests) are combined in a single person or role within an organization. 
+
+| Kind | Interests and _Concerns_ |
+| ---- | ------------------------ |
+| Requirements Engineers | Needs, Usage, Knowledge, Behavior, Quality, Priority |
+|  | _Intelligibility, Sufficiency, Coverage, Completeness, Alignment_ |
+| Experience Designers | Usage, Knowledge, Behavior, Quality, Priority |
+|  | _Intelligibility, Functionality, Usability, Sufficiency, Affordability, Efficiency_ |
+| Software Engineers | Usage, Knowledge, Behavior, Quality, Priority |
+|  | _Fitness, Simplicity, Flexibility, Adaptability, Modularity, Coverage, Completeness, Compatibility, Measurability, Efficiency_ |
+| Quality Engineers | Usage, Knowledge, Behavior, Quality, Priority |
+|  | _Sufficiency, Coverage, Completeness, Intelligibility, Alignment_ |
+
+<div align="center"><img src="../images/product_development.svg" /></div>

@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 import com.educery.concepts.*;
 import com.educery.utils.*;
 
-//@Ignore
+@Ignore // for debugging
 public class ConceptTest implements Logging {
 
     @Test public void variousConcepts() {

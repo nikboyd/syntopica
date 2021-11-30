@@ -1,3 +1,16 @@
 There are several kinds of governor. 
 A governor guides and governs a business, providing direction and scope, 
 and establishing boundaries and limits.
+
+| Kind | Interests and _Concerns_ |
+| ---- | ------------------------ |
+| Board Members | Value Propositions, Ends Policies |
+|  | _Relevancy, Accountability, Profitability, Value, Growth, Diversity_ |
+| Corporate Officers | Ends Policies, Means Policies |
+|  | _Value, Measurability, Accountability, Optimality_ |
+| Shareholders | Value, Growth |
+|  | _Value, Profitability, Growth, Accountability, Diversity_ |
+| Government Regulators | Regulations, Compliance |
+|  | _Measurability, Verifiability, Accountability, Trustability_ |
+
+<div align="center"><img src="../images/policy_governance.svg" /></div>

@@ -28,4 +28,5 @@ So, a business needs to clearly define its objectives (as ends)
 and the means for achieving those objectives 
 (especially by using information systems) through the definition 
 of measurable changes in the levels of the qualities about which it is most concerned.
-	 
+
+<div align="center"><img src="../images/activity_improvement.svg" /></div>

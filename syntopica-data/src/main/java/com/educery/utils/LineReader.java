@@ -13,9 +13,12 @@ public class LineReader implements Logging {
     protected BufferedReader reader;
     protected BufferedReader reader() { return this.reader; }
     protected LineReader(InputStream s) { this.reader = new BufferedReader(new InputStreamReader(s)); }
-    public void readLines(Consumer<String> c) { runLoudly(() -> { readAllLines(c); }); }
-    private void readAllLines(Consumer<String> c) throws IOException {
-        try (BufferedReader r = reader()) {
-            for (String line = r.readLine(); line != null; line = r.readLine()) c.accept(line); }}
+
+    public void readLines(Consumer<String> c) { readAllLines(c); }
+    protected void readAllLines(Consumer<String> c) {
+        runLoudly(() -> { try (BufferedReader r = reader()) { consumeLines(r, c); }}); }
+
+    protected void consumeLines(BufferedReader r, Consumer<String> c) throws IOException {
+        for (String line = r.readLine(); line != null; line = r.readLine()) c.accept(line); }
 
 } // LineReader

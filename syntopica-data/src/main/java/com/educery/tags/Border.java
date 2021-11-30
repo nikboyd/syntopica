@@ -1,5 +1,6 @@
 package com.educery.tags;
 
+import java.util.*;
 import com.educery.graphics.Point;
 import com.educery.tags.Edge.Index;
 import static com.educery.utils.Utils.*;
@@ -56,10 +57,15 @@ public class Border {
         return null;
     }
 
-    public void addHeads(Connector... heads) { Anchor a = getAnchor(heads[0].getTip()); if (hasSome(a)) a.add(heads); }
-    public void addTails(Connector... tails) { Anchor a = getAnchor(tails[0].getEnd()); if (hasSome(a)) a.add(tails); }
+    public void addHeads(Connector... heads) { addHeads(wrap(heads)); }
+    public void addHeads(List<Connector> heads) {
+        Anchor a = getAnchor(heads.get(0).getTip()); if (hasSome(a)) a.addAll(heads); }
 
-    static final int OptimalY = 2 * ModelElement.Height;
+    public void addTails(Connector... tails) { addTails(wrap(tails)); }
+    public void addTails(List<Connector> tails) {
+        Anchor a = getAnchor(tails.get(0).getEnd()); if (hasSome(a)) a.addAll(tails); }
+
+    static final int OptimalY = 2 * ModelElement.ModelHeight;
     public Point assignHead(Point tip, Point end) {
         // assigns the best available anchor point to a connector head
         Point delta = end.minus(tip);

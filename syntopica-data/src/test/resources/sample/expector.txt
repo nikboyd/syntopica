@@ -2,3 +2,22 @@ There are potentially several kinds of expector.
 An expector generally expects a software solution to simplify, permit, and improve the conduct of some business activity(s). 
 In some cases, a business activity might not even be allowed, or might not be affordable without a software solution 
 to automate some the associated processes, or to monitor them and collect measurements. 
+
+| Kind | Interests and _Concerns_ |
+| ---- | ------------------------ |
+| Solution Users | Features, Usage |
+|  | _Simplicity, Effectiveness, Relevancy, Usefulness, Usability, Efficiency, Availability_ |
+| Solution Customers | Features, Improvements |
+|  | _Relevancy, Usefulness, Efficiency_ |
+| Solution Installers | Installation, Configuration |
+|  | _Relevancy, Affordability, Adaptability_ |
+| Solution Operators | Operations, Monitoring |
+|  | _Measurability, Affordability, Verifiability_ |
+| Security Auditors | Security, Privacy |
+|  | _Accountability, Measurability, Verifiability, Trustability_ |
+| Finance Auditors | Accounting Practices (GAAP) |
+|  | _Accountability, Measurability, Verifiability, Trustability_ |
+| Compliance Auditors | Regulations, Compliance |
+|  | _Accountability, Measurability, Verifiability, Trustability_ |
+
+<div align="center"><img src="../images/activity_improvement.svg" /></div>

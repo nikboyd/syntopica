@@ -3,10 +3,12 @@ package com.educery.sites;
 import java.io.*;
 import java.util.*;
 import freemarker.template.*;
+import static freemarker.template.TemplateExceptionHandler.*;
 
 import com.educery.utils.*;
 import com.educery.concepts.*;
 import com.educery.concepts.Number;
+import com.educery.facts.FactParser;
 import static com.educery.utils.Utils.*;
 import static com.educery.utils.Exceptional.*;
 
@@ -37,50 +39,44 @@ public class ModelSite implements Site {
 
 
     private ModelSite() { }
-    public static ModelSite withTemplates(String templateFolder) {
-        return new ModelSite().initialize(templateFolder); }
+    public static ModelSite withForms(File formsFolder) {
+        return new ModelSite().initialize(formsFolder); }
 
     static final String Format = "UTF-8";
     private final Configuration cfg = new Configuration();
-    private ModelSite initialize(String templateFolder) {
-        runLoudly(() -> {
-            cfg.setDirectoryForTemplateLoading(new File(templateFolder));
-            cfg.setTemplateExceptionHandler(TemplateExceptionHandler.HTML_DEBUG_HANDLER);
+    private Template getForm(String formName) { return nullOrTryLoudly(() -> this.cfg.getTemplate(formName)); }
+    private ModelSite initialize(File formsFolder) {
+        runLoudly(() -> { // configure FreeMarker
+            cfg.setDirectoryForTemplateLoading(formsFolder);
+            cfg.setTemplateExceptionHandler(HTML_DEBUG_HANDLER);
             cfg.setObjectWrapper(new DefaultObjectWrapper());
             cfg.setDefaultEncoding(Format);
         });
         return this;
     }
 
-    static final String Slash = "/";
-    public ModelSite withBases(String domainFolder, String... linkBases) {
-        this.domainFolder = new File(domainFolder);
+    public ModelSite withBases(File... baseFolders) {
+        this.baseFolder   = baseFolders[0]; // base
+        this.domainFolder = baseFolders[1]; // briefs
+        this.pageFolder   = baseFolders[2]; // topics
+        this.imageFolder  = baseFolders[3]; // images
 
-        if (linkBases.length > 0) {
-            this.linkBase = buildBase(linkBases[0], Topics + Slash);
-        }
-        if (linkBases.length > 1) {
-            this.imageBase = buildBase(linkBases[1], Images + Slash);
-        }
+        runQuietly(() -> {
+            pageFolder().mkdirs();
+            imageFolder().mkdirs();
+            this.linkBase = "../" + Topics + Slash;
+            this.imageBase = "../" + Images + Slash;
+        });
 
         Site.SiteSource.register(this);
         return this;
     }
 
-    static String buildBase(String siteBase, String baseFolder) {
-        String result = siteBase;
-        if (!result.endsWith(Slash)) result += Slash;
-        return result + baseFolder; }
-
     static final String Topics = "topics";
     static final String Images = "images";
-    public ModelSite withPages(String pageFolder) {
-        this.pageFolder = new File(pageFolder + Slash + Topics);
-        this.imageFolder = new File(pageFolder + Slash + Images);
-        this.pageFolder.mkdirs();
-        this.imageFolder.mkdirs();
-        return this;
-    }
+
+    private File baseFolder;
+    public File baseFolder() { return this.baseFolder; }
 
     private File pageFolder;
     public File pageFolder() { return this.pageFolder; }
@@ -91,8 +87,9 @@ public class ModelSite implements Site {
     private File domainFolder;
     @Override public File domainFolder() { return this.domainFolder; }
 
-    public ModelSite withModel(String modelFile) { readDomainFacts(modelFile); return this; }
-    private void readDomainFacts(String modelFile) { FactReader.from(new File(domainFolder, modelFile)).readFacts(); }
+    public ModelSite withFacts(File factsFile) { readDomainFacts(factsFile); return this; }
+    void readDomainFacts(File factsFile) { new FactParser(factsFile).parseTokens(); }
+    public Domain getDomain() { return Domain.getCurrentDomain(); }
 
     public void mapTopic(Topic topic) {
         String key = topic.getTitle();
@@ -100,14 +97,14 @@ public class ModelSite implements Site {
         pluralLinks().put(key, topic.formatPageLink(Number.PluralNumber));
     }
 
-    private final HashMap<String, String> topicLinks = new HashMap<>();
+    private final HashMap<String, String> topicLinks = emptyMap();
     @Override public HashMap<String, String> topicLinks() { return this.topicLinks; }
     public List<Topic> getLinkedTopics() {
         List<Topic> results = mapList(topicLinks().keySet(), (k) -> getDomain().getTopic(k));
         Collections.sort(results, (a,b) -> a.getTitle().compareTo(b.getTitle()));
         return results; }
 
-    private final HashMap<String, String> pluralLinks = new HashMap<>();
+    private final HashMap<String, String> pluralLinks = emptyMap();
     @Override public HashMap<String, String> pluralLinks() { return this.pluralLinks; }
 
     private String pageType = HyperText;
@@ -120,38 +117,47 @@ public class ModelSite implements Site {
     private String imageBase = Empty;
     @Override public String imageBase() { return this.imageBase; }
 
-    public Domain getDomain() { return Domain.getCurrentDomain(); }
-
-    static final String PageReport = "generated %d pages";
+    static final String PageReport = "generated %d pages for: '%s'";
     public void generatePages() {
-        imageFolder().mkdirs();
         List<Topic> topics = getDomain().getTopics().getItems();
         topics.forEach((topic) -> mapTopic(topic));
         topics.forEach((topic) -> generatePage(topic));
-        report(format(PageReport, topics.size())); }
+        generateInventory();
+        report(format(PageReport, topics.size(), getDomain().getName())); }
+
+    static final String DomainInventory = "domain-inventory";
+    static final String InventoryTemplate = "inventory-template";
+    private void generateInventory() {
+        final HashMap<String, Object> rootMap = new HashMap();
+        rootMap.put("domain", getDomain());
+        rootMap.put("pageType", pageType());
+        rootMap.put("site", this);
+
+        File pageFile = new File(baseFolder(), DomainInventory + pageType());
+        writePage(pageFile, (Writer writer) -> getForm(InventoryTemplate + pageType()).process(rootMap, writer));
+    }
 
     static final String Graphics = ".svg";
     static final String PageTemplate = "page-template";
     private void generatePage(final Topic topic) {
-        String diagram = topic.buildDiagramSVG();
+//        Fact[] facts = topic.getLinkedFacts();
+        for (Fact fact : topic.getLinkedFacts()) {
+            String diagram = topic.buildDiagramSVG(fact);
+            File imageFile = new File(imageFolder(), topic.formImageName(fact) + Graphics);
+            writePage(imageFile, (Writer writer) -> writer.write(diagram));
+        }
+
         String discussion = topic.buildDiscussion();
         final HashMap<String, Object> rootMap = new HashMap();
         rootMap.put("topic", topic);
         rootMap.put("domain", getDomain());
-        rootMap.put("diagram", diagram);
         rootMap.put("discussion", discussion);
         rootMap.put("pageType", pageType());
         rootMap.put("site", this);
 
         File pageFile = new File(pageFolder(), topic.getLinkFileName(pageType()));
-        writePage(pageFile, (Writer writer) -> getTemplate(PageTemplate + pageType()).process(rootMap, writer));
-
-        File imageFile = new File(imageFolder(), topic.getLinkName() + Graphics);
-        writePage(imageFile, (Writer writer) -> writer.write(diagram));
+        writePage(pageFile, (Writer writer) -> getForm(PageTemplate + pageType()).process(rootMap, writer));
     }
-
-    private Template getTemplate(String templateName) throws Exception {
-        return this.cfg.getTemplate(templateName); }
 
     private OutputStreamWriter buildWriter(File pageFile) throws IOException {
         return new OutputStreamWriter(new FileOutputStream(pageFile)); }

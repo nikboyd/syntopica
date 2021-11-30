@@ -17,7 +17,7 @@ public class FactReader extends LineReader {
     protected FactReader(InputStream s) { super(s); }
     public static FactReader with(InputStream s) { return new FactReader(s); }
     public static FactReader from(File file) { return nullOrTryLoudly(() -> with(new FileInputStream(file))); }
-    private void readFact(String line) { if (!line.trim().isEmpty()) Fact.parseFrom(line); }
-    public void readFacts() { readLines(line -> readFact(line)); }
+//    private void readFact(String line) { if (!line.trim().isEmpty()) Fact.parseFrom(line); }
+//    public void readFacts() { readLines(line -> readFact(line)); }
 
 } // FactReader

@@ -2,6 +2,7 @@ package com.educery.utils;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.BinaryOperator;
@@ -36,7 +37,10 @@ public interface Utils {
     public static <T> boolean hasNo(Collection<T> items) {
         return items == null || items.isEmpty() || items.iterator().next() == null; }
 
-    public static <T> List<T> wrap(T... items) { return hasNo(items) ? new ArrayList() : Arrays.asList(items); }
+    static <T> List<T> wrapped(T... items) { return new ArrayList(Arrays.asList(items)); }
+    public static <T> List<T> wrap(T... items) { return hasNo(items) ? emptyList() : wrapped(items); }
+    public static <T> List<T> wrap(T head, List<T> items) { items.add(0, head); return items; }
+    public static <T> List<T> wrap(T head, T... items) { List<T> list = wrap(items); list.add(0, head); return list; }
     public static <T> T[] unwrap(List<T> items, T[] sample) { return hasNo(items) ? sample : items.toArray(sample); }
 
     public static <T> T findFirst(Collection<T> items, Predicate<? super T> p) {
@@ -77,10 +81,12 @@ public interface Utils {
     public static <R> R reduce(Collection<R> items, BinaryOperator<R> op, R identity) {
         return items.stream().reduce(identity, op); }
 
+    public static <K,V> HashMap<K,V> emptyMap() { return new HashMap(); }
     public static <R> ArrayList<R> emptyList() { return new ArrayList(); }
-    public static <R> ArrayList<R> fillList(int count, R item) {
-        ArrayList<R> results = emptyList();
-        while (count-- > 0) results.add(item);
-        return results; }
+    public static <R> ArrayList<R> copyList(List<R> list) { return new ArrayList(list); }
+    public static <R> ArrayList<R> buildList(Consumer<List<R>> c) { return buildList(emptyList(), c); }
+    public static <R> ArrayList<R> buildList(ArrayList<R> list, Consumer<List<R>> c) { c.accept(list); return list; }
+    public static <R> ArrayList<R> fillList(int count, final R item) {
+        return buildList(results -> { int n = count; while (n-- > 0) results.add(item);} ); }
 
 } // Utils

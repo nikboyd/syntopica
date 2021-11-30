@@ -30,11 +30,10 @@ public class TextBox extends TextElement implements Tag.Factory {
     @Override public int getOffsetX() { return getX() + (getWidth() / 2); }
     @Override public int getOffsetY() { return getY() + (getHeight() * 2 / 3); }
 
-    @Override public int getWidth() { return getName().length() * LetterWidth; }
+    @Override public int getWidth() { return nameWidth(); }
     @Override public int getHeight() { return Height; }
 
     // styling for a SVG text box
-    static final int LetterWidth = 10;
     static final int BoxFontHeight = 18;
     static final int Height = BoxFontHeight + 8;
     @Override protected Tag getTextStyle() { return TextBoxStyle; }

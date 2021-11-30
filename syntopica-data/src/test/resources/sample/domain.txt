@@ -1,5 +1,7 @@
 Domain named: software requirements.
 
+stakeholder holds: business interests, quality concerns.
+
 improvement = feature improves: activities for: business.
 governor governs: business.
 governor serves: business as: source of: vision, mission, values.
@@ -11,13 +13,13 @@ requestor serves: business as: source of: improvements, purposes.
 expector expects: improvements in: activity for: business.
 expector performs: activities for: business.
 expector uses: features of: solution.
-expector requests: actions of: components through: dialogs.
-expector requests: values from: components through: dialogs.
+expector triggers: actions on: components through: dialogs.
+expector views: values from: components through: dialogs.
 expector serves: business as: source of: features.
 
-developer designs: component, dialog, interface.
-developer builds: component, dialog, interface.
-developer tests: component, dialog, interface.
+developer designs: components, dialogs, interfaces.
+developer builds: components, dialogs, interfaces.
+developer tests: components, dialogs, interfaces.
 developer serves: business as: source of: estimates.
 
 vision describes: outcomes of: business.

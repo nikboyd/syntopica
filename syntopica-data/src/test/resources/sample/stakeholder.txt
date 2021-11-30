@@ -1,0 +1,8 @@
+Stakeholders include:
+
+* [Governors][governor], who _govern_ a business and establish its policies
+* [Requestors][requestor], who _oversee_ business activities and _request_ improvements in those activities
+* [Expectors][expector], who _perform_ those activities and expect a solution to improve those activities
+* [Developers][developer], who _develop_ software solutions to _improve_ business activities
+
+<div align="center"><img src="../images/model-overview.svg" width="75%" /></div>

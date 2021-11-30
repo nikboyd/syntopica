@@ -21,7 +21,7 @@ public class Edge {
 
     private static final int Center = 1;
     private static final int Anchors = 3;
-    static final int OptimalY = 2 * ModelElement.Height;
+    static final int OptimalY = 2 * ModelElement.ModelHeight;
 
     /**
      * Indicates a direction (2-dimensional).

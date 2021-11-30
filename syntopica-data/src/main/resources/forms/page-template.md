@@ -1,18 +1,21 @@
-## ${topic.subject}
-
-${topic.formatImageLink()}
+## ${topic.titleSubject()}
 
 In the context of this [model](../README.md#overview), ${topic.formatReference()}
 
-<#list topic.facts as fact>
-* ${topic.formatFact(fact)}
+<#list topic.getFacts() as fact>
+<details>
+  <summary>${topic.formatFact(fact)}</summary>
+
+  <img src="../images/${topic.formImageName(fact)}.svg" />
+</details>
+
 </#list>
 
 ### Discussion
 
 ${discussion}
 
-<h4 align="center"><b>&sect; &sect; &sect;</b></h4>
+<div align="center"><b>&sect; &sect; &sect;</b></div>
 
 <#list site.linkedTopics as topic>
 ${topic.formatRefLinks()}

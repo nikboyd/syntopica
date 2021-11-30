@@ -4,3 +4,18 @@ or they may have specific domain knowledge and expertise.
 They also ensure that the conduct of business activities remain 
 in alignment with the purposes of the business, 
 esp. with its mission and vision.
+
+| Kind | Interests and _Concerns_ |
+| ---- | ------------------------ |
+| Activity Managers | Activities, Improvements |
+|  | _Relevancy, Effectiveness, Efficiency, Reliability, Availability, Affordability_ |
+| Solution Planners | Markets, Coverage |
+|  | _Relevancy, Usefulness, Efficiency_ |
+| Solution Marketers | Markets, Market Share |
+|  | _Relevancy, Affordability, Adaptability_ |
+| Solution Sponsors | Budgets, Expenses |
+|  | _Measurability, Affordability, Verifiability_ |
+| Domain Experts | Domain Coverage |
+|  | _Sufficiency, Completeness, Cohesion, Correctness, Optimality_ |
+
+<div align="center"><img src="../images/activity_improvement.svg" /></div>

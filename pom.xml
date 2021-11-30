@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project 
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="
+		http://maven.apache.org/POM/4.0.0 
+		http://maven.apache.org/xsd/maven-4.0.0.xsd
+		">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.educery</groupId>
+    <artifactId>syntopica</artifactId>
+    <version>1.1</version>
+    <packaging>pom</packaging>
+    
+    <modules>
+        <module>syntopica-data</module>
+    </modules>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yyyy.MMdd.HHmm</maven.build.timestamp.format>
+        <build.timestamp>${maven.build.timestamp}</build.timestamp>
+        
+        <version.syntopica>${build.timestamp}</version.syntopica>
+        <version.syntopica-libs>[2021,)</version.syntopica-libs>
+
+        <version.commons-io>1.3.2</version.commons-io>
+        <version.commons-cli>1.3.1</version.commons-cli>
+        <version.commons-lang>3.10</version.commons-lang>
+        <version.commons-logging>1.1.3</version.commons-logging>
+
+        <version.slf4j>1.7.9</version.slf4j>
+        <version.log4j>2.1</version.log4j>
+        <version.junit>4.11</version.junit>
+        <version.freemarker>2.3.28</version.freemarker>
+
+        <version.antlr>4.7.1</version.antlr>
+        <!--<version.antlr-st>4.0.8</version.antlr-st>-->
+        <version.antlr-maven>4.7.1</version.antlr-maven>
+
+        <version.maven-asm>3.3.0</version.maven-asm>
+        <version.maven-compiler>3.8.1</version.maven-compiler>
+        <version.maven-surefire>2.22.1</version.maven-surefire>
+        <version.maven-jacoco>0.8.5</version.maven-jacoco>
+    </properties>
+
+</project>

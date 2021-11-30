@@ -34,16 +34,13 @@ public class Point {
     public int getY() { return this.positions[1]; }
     public void setY(int y) { this.positions[1] = y; }
 
-    public Point reduced(int factor) {
-        return (factor == 0) ? new Point() : Point.at(getX() / factor, getY() / factor); }
-
     public Point invert() { return this.times(-1); }
     public Point times(int factor) { return Point.at(getX() * factor, getY() * factor); }
     public Point times(Point p) { return Point.at(getX() * p.getX(), getY() * p.getY()); }
+    public Point reduced(int factor) { return (factor == 0) ? new Point() : Point.at(getX() / factor, getY() / factor); }
 
     public Point flip() { return Point.at(getY(), getX()); }
     public Point signs() { return Point.at((int) Math.signum(getX()), (int) Math.signum(getY())); }
-
 
     public Point invertX() { return Point.at(-getX(), getY()); }
     public Point invertY() { return Point.at(getX(), -getY()); }
@@ -53,15 +50,10 @@ public class Point {
 
     public String format() { return getX() + "," + getY(); }
 
+    public boolean resembles(Point p) { return p.getX() == getX() && p.getY() == getY(); }
     @Override public boolean equals(Object candidate) {
-        if (hasNo(candidate)) return false;
-        if (!getClass().isInstance(candidate)) return false;
+        return hasSome(candidate) && getClass().isInstance(candidate) && resembles((Point) candidate); }
 
-        Point p = (Point) candidate;
-        return p.getX() == getX() && p.getY() == getY();
-    }
-
-    @Override public int hashCode() {
-        int hash = 3; hash = 19 * hash + Arrays.hashCode(this.positions); return hash; }
+    @Override public int hashCode() { int hash = 3; hash = 19 * hash + Arrays.hashCode(this.positions); return hash; }
 
 } // Point

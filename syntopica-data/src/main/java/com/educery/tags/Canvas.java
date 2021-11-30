@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 import static java.lang.System.*;
 import static com.educery.utils.Utils.*;
+import com.educery.graphics.Point;
 import com.educery.utils.*;
 
 /**
@@ -26,6 +27,7 @@ public class Canvas implements Registry.KeySource, Tag.Factory, Closeable {
 
     private final int[] viewbox = { 0, 0, 0, 0 };
     private int[] viewbox() { return this.viewbox; }
+    @Override public Point getLocation() { return new Point(viewbox[0], viewbox[1]); }
     public Canvas with(int[] viewbox) { if (viewbox.length == 4) arraycopy(viewbox, 0, viewbox(), 0, 4); return this; }
 
     static final String ViewboxSpec = "%d %d %d %d";
@@ -33,8 +35,10 @@ public class Canvas implements Registry.KeySource, Tag.Factory, Closeable {
 
     private final ArrayList<Tag.Factory> elements = emptyList();
     private List<Tag.Factory> elements() { return this.elements; }
+    public Canvas with(Tag.Factory... elements) { return with(wrap(elements)); }
+    public Canvas with(List<Tag.Factory> elements) { elements().addAll(elements); return this; }
+
     @Override public Tag drawElement() { return drawElements(buildContext()); }
-    public Canvas with(Tag.Factory... elements) { elements().addAll(wrap(elements)); return this; }
     private Tag drawElements(Tag tag) { elements().forEach((element) -> tag.with(element.drawElement())); return tag; }
 
     static final String Measure = "cm";

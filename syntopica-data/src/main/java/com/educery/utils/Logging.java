@@ -20,6 +20,7 @@ public interface Logging {
         if (hasNo(ex.getMessage())) ex.printStackTrace();
         else logger().debug(ex.getMessage(), ex); }
 
+    default void reportEach(String... messages) { wrap(messages).forEach((m) -> report(m)); }
     default void report(String message) { logger().info(message); }
     default void report(Throwable ex) {
         if (hasNo(ex)) return;
@@ -47,8 +48,15 @@ public interface Logging {
 
     static final String Empty = "";
     static final String Blank = " ";
+
+    // punctuation
     static final String Colon = ":";
+    static final String Semi  = ";";
     static final String Comma = ",";
     static final String Period = ".";
+    static final String NewLine = "\n";
+
+    static final String Slash = "/";
+    static final String Score = "_";
 
 } // Logging

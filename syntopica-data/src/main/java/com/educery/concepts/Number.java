@@ -28,8 +28,8 @@ public class Number implements Logging {
         PluralNumber.replacements.put("ays", "ay");
         PluralNumber.replacements.put("ies", "y");
         PluralNumber.replacements.put("sses", "ss");
-        // PluralNumber.replacements.put(Plural, Empty);
         PluralNumber.replacements.put(Empty, Empty);
+
         SingularNumber.replacements.put("ue", "ues");
         SingularNumber.replacements.put("ay", "ays");
         SingularNumber.replacements.put("y", "ies");
@@ -61,6 +61,10 @@ public class Number implements Logging {
     String convert(String subject) { return replaceSuffix(subject.trim()); }
     private String replaceSuffix(String subject) {
         String suffix = suffixFrom(subject);
+        if (suffix.isEmpty() && endsPlurally(subject)) {
+            return subject.substring(0, subject.length() - 1);
+        }
+
         int rootLength = subject.length() - suffix.length();
         subject = subject.substring(0, rootLength);
         subject += this.replacements.get(suffix);

@@ -27,11 +27,16 @@ public class Anchor {
         this.location.setY(p.getY());
     }
 
-    static final Connector[] NoConnectors = { };
     private final ArrayList<Connector> connectors = new ArrayList();
-    public void add(Connector... c) { this.connectors.addAll(Arrays.asList(c)); }
-    public Connector[] getConnectors() { return unwrap(this.connectors, NoConnectors); }
-    public boolean isEmpty() { return this.connectors.isEmpty(); }
-    public int count() { return this.connectors.size(); }
+    public List<Connector> connectors() { return this.connectors; }
+
+    static final Connector[] NoConnectors = { };
+    public Connector[] getConnectors() { return unwrap(connectors(), NoConnectors); }
+
+    public void addAll(List<Connector> list) { connectors().addAll(list); }
+    public void add(Connector... c) { addAll(wrap(c)); }
+
+    public boolean isEmpty() { return connectors().isEmpty(); }
+    public int count() { return connectors().size(); }
 
 } // Anchor

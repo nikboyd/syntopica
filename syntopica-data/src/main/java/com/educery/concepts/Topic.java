@@ -6,6 +6,8 @@ import com.educery.tags.*;
 import com.educery.utils.*;
 import static com.educery.utils.Site.*;
 import static com.educery.utils.Utils.*;
+import static com.educery.concepts.Number.*;
+import static com.educery.utils.LineBuilder.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
 /**
@@ -21,19 +23,24 @@ import static org.apache.commons.lang3.StringUtils.*;
 public class Topic implements Registry.KeySource, Logging {
 
     public static Domain domain() { return Domain.getCurrentDomain(); }
-    public static Number getNumber(String subject) { return Number.getNumber(!Number.isSingular(subject)); }
+    public static Number getNumber(String subject) { return Number.getNumber(!isSingular(subject)); }
     public static List<String> namesFrom(String names) { return map(wrap(names.split(Comma)), (n) -> n.trim()); }
     public static List<Topic> listFrom(String names) { return map(namesFrom(names), (n) -> domain().getTopic(n)); }
 
     private String title = Empty; // is singular!
     private Topic(String title) { this.title = title; }
-    public static Topic named(String title) { return new Topic(Number.asSingular(title)); }
-    public Topic with(Fact... facts) { for (Fact fact : facts) facts().register(fact); return this; }
+    public static Topic named(String title) { return new Topic(asSingular(title)); }
     public Topic with(String discussion) { setDiscussion(discussion); return this; }
 
     public String getTitle() { return this.title; }
+    public String[] titleWords() { return getTitle().split(Blank); }
+    public List<String> subjectWords() { return map(wrap(titleWords()), w -> capitalize(w)); }
+    public String titleSubject() { return joinWith(Blank, subjectWords()); }
+
     @Override public String getKey() { return getTitle(); }
-    public String getTitle(Number aNumber) { return aNumber.isPlural() ? Number.asPlural(getTitle()) : getTitle(); }
+    public String getImageName() { return getTitle().replaceAll(Blank, Score); }
+    public String getTitle(Number aNumber) {
+        return aNumber.isPlural() ? asPlural(getTitle()) : asSingular(getTitle()); }
 
     public void reportTopic() { report("topic: " + getTitle()); }
     public void dump() { reportTopic(); if (isDefined()) getFacts()[0].dumpMessage(); }
@@ -61,20 +68,28 @@ public class Topic implements Registry.KeySource, Logging {
         return Tag.linkWith(linkedTopics().get(subject)).withContent(subject).formatReference(); }
 
     private final Registry<Fact> facts = Registry.empty();
-    Registry<Fact> facts() { return this.facts; }
+    public Registry<Fact> facts() { return this.facts; }
+    public boolean hasFacts() { return !facts().isEmpty(); }
+    public Topic register(Fact f) { facts().register(f); return this; }
+    public Topic with(Fact... facts) { for (Fact fact : facts) register(fact); return this; }
 
-    static final Fact[] NoFacts = {};
-    public Fact[] getFacts() { return unwrap(facts().getItems(), NoFacts); }
+    static final Fact[] NoFacts = { };
+    public Fact[] getLinkedFacts() { return unwrap(facts().getItems(), NoFacts); }
+    public Fact[] getFacts() { return getLinkedFacts(); }
 
-    public String getArticle() { return getArticle(Number.SingularNumber); }
+    public String getArticle() { return getArticle(SingularNumber); }
     public String getArticle(Number aNumber) { return Number.getArticle(getTitle()); }
 
     public String getSubject() { return capitalize(getTitle()); }
-    public String getSubject(Number aNumber) { return capitalize(getTitle(aNumber)); }
+    public String getSubject(Number aNumber) { return getTitle(aNumber); }
+    public String formatSubjectLink() {
+        return Tag.linkWith(getLinkFileName()).withBase("topics/").withContent(getSubject(SingularNumber)).formatDetail();
+    }
 
-    static final String Text = ".txt";
+    public static final String Text = ".txt";
     public String domainFileName() { return getLinkName() + Text; }
     public File domainFile() { return new File(Site.getSite().domainFolder(), domainFileName()); }
+    public boolean hasSignificance() { return hasFacts() || domainFile().exists(); }
 
     public String formatPageLink(Number aNumber, String linkBase) {
         return Tag.linkWith(getLinkFileName()).withBase(linkBase).withContent(getTitle(aNumber)).format(); }
@@ -87,60 +102,47 @@ public class Topic implements Registry.KeySource, Logging {
     public String getLinkFileName() { return getLinkFileName(PageType); }
 
     private static final String PageType = ".md";
-    private String formatLinkName(String link) { return link.replace(Blank, Period); }
+    private String formatLinkName(String link) { return link.replaceAll(Blank, Period); }
     private String formatLink(String subject) { return formatLinkName(subject) + PageType; }
     public String buildLink(String s) { return Tag.linkWith(formatLink(s)).withContent(s).format(); }
 
-    public String formatFact(Fact fact) {
-        String subject = fact.mainTopic();
-        String[] parts = fact.getPredicate().getParts();
-        StringBuilder builder = new StringBuilder();
-        if (fact.defines(this)) {
-            builder.append(Number.getArticle(subject));
-            builder.append(Blank);
-            builder.append(formatRelatedTopics(subject));
-            builder.append(Blank);
-        }
+    public String formatFact(Fact fact) { return formatFact(fact, Empty); }
+    public String formatFact(Fact fact, String base) {
+        return build((b) -> {
+            String name = fact.mainTopic();
+            Topic topic = domain().getTopic(name);
+            if (fact.defines(this))
+                b.blankAfterEach(Number.getArticle(name),
+                    topic.formatFactLink(Number.getNumber(name), base));
 
-        builder.append(Tag.italics(parts[0]).format());
-        if (fact.getValenceCount() > 1) {
-            builder.append(Blank);
-            builder.append(Number.getArticle(fact.getTopic(1)));
-            builder.append(Blank);
-            builder.append(formatRelatedTopics(fact.getTopic(1)));
-
-            if (fact.getValenceCount() > 2) {
-                for (int index = 2; index < fact.getValenceCount(); index++) {
-                    builder.append(Blank);
-                    builder.append(parts[index - 1]);
-                    builder.append(Blank);
-                    builder.append(Number.getArticle(fact.getTopic(index)));
-                    builder.append(Blank);
-                    builder.append(formatRelatedTopics(fact.getTopic(index)));
+            int[] px = { 0 };
+            b.tie(Tag.italics(fact.getPredicate().getVerb()).format());
+            if (fact.getValenceCount() > 1) {
+                for (int index = 1; index < fact.topicCount(); index++) {
+                    if (index > 1) {
+                        b.blankBeforeEach(fact.getPredicate().nextPart(px));
+                    }
+                    name = fact.getTopic(index);
+                    topic = domain().getTopic(name);
+                    b.blankBeforeEach(Number.getArticle(name),
+                        topic.formatFactLink(Number.getNumber(name), base));
                 }
             }
-        }
-        return builder.toString();
+        });
     }
 
-    static final String OR = " or ";
-    private String formatRelatedTopics(String topics) {
-        StringBuilder builder = new StringBuilder();
-        Topic.listFrom(topics).forEach((topic) -> {
-            if (builder.length() > 0) builder.append(OR);
-            builder.append(topic.formatPageLink());
-        });
-        return builder.toString(); }
+    public String formatFactLink(Number n, String base) {
+        return Tag.linkWith(getLinkFileName()).withBase(base).withContent(getTitle(n)).formatDetail(); }
 
     public String formatReference() { return getArticle() + Blank + formatPageLink(); }
-    public String formatPageLink() { return formatPageLink(Number.SingularNumber); }
-    public String formatPageLink(Number aNumber) {
-        return Tag.linkWith(getLinkFileName()).withContent(getTitle(aNumber)).format(); }
+    public String formatPageLink() { return formatPageLink(SingularNumber); }
+    public String formatPageLink(Number n) {
+        return Tag.linkWith(getLinkFileName()).withContent(getTitle(n)).format(); }
 
     public Site site() { return Site.getSite(); }
     public String linkBase() { return site().linkBase(); }
-    public String formatRefLinks() { return formatRefLink() + NewLine + formatRefLink(Number.PluralNumber); }
-    public String formatRefLink() { return formatRefLink(Number.SingularNumber); }
+    public String formatRefLinks() { return formatRefLink() + NewLine + formatRefLink(PluralNumber); }
+    public String formatRefLink() { return formatRefLink(SingularNumber); }
     public String formatRefLink(Number aNumber) {
         return Tag.linkWith(getLinkFileName()).withContent(getTitle(aNumber)).formatReference(); }
 
@@ -151,29 +153,31 @@ public class Topic implements Registry.KeySource, Logging {
         String link = getLinkName() + Graphics;
         return Tag.imageWith(link).withBase(imageBase()).withAlign(Right).format(); }
 
-    public String buildDiagramSVG() {
-        Fact fact = getFacts()[0];
-        int boxHeight = fact.getValenceCount() * 3;
-        int viewHeight = fact.getValenceCount() * 100;
+    static final String ImageForm = "%s_%s";
+    public String formImageName(Fact fact) { return format(ImageForm, getImageName(), fact.getVerb()); }
+    public String buildDiagramSVG(Fact fact) {
+        List<String> elements = fact.namedElements();
+        int boxHeight = elements.size() * 3;
+        int viewHeight = elements.size() * 100;
         int[] viewbox = {10, 8, 350, viewHeight};
 
         // note: canvas.close() deactivates the canvas
         try (Canvas canvas = Canvas.with(12, boxHeight).activate()) {
-            Tag.Factory[] tags = fact.buildTags();
-            canvas.with(viewbox).with(tags);
-            return canvas.drawElement().format();
+            return canvas.with(viewbox).with(fact.buildTags()).drawElement().format();
         }
     }
 
-    static final String NewLine = "\n";
-    static final String Break = "<br/>";
     public String buildDiscussion() {
         if (!domainFile().exists()) return "";
 
         // replace known links
         TopicReader reader = TopicReader.from(domainFile());
         String text = reader.readDiscussion();
-        for (String subject : site().topicLinks().keySet()) {
+        List<String> keys = new ArrayList(site().topicLinks().keySet());
+        Collections.sort(keys, (Object o1, Object o2) -> {
+            return o2.toString().length() - o1.toString().length();
+        });
+        for (String subject : keys) {
             text = fixLeadingSubject(subject, text);
             text = fixPluralSubject(subject, text);
             text = fixSubjectLinks(subject, text);
@@ -194,21 +198,36 @@ public class Topic implements Registry.KeySource, Logging {
         String cap = capitalize(subject);
         String capLink = capitalizeLink(subject);
         // replace leading sentence subject with fixed link
-        return text.contains(cap) ? text.replace(cap + Blank, capLink + Blank) : text;
+        if (!text.contains(cap)) return text;
+        if (text.contains(LeftMark + cap)) return text;
+        if (text.contains(cap + RightMark)) return text;
+        return text.replace(cap + Blank, capLink + Blank);
     }
 
     private String fixPluralSubject(String subject, String text) {
-        String plural = Number.asPlural(subject);
+        String plural = asPlural(subject);
         String pluralLink = site().pluralLinks().get(subject);
-        return text.contains(plural) ? text.replace(plural, pluralLink) : text;
+        if (!text.contains(plural)) return text;
+        if (text.contains(LeftMark + plural)) return text;
+        if (text.contains(plural + RightMark)) return text;
+        return text.replace(plural, pluralLink);
     }
 
     private String fixSubjectLinks(String subject, String text) {
-        String topicLink = site().topicLinks().get(subject);
-        if (text.contains(subject)) {
-            text = text.replace(Blank + subject, Blank + topicLink);
-            text = text.replace(subject + Blank, topicLink + Blank);
-        }
+        return fixSubjectLink(subject, text, site().topicLinks().get(subject));
+    }
+
+    static final String LeftMark = "[";
+    static final String RightMark = "]";
+    private String fixSubjectLink(String subject, String text, String topicLink) {
+        if (!text.contains(subject)) return text;
+        if (text.contains(LeftMark + asPlural(subject))) return text;
+        if (text.contains(LeftMark + asSingular(subject))) return text;
+        if (text.contains(asPlural(subject) + RightMark)) return text;
+        if (text.contains(asSingular(subject) + RightMark)) return text;
+
+        text = text.replace(Blank + subject, Blank + topicLink);
+        text = text.replace(subject + Blank, topicLink + Blank);
         return text;
     }
 
@@ -221,6 +240,7 @@ public class Topic implements Registry.KeySource, Logging {
         return text;
     }
 
+    static final String Break = "<br/>";
     private String fixLineBreaks(String text) {
         if (!site().usesMarkdown()) {
             text = text.replace(NewLine + NewLine, Break + Break);
@@ -231,8 +251,8 @@ public class Topic implements Registry.KeySource, Logging {
     private String capitalizeLink(String subject) {
         String topicLink = site().topicLinks().get(subject);
         String cap = capitalize(subject);
-        String subStart = "[" + subject.charAt(0);
-        String capStart = "[" + cap.charAt(0);
+        String subStart = LeftMark + subject.charAt(0);
+        String capStart = LeftMark + cap.charAt(0);
         return topicLink.replace(subStart, capStart);
     }
 

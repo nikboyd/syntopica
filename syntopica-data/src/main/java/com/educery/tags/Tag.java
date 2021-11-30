@@ -1,8 +1,10 @@
 package com.educery.tags;
 
-import com.educery.utils.Registry;
 import java.util.*;
+import com.educery.utils.*;
+import com.educery.graphics.Point;
 import static com.educery.utils.Utils.*;
+import static com.educery.utils.LineBuilder.*;
 
 /**
  * Represents an X/HTML element and its contents.
@@ -21,32 +23,31 @@ public class Tag implements Registry.KeySource {
     public static interface Factory {
 
         public static final String TextStyle = "text-style";
+        public static final String SansSerif = "sans-serif";
         public static final String TextAnchor = "text-anchor";
         public static final String FontFamily = "font-family";
         public static final String FontWeight = "font-weight";
         public static final String FontStyle = "font-style";
         public static final String FontSize = "font-size";
 
-        public static final String Fill = "fill";
         public static final String FillOpacity = "fill-opacity";
+        public static final String Fill = "fill";
 
         public static final String StrokeWidth = "stroke-width";
         public static final String Stroke = "stroke";
 
         public static final String White = "#ffffff";
         public static final String Black = "#000000";
-        public static final String SansSerif = "sans-serif";
         public static final String Middle = "middle";
         public static final String Normal = "normal";
         public static final String Italic = "italic";
         public static final String None = "none";
 
-        /**
-         * Builds a new Tag.
-         *
-         * @return a new Tag
-         */
         public Tag drawElement();
+
+        default Point getLocation() { return new Point(); }
+        default Point getOffsets()  { return new Point(); }
+        default Point getExtent()   { return new Point(); }
 
     } // Factory
 
@@ -61,14 +62,25 @@ public class Tag implements Registry.KeySource {
     static final String Anchor = "a";
     public boolean isAnchor() { return getKey().equals(Anchor); }
 
-    static final String HyperLink = "href";
-    public Tag withLink(String link) { return with(HyperLink, link); }
-    public static Tag linkWith(String reference) { return Tag.named(Anchor).withLink(reference); }
+    static final String MarkDown = ".md";
+    public boolean isMarkdown() { return getLink().endsWith(MarkDown); }
 
     static final String Source = "src";
+    static final String HyperLink = "href";
     static final String XLink = "xlink:" + HyperLink;
+
+    static final String[] Links = {XLink, HyperLink, Source};
+    static final List<String> LinkTypes = wrap(Links);
+    private boolean isLink(String key) { return LinkTypes.contains(key); }
+
+    public Tag withLink(String link) { return with(HyperLink, link); }
+    public static Tag linkWith(String reference) { return Tag.named(Anchor).withLink(reference); }
     public static Tag xlinkWith(String reference) { return Tag.named(Anchor).with(XLink, reference); }
-    private String getLink() { return (this.hasValue(HyperLink) ? getValue(HyperLink) : getValue(XLink)); }
+    public String getLink() { return (this.hasValue(HyperLink) ? getValue(HyperLink) : getValue(XLink)); }
+    public String getLinkName() { String link = getLink(); return link.substring(0, link.length() - MarkDown.length()); }
+
+    static final String LinkBase = "xlink:base";
+    public Tag withBase(String linkBase) { return with(LinkBase, linkBase); }
 
     static final String Polyline = "polyline";
     public static Tag polyline() { return Tag.named(Polyline); }
@@ -106,11 +118,11 @@ public class Tag implements Registry.KeySource {
     private String getLinkValue(String key) { return isLink(key) ? getLinkBase() + getValue(key) : getValue(key); }
     private String getLinkBase() { return getValue(LinkBase); }
 
-    static final String Content = "";
+    static final String Content = Empty;
     public String getContent() { return getValue(Content); }
 
-    static final String LinkBase = "xlink:base";
-    public Tag withBase(String linkBase) { return with(LinkBase, linkBase); }
+    static final String Dot = ".";
+    public String topicRef() { return getContent().replace(Blank, Dot); }
 
     static final String[] InitialTags = { Content, LinkBase };
     private boolean taggedInitially(String key) { return wrap(InitialTags).contains(key.trim()); }
@@ -127,25 +139,39 @@ public class Tag implements Registry.KeySource {
     static final String Align = "align";
     public Tag withAlign(String alignment) { return with(Align, alignment); }
 
-    public Tag withX(int value) { return this.with("x", value + Empty); }
-    public Tag withY(int value) { return this.with("y", value + Empty); }
+    static final String X = "x";
+    public int valueX() { return intValue(X); }
+    public Tag withX(int value) { return this.with(X, value + Empty); }
+
+    static final String Y = "y";
+    public int valueY() { return intValue(Y); }
+    public Tag withY(int value) { return this.with(Y, value + Empty); }
+
+    public int intValue(String name) { return Integer.parseInt(getValue(name)); }
+    public Tag withOrigin(Point p) { return this.withX(p.getX()).withY(p.getY()); }
+    public Tag withExtent(Point p) { return this.withWidth(p.getX()).withHeight(p.getY()); }
+    public Tag copyOrigin(Factory f) { return withOrigin(f.getLocation()); }
+    public Tag copyExtent(Factory f) { return withExtent(f.getExtent()); }
 
     static final String Width = "width";
+    public int valueWidth() { return intValue(Width); }
     public Tag withWidth(String value) { return this.with(Width, value); }
     public Tag withWidth(int value) { return this.with(Width, value + Empty); }
+    public Tag copyWidth(Tag tag) { return this.withWidth(valueWidth()); }
 
     private static final String Height = "height";
+    public int valueHeight() { return intValue(Height); }
     public Tag withHeight(String value) { return this.with(Height, value); }
     public Tag withHeight(int value) { return this.with(Height, value + Empty); }
+    public Tag copyHeight(Tag tag) { return this.withHeight(valueHeight()); }
 
-    static final String SemiColon = ";";
     static final String Style = "style";
     public Tag withStyle(Tag stylingTag) { return this.withStyle(stylingTag.getValue(Style)); }
     public Tag withStyle(String styleText) { return this.with(Style, styleText); }
     public Tag withStyle(String name, int value) { return this.withStyle(name, value + Empty); }
     public Tag withStyle(String name, String value) {
         String priorValue = getValue(Style);
-        if (!priorValue.isEmpty()) priorValue += SemiColon + Blank;
+        if (!priorValue.isEmpty()) priorValue += Semi + Blank;
         String namedValue = name + Colon + Blank + value;
         return this.withStyle(priorValue + namedValue); }
 
@@ -158,64 +184,20 @@ public class Tag implements Registry.KeySource {
     private ArrayList<Tag> tags() { return this.contentTags; }
     public boolean hasTags() { return !tags().isEmpty(); }
     public boolean hasContent() { return !getContent().isEmpty(); }
-    public Tag with(Tag... elements) { tags().addAll(wrap(elements)); return this; }
+    public Tag with(Tag... elements) { return with(wrap(elements)); }
+    public Tag with(List<Tag> elements) { tags().addAll(elements); return this; }
 
-    static final String MarkDown = ".md";
-    public boolean isMarkdown() { return getLink().endsWith(MarkDown); }
-    public String getLinkName() {
-        String link = getLink(); return link.substring(0, link.length() - MarkDown.length()); }
+    public String format() { return build(b -> linkOrTag(b)); }
+    public String formatDetail() { return build(b -> buildTag(b)); }
+    public String formatReference() { return build(b -> buildRef(b)); }
 
-    public String format() {
-        StringBuilder builder = new StringBuilder();
-        if (this.isAnchor() && this.isMarkdown()) {
-            buildMarkdownLink(builder);
-        } else {
-            buildTag(builder);
-        }
-        return builder.toString();
-    }
+//    public void buildPageLink(LineBuilder builder) { builder.term(getLinkBase(), getLink()); }
+    private void linkOrTag(LineBuilder b) { if (isAnchor() && isMarkdown()) buildLink(b); else buildTag(b); }
+    public void buildLink(LineBuilder b) { b.bangIf(isImage()); b.square(getContent()); b.square(getLinkName()); }
+    public void buildRef(LineBuilder b) { b.square(topicRef()); b.tie(Colon, Blank, getLinkBase(), getLink()); }
 
-    static final String LeftMark = "[";
-    static final String RightMark = "]";
-    public void buildMarkdownLink(StringBuilder builder) {
-        markImage(builder);
-        builder.append(LeftMark);
-        builder.append(getContent());
-        builder.append(RightMark);
-        builder.append(LeftMark);
-        builder.append(getLinkName());
-        builder.append(RightMark);
-    }
-
-    static final String Bang = "!";
-    private void markImage(StringBuilder builder) { if (this.isImage()) builder.append(Bang); }
-
-    static final String LeftEnd = "(";
-    static final String RightEnd = ")";
-    public void buildPageLink(StringBuilder builder) {
-        builder.append(LeftEnd);
-        builder.append(getLinkBase());
-        builder.append(getLink());
-        builder.append(RightEnd);
-    }
-
-    public String formatReference() { StringBuilder b = new StringBuilder(); buildReference(b); return b.toString(); }
-    private void buildReference(StringBuilder builder) {
-        builder.append(LeftMark);
-        builder.append(getContent());
-        builder.append(RightMark);
-        builder.append(Colon);
-        builder.append(Blank);
-        builder.append(getLinkBase());
-        builder.append(getLink());
-    }
-
-    static final String Slash = "/";
-    static final String NewLine = "\n";
-    static final String LeftBracket = "<";
-    static final String RightBracket = ">";
-    private void buildTags(StringBuilder builder) { tags().forEach((tag) -> tag.buildTag(builder)); }
-    private void buildTag(StringBuilder builder) {
+    private void buildTags(LineBuilder builder) { tags().forEach(tag -> tag.buildTag(builder)); }
+    private void buildTag(LineBuilder builder) {
         if (hasTags()) { // nested tags
             buildHead(builder);
             buildTags(builder);
@@ -223,7 +205,7 @@ public class Tag implements Registry.KeySource {
         }
         else if (hasContent()) {
             buildHead(builder);
-            builder.append(getContent());
+            builder.tie(getContent());
             buildTail(builder);
         }
         else { // simple head
@@ -231,45 +213,16 @@ public class Tag implements Registry.KeySource {
         }
 
         if (this.isImage()) {
-            builder.append(NewLine);
+            builder.newLine();
         }
     }
 
-    private void buildHeadOnly(StringBuilder builder) {
-        builder.append(LeftBracket);
-        builder.append(getKey());
-        buildAttributes(builder);
-        builder.append(Slash);
-        builder.append(RightBracket);
-    }
+    private void buildHeadOnly(LineBuilder builder) { builder.angle(getKey(), buildAttributes(), Slash); }
+    private void buildHead(LineBuilder builder) { builder.angle(getKey(), buildAttributes()); }
+    private void buildTail(LineBuilder builder) { builder.angle(Slash, getKey()); }
 
-    private void buildHead(StringBuilder builder) {
-        builder.append(LeftBracket);
-        builder.append(getKey());
-        buildAttributes(builder);
-        builder.append(RightBracket);
-    }
-
-    private void buildTail(StringBuilder builder) {
-        builder.append(LeftBracket);
-        builder.append(Slash);
-        builder.append(getKey());
-        builder.append(RightBracket);
-    }
-
-    static final String Quote = "\"";
-    public static final String Equals = " = ";
-    static final String[] Links = {XLink, HyperLink, Source};
-    static final List<String> LinkTypes = wrap(Links);
-    private boolean isLink(String key) { return LinkTypes.contains(key); }
-    private void buildAttributes(StringBuilder builder) { attributeNames().forEach((key) -> buildAttribute(key, builder)); }
-    private void buildAttribute(String key, StringBuilder builder) {
-        builder.append(Blank);
-        builder.append(key);
-        builder.append(Equals.trim());
-        builder.append(Quote);
-        builder.append(getLinkValue(key));
-        builder.append(Quote);
-    }
+    private String buildAttributes() { return build(b -> buildAttributes(b)); }
+    private void buildAttributes(LineBuilder b) { attributeNames().forEach(key -> buildAttribute(key, b)); }
+    private void buildAttribute(String key, LineBuilder b) { b.blank(); b.nameValue(key, getLinkValue(key)); }
 
 } // Tag

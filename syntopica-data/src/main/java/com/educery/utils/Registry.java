@@ -36,48 +36,36 @@ public class Registry<ItemType extends Registry.KeySource> implements Logging {
     private Registry() { } // prevent external construction
     public Registry<ItemType> with(ItemType item) { register(item); return this; }
     public Registry<ItemType> without(ItemType item) { remove(item); return this; }
-    public static <ItemType extends Registry.KeySource> Registry<ItemType> empty() { return new Registry<>(); }
+    public static <ItemType extends Registry.KeySource> Registry<ItemType> empty() { return new Registry(); }
 
     static final String[] NoItems = { };
     private final ArrayList<String> order = emptyList();
-    public String[] getItemOrder() { return unwrap(this.order, NoItems); }
+    private List<String> order() { return this.order; }
+    public String[] getItemOrder() { return unwrap(order(), NoItems); }
 
     private final HashMap<String, ItemType> items = new HashMap();
+    private Map<String, ItemType> items() { return this.items; }
     public ItemType register(ItemType item) { return addItem(item); }
-    private ItemType addItem(ItemType item) {
-        if (!okKey(item)) return item; // invalid!
-        if (!hasItem(item.getKey())) adopt(item);
-        return this.items.get(item.getKey()); }
+    private ItemType addItem(ItemType item) { if (!okKey(item)) return item; 
+        if (!hasItem(item.getKey())) adopt(item); return items().get(item.getKey()); }
 
     public void remove(ItemType item) { if (okKey(item)) {
         if (hasItem(item.getKey())) orphan(item); else reportMissing(item); } }
 
-    private void orphan(ItemType item) {
-        String key = item.getKey().trim();
-        this.order.remove(key);
-        this.items.remove(key); }
-
-    private void adopt(ItemType item) {
-        String key = item.getKey().trim();
-        this.items.put(key, item);
-        this.order.add(key); }
+    private void orphan(ItemType item) { String key = item.getKey().trim(); order().remove(key); items().remove(key); }
+    private void adopt(ItemType item) { String key = item.getKey().trim(); items().put(key, item); order().add(key); }
 
     public boolean okKey(String key) { return !noKey(key); }
     public boolean okKey(ItemType item) { return hasSome(item) && okKey(item.getKey()); }
     public boolean noKey(String key) { return hasNo(key) || key.trim().isEmpty(); }
-    public boolean hasItem(String key) { return okKey(key) && this.items.containsKey(key.trim()); }
+    public boolean hasItem(String key) { return okKey(key) && items().containsKey(key.trim()); }
     public boolean hasItem(ItemType item) { return hasSome(item) && hasItem(item.getKey()); }
-    public boolean isEmpty() { return this.items.isEmpty(); }
-    public void clear() { this.items.clear(); this.order.clear(); }
-    public int countItems() { return this.items.size(); }
+    public boolean isEmpty() { return items().isEmpty(); }
+    public void clear() { items().clear(); order().clear(); }
+    public int countItems() { return items().size(); }
 
-    private ItemType[] emptyItems(ItemType... empty) { return empty; }
-    public ItemType getItem(String key) { return noKey(key) ? null : this.items.get(key.trim()); }
-    public ItemType[] getOrderedItems() { return unwrap(getItems(), emptyItems()); }
-    public List<ItemType> getItems() {
-        ArrayList<ItemType> results = emptyList();
-        this.order.forEach((key) -> results.add(this.items.get(key)));
-        return results; }
+    public ItemType getItem(String key) { return noKey(key) ? null : items().get(key.trim()); }
+    public List<ItemType> getItems() { return buildList(list -> order().forEach((key) -> list.add(items().get(key)))); }
 
     static final String MissingItem = "can't find an item: '%s'";
     private void reportMissing(ItemType item) { warn(format(MissingItem, item.getKey())); }

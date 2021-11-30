@@ -3,40 +3,24 @@ package com.educery.concept.models;
 import java.io.*;
 import org.junit.*;
 
-import com.educery.sites.ModelSite;
+import com.educery.sites.Main;
 import com.educery.utils.Logging;
+import static com.educery.utils.Utils.*;
+import static com.educery.utils.Exceptional.*;
 
 /**
  * Generates model pages from a sample model.
  */
+@Ignore
 public class ModelTest implements Logging {
 
-    private static final String PageBase = "/software-requirements";
-    private static final String LinkBase = "https://gitlab.com/nikboyd/software-requirements";
-    private static final String ImageBase = "..";
-
-    /**
-     * Generates web pages from a model.
-     */
-    @Test
-    public void generatePages() {
-        String templateFolder = getClass().getResource("/templates").getFile();
-        String domainFolder = getClass().getResource("/sample").getFile();
-        ModelSite.withTemplates(templateFolder)
-                .withBases(domainFolder, LinkBase, ImageBase)
-                .withPages(getPagesFolder(domainFolder))
-                .withModel("/domain.txt").withMarkdown()
-                .generatePages();
-    }
-
-    private String getPagesFolder(String domainFolder) {
-        // domainFolder = /git-code/syntopica/syntopica-data/target/test-classes/sample
-        // pagesFolder  = /git-code/software-requirements
-        File result = new File(domainFolder);
-        for (int parent = 0; parent < 5; parent++) {
-            result = result.getParentFile();
-        }
-        return result.getPath() + PageBase;
+    static final String CodeBase = "./../..";
+    static final String[] DemoBases = { "eco-depot", "software-requirements" };
+    @Test public void testMain() throws Exception {
+        wrap(DemoBases).forEach(demo -> runLoudly(() -> {
+            File demoBase = new File(new File(CodeBase).getCanonicalPath(), demo);
+            Main.main(demoBase.getPath());
+        }));
     }
 
 } // ModelTest
